@@ -1,16 +1,21 @@
 {
-    "name": "sonata-project/admin-bundle",
+    "name": "rmzamora/admin-bundle",
     "type": "symfony-bundle",
-    "description": "Symfony SonataAdminBundle",
-    "keywords": ["Admin Generator", "admin", "sonata", "bootstrap"],
+    "description": "Fork of Symfony SonataAdminBundle",
+    "keywords": ["Admin Generator", "admin", "sonata", "bootstrap", "rmzamora fork"],
     "homepage": "http://sonata-project.org/bundles/admin",
     "license": "MIT",
     "authors": [
         {
+            "name": "Mell M. Zamora",
+            "email": "me@mellzamora.com",
+            "homepage": "http://mellzamora.com"
+        },
+        {
             "name": "Thomas Rabaix",
             "email": "thomas.rabaix@sonata-project.org",
             "homepage": "http://sonata-project.org"
-        },
+        },        
         {
             "name": "Sonata Community",
             "homepage": "https://github.com/sonata-project/SonataAdminBundle/contributors"
