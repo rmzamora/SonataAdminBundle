@@ -40,7 +40,7 @@
         "jms/translation-bundle": "*"
     },
     "suggest": {
-        "sonata-project/doctrine-orm-admin-bundle": "dev-master",
+        "rmzamora/doctrine-orm-admin-bundle": "dev-rmzamora-master",
         "sonata-project/intl-bundle": "dev-master"
     },
     "autoload": {
