@@ -15,7 +15,7 @@
             "name": "Thomas Rabaix",
             "email": "thomas.rabaix@sonata-project.org",
             "homepage": "http://sonata-project.org"
-        },        
+        },
         {
             "name": "Sonata Community",
             "homepage": "https://github.com/sonata-project/SonataAdminBundle/contributors"
@@ -32,20 +32,27 @@
         "symfony/twig-bridge": ">=2.1,<2.3-dev",
         "twig/twig": ">=1.10,<2.0-dev",
         "knplabs/knp-menu-bundle": ">=1.1.0,<2.0.x-dev",
-        "sonata-project/jquery-bundle": "dev-master",
-        "sonata-project/exporter": "1.1.*",
-        "rmzamora/block-bundle": "dev-rmzamora-master"
+        "sonata-project/jquery-bundle": "1.8.*",
+        "sonata-project/exporter": "1.*",
+        "sonata-project/block-bundle": "2.1.*",
+        "doctrine/common": ">=2.2,<3.0"
     },
     "require-dev": {
-        "jms/translation-bundle": "*"
+        "jms/translation-bundle": "*",
+        "sonata-project/intl-bundle": "2.1.*"
     },
     "suggest": {
-        "rmzamora/doctrine-orm-admin-bundle": "dev-rmzamora-master",
-        "sonata-project/intl-bundle": "dev-master"
+        "sonata-project/doctrine-orm-admin-bundle": "2.1.*@dev",
+        "sonata-project/intl-bundle": "2.1.*"
     },
     "autoload": {
         "psr-0": { "Sonata\\AdminBundle": "" }
     },
     "target-dir": "Sonata/AdminBundle",
-    "minimum-stability": "dev"
+    "extra": {
+        "branch-alias": {
+            "dev-2.0": "2.0.x-dev",
+            "dev-master": "2.1.x-dev"
+        }
+    }
 }
