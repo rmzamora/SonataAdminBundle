@@ -33,8 +33,8 @@
         "twig/twig": ">=1.12,<2.0-dev",
         "knplabs/knp-menu-bundle": "2.0.*@dev",
         "sonata-project/jquery-bundle": "1.8.*",
-        "sonata-project/exporter": "1.*",
-        "rmzamora/block-bundle": ">=2.2.1,<3.0",
+        "sonata-project/exporter": ">=1.3",
+        "rmzamora/block-bundle": ">=2.3.*@dev,<3.0",
         "doctrine/common": ">=2.2,<3.0"
     },
     "require-dev": {
