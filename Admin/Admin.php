@@ -692,6 +692,19 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
         foreach ($this->getExtensions() as $extension) {
             $extension->configureListFields($mapper);
         }
+
+        if ($this->hasRequest() && $this->getRequest()->isXmlHttpRequest()) {
+            $fieldDescription = $this->getModelManager()->getNewFieldDescriptionInstance($this->getClass(), 'select', array(
+                'label'    => false,
+                'code'     => '_select',
+                'sortable' => false,
+            ));
+
+            $fieldDescription->setAdmin($this);
+            $fieldDescription->setTemplate($this->getTemplate('select'));
+
+            $mapper->add($fieldDescription, 'select');
+        }
     }
 
     /**
