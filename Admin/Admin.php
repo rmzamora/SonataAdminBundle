@@ -45,6 +45,7 @@ use Knp\Menu\FactoryInterface as MenuFactoryInterface;
 use Knp\Menu\ItemInterface as MenuItemInterface;
 use Knp\Menu\Matcher\MatcherInterface;
 use Knp\Menu\Matcher\Voter\UriVoter;
+use Knp\Menu\Util\MenuManipulator;
 
 abstract class Admin implements AdminInterface, DomainObjectInterface
 {
@@ -2022,7 +2023,9 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
                   $this->toString($this->getSubject())
             );
         } else {
-            $menu->getBreadcrumbsArray();
+            //$menu->getBreadcrumbsArray();
+            $manipulator = new MenuManipulator();
+            $manipulator->getBreadcrumbsArray($menu);
         }
 
         return $this->breadcrumbs[$action] = $menu;
