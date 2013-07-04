@@ -2019,8 +2019,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
             $menu = $menu->addChild($this->toString($this->getSubject()));
         } elseif ($action != 'list') {
             $menu = $menu->addChild(
-//                $this->trans($this->getLabelTranslatorStrategy()->getLabel(sprintf('%s_%s', $this->getClassnameLabel(), $action), 'breadcrumb', 'link'))
-                  $this->toString($this->getSubject())
+                $this->trans($this->getLabelTranslatorStrategy()->getLabel(sprintf('%s_%s', $this->getClassnameLabel(), $action), 'breadcrumb', 'link'))
             );
         } else {
             //$menu->getBreadcrumbsArray();
