@@ -1119,13 +1119,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     }
 
     /**
-     * Generates the object url with the given $name
-     *
-     * @param string $name
-     * @param mixed  $object
-     * @param array  $parameters
-     *
-     * @return string return a complete url
+     * {@inheritdoc}
      */
     public function generateObjectUrl($name, $object, array $parameters = array(), $absolute = false)
     {
@@ -1190,7 +1184,12 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
      */
     public function getNewInstance()
     {
-        return $this->getModelManager()->getModelInstance($this->getActiveSubClass() ?: $this->getClass());
+        $object = $this->getModelManager()->getModelInstance($this->getActiveSubClass() ?: $this->getClass());
+        foreach($this->getExtensions() as $extension) {
+            $extension->alterNewInstance($this, $object);
+        }
+
+        return $object;
     }
 
     /**
@@ -2162,8 +2161,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     }
 
     /**
-     *
-     * @return boolean true if the request object is linked to the Admin
+     * {@inheritdoc}
      */
     public function hasRequest()
     {
@@ -2567,7 +2565,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
             return '';
         }
 
-        if (method_exists($object, '__toString')) {
+        if (method_exists($object, '__toString') && null !== $object->__toString()) {
             return (string) $object;
         }
 

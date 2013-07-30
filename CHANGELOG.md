@@ -1,6 +1,25 @@
 CHANGELOG
 =========
 
+### 2013-07-26
+
+* [BC BREAK] added alterNewInstance to AdminExtensionInterface
+  If you do not extend the AdminExtension, you need to add an empty method to
+  your extension classes:
+
+      public function alterNewInstance(AdminInterface $admin, $object)
+      {}
+
+* [BC BREAK] added hasRequest to the AdminInterface
+  If you do not extend the Admin class, you need to add a hasRequest method to
+  your admin like this (depending on how you handle the request you return in
+  getRequest:
+
+      public function hasRequest()
+      {
+          return null !== $this->request;
+      }
+
 ### 2013-07-05
 
 *  Remove qTip
