@@ -240,6 +240,7 @@ class to determine which fields to show.
 In PageAdmin we then have the following code to manage the relationships' lifecycles:
 
 .. code-block:: php
+
     class PageAdmin extends Admin
     {
         // ...
@@ -303,4 +304,4 @@ as SonataAdmin.
 To learn how to add an image preview to your ImageAdmin take a look at the related cookbook entry.
 
 
-_`uploading files with Doctrine and Symfony`: http://symfony.com/doc/current/cookbook/doctrine/file_uploads.html
+.. _`uploading files with Doctrine and Symfony`: http://symfony.com/doc/current/cookbook/doctrine/file_uploads.html
