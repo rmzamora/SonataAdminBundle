@@ -48,6 +48,8 @@ use Knp\Menu\Matcher\MatcherInterface;
 use Knp\Menu\Matcher\Voter\UriVoter;
 use Knp\Menu\Util\MenuManipulator;
 
+use Doctrine\Common\Util\ClassUtils;
+
 abstract class Admin implements AdminInterface, DomainObjectInterface
 {
     const CONTEXT_MENU       = 'menu';
@@ -1001,10 +1003,10 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
         if (!$this->hasActiveSubClass()) {
             return null;
         }
-        
+
         return $this->getClass();
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -1013,16 +1015,16 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
         if (!$this->hasActiveSubClass()) {
             return null;
         }
-        
+
         $subClass = $this->getRequest()->query->get('subclass');
-        
+
         if(! $this->hasSubClass($subClass)){
             return null;
         }
-        
+
         return $subClass;
     }
-    
+
     /**
      * Returns the list of batchs actions
      *
@@ -1457,7 +1459,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getLabel()
     {
@@ -1532,7 +1534,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public function getShowGroups()
     {
@@ -1540,7 +1542,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     }
 
     /**
-     * @param array $showGroups
+     * {@inheritdoc}
      */
     public function setShowGroups(array $showGroups)
     {
@@ -1548,8 +1550,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     }
 
     /**
-     * @param string $group
-     * @param array  $keys
+     * {@inheritdoc}
      */
     public function reorderShowGroup($group, array $keys)
     {
@@ -1717,11 +1718,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     }
 
     /**
-     * remove a FieldDescription
-     *
-     * @param string $name
-     *
-     * @return void
+     * {@inheritdoc}
      */
     public function removeShowFieldDescription($name)
     {
@@ -2587,7 +2584,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
             return (string) $object;
         }
 
-        return sprintf("%s:%s", get_class($object), spl_object_hash($object));
+        return sprintf("%s:%s", ClassUtils::getClass($object), spl_object_hash($object));
     }
 
     /**
