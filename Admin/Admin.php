@@ -1692,11 +1692,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     }
 
     /**
-     * Returns true if the admin has a FieldDescription with the given $name
-     *
-     * @param string $name
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function hasShowFieldDescription($name)
     {
@@ -1738,11 +1734,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     }
 
     /**
-     * Returns true if the list FieldDescription exists
-     *
-     * @param string $name
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function hasListFieldDescription($name)
     {
@@ -1760,11 +1752,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     }
 
     /**
-     * remove a list FieldDescription
-     *
-     * @param string $name
-     *
-     * @return void
+     * {@inheritdoc}
      */
     public function removeListFieldDescription($name)
     {
@@ -1784,11 +1772,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     }
 
     /**
-     * Returns true if the filter FieldDescription exists
-     *
-     * @param string $name
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function hasFilterFieldDescription($name)
     {
@@ -1804,9 +1788,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     }
 
     /**
-     * remove a filter FieldDescription
-     *
-     * @param string $name
+     * {@inheritdoc}
      */
     public function removeFilterFieldDescription($name)
     {
