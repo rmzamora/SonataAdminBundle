@@ -13,6 +13,7 @@ namespace Sonata\AdminBundle\Controller;
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -177,9 +178,10 @@ class CRUDController extends Controller
         $this->get('twig')->getExtension('form')->renderer->setTheme($formView, $this->admin->getFilterTheme());
 
         return $this->render($this->admin->getTemplate('list'), array(
-            'action'   => 'list',
-            'form'     => $formView,
-            'datagrid' => $datagrid
+            'action'     => 'list',
+            'form'       => $formView,
+            'datagrid'   => $datagrid,
+            'csrf_token' => $this->getCsrfToken('sonata.batch'),
         ));
     }
 
@@ -230,6 +232,9 @@ class CRUDController extends Controller
         }
 
         if ($this->getRestMethod() == 'DELETE') {
+            // check the csrf token
+            $this->validateCsrfToken('sonata.delete');
+
             try {
                 $this->admin->delete($object);
 
@@ -252,8 +257,9 @@ class CRUDController extends Controller
         }
 
         return $this->render($this->admin->getTemplate('delete'), array(
-            'object' => $object,
-            'action' => 'delete'
+            'object'     => $object,
+            'action'     => 'delete',
+            'csrf_token' => $this->getCsrfToken('sonata.delete')
         ));
     }
 
@@ -381,6 +387,9 @@ class CRUDController extends Controller
             throw new \RuntimeException('invalid request type, POST expected');
         }
 
+        // check the csrf token
+        $this->validateCsrfToken('sonata.batch');
+
         $confirmation = $this->get('request')->get('confirmation', false);
 
         if ($data = json_decode($this->get('request')->get('data'), true)) {
@@ -396,6 +405,8 @@ class CRUDController extends Controller
             $idx          = $this->get('request')->get('idx');
             $all_elements = $this->get('request')->get('all_elements');
             $data         = $this->get('request')->request->all();
+
+            unset($data['_sonata_csrf_token']);
         }
 
         $batchActions = $this->admin->getBatchActions();
@@ -431,10 +442,11 @@ class CRUDController extends Controller
             $formView = $datagrid->getForm()->createView();
 
             return $this->render($this->admin->getTemplate('batch_confirmation'), array(
-                'action'   => 'list',
-                'datagrid' => $datagrid,
-                'form'     => $formView,
-                'data'     => $data,
+                'action'     => 'list',
+                'datagrid'   => $datagrid,
+                'form'       => $formView,
+                'data'       => $data,
+                'csrf_token' => $this->getCsrfToken('sonata.batch'),
             ));
         }
 
@@ -723,7 +735,7 @@ class CRUDController extends Controller
 
     /**
      * Gets ACL users
-     * 
+     *
      * @return \Traversable
      */
     protected function getAclUsers()
@@ -738,7 +750,7 @@ class CRUDController extends Controller
                 $aclUsers = $userManager->findUsers();
             }
         }
-        
+
         return is_array($aclUsers) ? new \ArrayIterator($aclUsers) : $aclUsers;
     }
 
@@ -757,7 +769,7 @@ class CRUDController extends Controller
         if (!$this->admin->isAclEnabled()) {
             throw new NotFoundHttpException('ACL are not enabled for this admin');
         }
-        
+
         $id = $this->get('request')->get($this->admin->getIdParameter());
 
         $object = $this->admin->getObject($id);
@@ -780,7 +792,7 @@ class CRUDController extends Controller
             $aclUsers,
             $adminObjectAclManipulator->getMaskBuilderClass()
         );
-        
+
         $form = $adminObjectAclManipulator->createForm($adminObjectAclData);
 
         $request = $this->getRequest();
@@ -797,11 +809,11 @@ class CRUDController extends Controller
         }
 
         return $this->render($this->admin->getTemplate('acl'), array(
-            'action' => 'acl',
+            'action'      => 'acl',
             'permissions' => $adminObjectAclData->getUserPermissions(),
-            'object' => $object,
-            'users' => $aclUsers,
-            'form' => $form->createView()
+            'object'      => $object,
+            'users'       => $aclUsers,
+            'form'        => $form->createView()
         ));
     }
 
@@ -816,5 +828,37 @@ class CRUDController extends Controller
         $this->get('session')
              ->getFlashBag()
              ->add($type, $message);
+    }
+
+    /**
+     * Validate CSRF token for action with out form
+     *
+     * @param string $intention
+     *
+     * @throws \RuntimeException
+     */
+    public function validateCsrfToken($intention)
+    {
+        if (!$this->container->has('form.csrf_provider')) {
+            return;
+        }
+
+        if (!$this->container->get('form.csrf_provider')->isCsrfTokenValid($intention, $this->get('request')->request->get('_sonata_csrf_token', false))) {
+            throw new HttpException(400, "The csrf token is not valid, CSRF attack ?");
+        }
+    }
+
+    /**
+     * @param $intention
+     *
+     * @return string
+     */
+    public function getCsrfToken($intention)
+    {
+        if (!$this->container->has('form.csrf_provider')) {
+            return false;
+        }
+
+        return $this->container->get('form.csrf_provider')->generateCsrfToken($intention);
     }
 }

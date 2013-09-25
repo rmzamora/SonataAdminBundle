@@ -48,7 +48,7 @@ class ListMapperTest extends \PHPUnit_Framework_TestCase
 
         $modelManager = $this->getMock('Sonata\AdminBundle\Model\ModelManagerInterface');
 
-        //php 5.3 BC
+        // php 5.3 BC
         $fieldDescription = $this->getFieldDescriptionMock();
 
         $modelManager->expects($this->any())
@@ -116,6 +116,34 @@ class ListMapperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('fooName', $fieldDescription->getOption('label'));
     }
 
+    public function testAddViewInlineActionException()
+    {
+        $this->setExpectedException('PHPUnit_Framework_Error', 'Inline action "view" is deprecated since version 2.2.4. Use inline action "show" instead.');
+
+        $this->assertFalse($this->listMapper->has('_action'));
+        $this->listMapper->add('_action', 'actions', array('actions'=>array('view'=>array())));
+    }
+
+    public function testAddViewInlineAction()
+    {
+        // ignore E_USER_DEPRECATED error
+        $previousErrorHandler = set_error_handler( function() {}, E_USER_DEPRECATED);
+
+        $this->assertFalse($this->listMapper->has('_action'));
+        $this->listMapper->add('_action', 'actions', array('actions'=>array('view'=>array())));
+
+        $this->assertTrue($this->listMapper->has('_action'));
+
+        $fieldDescription = $this->listMapper->get('_action');
+
+        $this->assertInstanceOf('Sonata\AdminBundle\Admin\FieldDescriptionInterface', $fieldDescription);
+        $this->assertEquals('_action', $fieldDescription->getName());
+        $this->assertCount(1, $fieldDescription->getOption('actions'));
+        $this->assertEquals(array('show'=>array()), $fieldDescription->getOption('actions'));
+
+        set_error_handler($previousErrorHandler);
+    }
+
     public function testAddRemove()
     {
         $this->assertFalse($this->listMapper->has('fooName'));
@@ -163,7 +191,7 @@ class ListMapperTest extends \PHPUnit_Framework_TestCase
 
         $this->listMapper->reorder(array('fooName3', 'fooName2', 'fooName1', 'fooName4'));
 
-        //print_r is used to compare order of items in associative arrays
+        // print_r is used to compare order of items in associative arrays
         $this->assertEquals(print_r(array(
             'fooName3'=>$fieldDescription3,
             'fooName2'=>$fieldDescription2,
