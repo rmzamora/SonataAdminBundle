@@ -55,7 +55,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     const CONTEXT_MENU       = 'menu';
     const CONTEXT_DASHBOARD  = 'dashboard';
 
-    const CLASS_REGEX        = '@([A-Za-z0-9]*)\\\(Bundle\\\)?([A-Za-z0-9]+)Bundle\\\(Entity|Document|Model|PHPCR|Doctrine\\\Phpcr)\\\(.*)@';
+    const CLASS_REGEX        = '@([A-Za-z0-9]*)\\\(Bundle\\\)?([A-Za-z0-9]+)Bundle\\\(Entity|Document|Model|PHPCR|Phpcr|Doctrine\\\Orm|Doctrine\\\Phpcr|Doctrine\\\MongoDB|Doctrine\\\CouchDB)\\\(.*)@';
 
     /**
      * The class name managed by the admin class
@@ -1080,9 +1080,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     }
 
     /**
-     * Returns the parameter representing request id, ie: id or childId
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getIdParameter()
     {
@@ -1579,8 +1577,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     }
 
     /**
-     *
-     * @return \Sonata\AdminBundle\Admin\FieldDescriptionInterface the parent field description
+     * {@inheritdoc}
      */
     public function getParentFieldDescription()
     {
@@ -1588,9 +1585,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     }
 
     /**
-     * Returns true if the Admin is linked to a parent FieldDescription
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function hasParentFieldDescription()
     {
@@ -1898,9 +1893,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     }
 
     /**
-     * Returns the uniqid
-     *
-     * @return integer
+     * {@inheritdoc}
      */
     public function getUniqid()
     {
@@ -1918,9 +1911,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     }
 
     /**
-     * Returns an array of persistent parameters
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function getPersistentParameters()
     {
@@ -2281,7 +2272,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getBaseCodeRoute()
     {
