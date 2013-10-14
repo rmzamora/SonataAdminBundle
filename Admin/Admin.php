@@ -899,7 +899,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     public function getBaseRouteName()
     {
         if (!$this->baseRouteName) {
-            preg_match(self::CLASS_REGEX, $this->class , $matches);
+            preg_match(self::CLASS_REGEX, $this->class, $matches);
 
             if (!$matches) {
                 throw new \RuntimeException(sprintf('Cannot automatically determine base route name, please define a default `baseRouteName` value for the admin class `%s`', get_class($this)));
@@ -1222,7 +1222,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     public function getNewInstance()
     {
         $object = $this->getModelManager()->getModelInstance($this->getClass());
-        foreach($this->getExtensions() as $extension) {
+        foreach ($this->getExtensions() as $extension) {
             $extension->alterNewInstance($this, $object);
         }
 
@@ -2026,11 +2026,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     }
 
     /**
-     * set the current child status
-     *
-     * @param boolean $currentChild
-     *
-     * @return void
+     * {@inheritdoc}
      */
     public function setCurrentChild($currentChild)
     {
@@ -2038,9 +2034,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     }
 
     /**
-     * Returns the current child status
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function getCurrentChild()
     {

@@ -286,7 +286,7 @@ interface AdminInterface
     public function getRoutes();
 
     /**
-     * Return the parameter name used to represente the id in the url
+     * Return the parameter name used to represent the id in the url
      *
      * @return string
      */
@@ -910,4 +910,18 @@ interface AdminInterface
      * @return array
      */
     public function getBreadcrumbs($action);
+
+    /**
+     * Set the current child status
+     *
+     * @param boolean $currentChild
+     */
+    public function setCurrentChild($currentChild);
+
+    /**
+     * Returns the current child status
+     *
+     * @return bool
+     */
+    public function getCurrentChild();
 }
