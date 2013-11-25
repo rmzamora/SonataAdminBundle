@@ -544,8 +544,6 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
      */
     public function initialize()
     {
-        $this->uniqid = "s".uniqid();
-
         if (!$this->classnameLabel) {
             $this->classnameLabel = substr($this->getClass(), strrpos($this->getClass(), '\\') + 1);
         }
@@ -1049,9 +1047,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     }
 
     /**
-     * Returns the list of batchs actions
-     *
-     * @return array the list of batchs actions
+     * {@inheritdoc}
      */
     public function getBatchActions()
     {
@@ -1903,6 +1899,10 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
      */
     public function getUniqid()
     {
+        if (!$this->uniqid) {
+            $this->uniqid = "s".uniqid();
+        }
+
         return $this->uniqid;
     }
 
