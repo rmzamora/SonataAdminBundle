@@ -2144,6 +2144,14 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     /**
      * {@inheritdoc}
      */
+    public function getTranslationLabel($label, $context = '', $type = '')
+    {
+        return $this->getLabelTranslatorStrategy()->getLabel($label, $context, $type);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function setRequest(Request $request)
     {
         $this->request = $request;
