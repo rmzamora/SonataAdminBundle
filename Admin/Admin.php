@@ -2109,7 +2109,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
      */
     public function trans($id, array $parameters = array(), $domain = null, $locale = null)
     {
-        $domain = $domain ?: $this->translationDomain;
+        $domain = $domain ?: $this->getTranslationDomain();
 
         if (!$this->translator) {
             return $id;
@@ -2131,7 +2131,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
      */
     public function transChoice($id, $count, array $parameters = array(), $domain = null, $locale = null)
     {
-        $domain = $domain ?: $this->translationDomain;
+        $domain = $domain ?: $this->getTranslationDomain();
 
         if (!$this->translator) {
             return $id;
