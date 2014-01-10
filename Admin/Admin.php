@@ -1583,6 +1583,20 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function removeFieldFromFormGroup($key)
+    {
+        foreach ($this->formGroups as $name => $formGroup) {
+            unset($this->formGroups[$name]['fields'][$key]);
+
+            if (empty($this->formGroups[$name]['fields'])) {
+                unset($this->formGroups[$name]);
+            }
+        }
+    }
+
+    /**
      * @param array $group
      * @param array $keys
      */
