@@ -42,18 +42,17 @@
         "doctrine/common": "~2.2"
     },
     "require-dev": {
-        "jms/translation-bundle": "*@dev",
+        "jms/translation-bundle": "~1.1",
         "symfony/yaml": "~2.2",
         "sonata-project/intl-bundle": "~2.1"
     },
     "suggest": {
-        "sonata-project/doctrine-orm-admin-bundle": "2.2.*@dev",
-        "sonata-project/intl-bundle": "2.1.*"
+        "jms/translation-bundle": "Extract message keys from Admins",
+        "sonata-project/intl-bundle": "Add localized date and number into the list"
     },
     "autoload": {
-        "psr-0": { "Sonata\\AdminBundle": "" }
+        "psr-4": { "Sonata\\AdminBundle\\": "" }
     },
-    "target-dir": "Sonata/AdminBundle",
     "extra": {
         "branch-alias": {
             "dev-master": "2.4.x-dev"
