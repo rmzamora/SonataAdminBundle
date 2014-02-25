@@ -43,7 +43,7 @@
     },
     "require-dev": {
         "jms/translation-bundle": "~1.1",
-        "symfony/yaml": "~2.2",
+        "symfony/yaml": "~2.3",
         "sonata-project/intl-bundle": "~2.1"
     },
     "suggest": {
