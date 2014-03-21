@@ -28,7 +28,7 @@ Customising the query used to show the object from within your Admin class
 
 Setting up a showAction is pretty much the same as a form, which we did in the initial setup.
 
-It is actually a but easier, because we are only concerned with displaying information.
+It is actually a bit easier, because we are only concerned with displaying information.
 
 Smile, the hard part is already done.
 
@@ -94,7 +94,7 @@ This ensures that you can update Sonata Admin and keep all of your hard work.
 
 The original template can be found in the following location:
 
-``vendor/sonata-project/admin-bundle/Sonata/AdminBundle/Resources/views/CRUD/base_show.html.twig``
+``vendor/sonata-project/admin-bundle/Resources/views/CRUD/base_show.html.twig``
 
 Now that you have a copy of the default template, check to make sure it works.
 
