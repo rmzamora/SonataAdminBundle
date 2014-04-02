@@ -59,7 +59,7 @@ var Admin = {
     setup_xeditable: function(subject) {
         jQuery('.x-editable', subject).editable({
             emptyclass: 'editable-empty btn btn-small',
-            emptytext: '<i class="icon-edit"></i>',
+            emptytext: '<i class="glyphicon glyphicon-edit"></i>',
             success: function(response) {
                 if('KO' === response.status) {
                     return response.message;
@@ -113,11 +113,14 @@ var Admin = {
             }
 
             var target = input,
-                fieldShortDescription = input.closest('.field-container').find('.field-short-description')
-            ;
-
+                fieldShortDescription = input.closest('.field-container').find('.field-short-description'),
+                select2 = input.closest('.select2-container')
+                ;
+    
             if (fieldShortDescription.length) {
                 target = fieldShortDescription;
+            } else if (select2.length) {
+                target= select2;
             }
 
             target.popover({
@@ -152,8 +155,8 @@ var Admin = {
 
     add_filters: function(subject) {
         jQuery('div.filter_container .sonata-filter-option', subject).hide();
-        jQuery('fieldset.filter_legend', subject).click(function(event) {
-            jQuery('div.filter_container .sonata-filter-option', jQuery(event.target).parent()).toggle();
+        jQuery('h4.filter_legend', subject).click(function(event) {
+            jQuery('div.filter_container .sonata-filter-option').toggle();
         });
     },
 
