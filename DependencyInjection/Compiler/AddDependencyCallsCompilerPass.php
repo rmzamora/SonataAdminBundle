@@ -109,6 +109,10 @@ class AddDependencyCallsCompilerPass implements CompilerPassInterface
                     $groups[$resolvedGroupName]['label_catalogue'] = 'SonataAdminBundle';
                 }
 
+                if (empty($group['icon'])) {
+                    $groups[$resolvedGroupName]['icon'] = $groupDefaults[$resolvedGroupName]['icon'];
+                }
+
                 if (!empty($group['item_adds'])) {
                     $groups[$resolvedGroupName]['items'] = array_merge($groups[$resolvedGroupName]['items'], $group['item_adds']);
                 }
@@ -272,6 +276,7 @@ class AddDependencyCallsCompilerPass implements CompilerPassInterface
         // make sure the default templates are defined
         $definedTemplates = array_merge(array(
             'user_block'               => 'SonataAdminBundle:Core:user_block.html.twig',
+            'add_block'                => 'SonataAdminBundle:Core:add_block.html.twig',
             'layout'                   => 'SonataAdminBundle::standard_layout.html.twig',
             'ajax'                     => 'SonataAdminBundle::ajax_layout.html.twig',
             'dashboard'                => 'SonataAdminBundle:Core:dashboard.html.twig',
