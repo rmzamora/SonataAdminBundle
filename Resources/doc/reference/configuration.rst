@@ -60,7 +60,7 @@ Full Configuration Options
                 confirm_exit:                           true      # enabled confirmation when quitting with unsaved changes
                 use_select2:                            true      # enable select2
                 pager_links:                            ~         # pager max links to display
-                dropdown_number_groups_per_colums:          2         # max items per column in dropdown menu (add button in top nav)
+                dropdown_number_groups_per_colums:      2         # max items per column in dropdown menu (add button in top nav)
             dashboard:
                 groups:
 
@@ -121,7 +121,7 @@ Full Configuration Options
                 pager_results:        SonataAdminBundle:Pager:results.html.twig
 
             assets:
-                css:
+                stylesheets:
 
                     # Defaults:
                     - bundles/sonataadmin/admin-lte/css/bootstrap.min.css
