@@ -12,6 +12,7 @@
 namespace Sonata\AdminBundle\Admin;
 
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
+use Sonata\CoreBundle\Model\Metadata;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormBuilder;
 use Symfony\Component\PropertyAccess\PropertyPath;
@@ -479,16 +480,6 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     }
 
     /**
-     * @deprecated removed with Symfony 2.2
-     *
-     * {@inheritdoc}
-     */
-    protected function configureShowField(ShowMapper $show)
-    {
-
-    }
-
-    /**
      * {@inheritdoc}
      */
     protected function configureShowFields(ShowMapper $filter)
@@ -724,7 +715,6 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
         $this->show = new FieldDescriptionCollection();
         $mapper = new ShowMapper($this->showBuilder, $this->show, $this);
 
-        $this->configureShowField($mapper); // deprecated, use configureShowFields instead
         $this->configureShowFields($mapper);
 
         foreach ($this->getExtensions() as $extension) {
@@ -2751,5 +2741,13 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     public function isAclEnabled()
     {
         return $this->getSecurityHandler() instanceof AclSecurityHandlerInterface;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getObjectMetadata($object)
+    {
+        return new Metadata($this->toString($object));
     }
 }
