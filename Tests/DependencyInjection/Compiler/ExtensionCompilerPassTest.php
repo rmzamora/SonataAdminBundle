@@ -39,8 +39,6 @@ class ExtensionCompilerPassTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        parent::setUp();
-
         $this->extension = new SonataAdminExtension();
         $this->config    = $this->getConfig();
         $this->root      = 'sonata.admin';
@@ -107,8 +105,8 @@ class ExtensionCompilerPassTest extends \PHPUnit_Framework_TestCase
         $extensionMap = $container->getParameter($this->root . ".extension.map");
 
         $method = new \ReflectionMethod(
-                  'Sonata\AdminBundle\DependencyInjection\Compiler\ExtensionCompilerPass', 'flattenExtensionConfiguration'
-                );
+            'Sonata\AdminBundle\DependencyInjection\Compiler\ExtensionCompilerPass', 'flattenExtensionConfiguration'
+        );
 
         $method->setAccessible(TRUE);
         $extensionMap = $method->invokeArgs(new ExtensionCompilerPass(), array($extensionMap));
@@ -283,6 +281,8 @@ class ExtensionCompilerPassTest extends \PHPUnit_Framework_TestCase
             'SonataCoreBundle' => true,
             'KnpMenuBundle' => true
         ));
+        $container->setParameter('kernel.cache_dir', '/tmp');
+        $container->setParameter('kernel.debug', true);
 
         // Add dependencies for SonataAdminBundle (these services will never get called so dummy classes will do)
         $container

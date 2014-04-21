@@ -174,6 +174,8 @@ class AddDependencyCallsCompilerPassTest extends \PHPUnit_Framework_TestCase
             'SonataCoreBundle' => true,
             'KnpMenuBundle' => true
         ));
+        $container->setParameter('kernel.cache_dir', '/tmp');
+        $container->setParameter('kernel.debug', true);
 
         // Add dependencies for SonataAdminBundle (these services will never get called so dummy classes will do)
         $container
@@ -212,6 +214,9 @@ class AddDependencyCallsCompilerPassTest extends \PHPUnit_Framework_TestCase
         $container
             ->register('sonata.admin.builder.orm_datagrid')
             ->setClass('Sonata\DoctrineORMAdminBundle\Builder\DatagridBuilder');
+        $container
+            ->register('sonata.admin.route.cache')
+            ->setClass('Sonata\AdminBundle\Route\RoutesCache');
         $container
             ->register('knp_menu.factory')
             ->setClass('Knp\Menu\Silex\RouterAwareFactory');
