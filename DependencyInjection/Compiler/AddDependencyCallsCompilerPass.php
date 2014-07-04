@@ -155,7 +155,7 @@ class AddDependencyCallsCompilerPass implements CompilerPassInterface
             'validator',
             'security_handler',
             'menu_factory',
-            'menu_matcher',
+            //'menu_matcher',
             'route_builder',
             'label_translator_strategy',
         );
@@ -202,8 +202,9 @@ class AddDependencyCallsCompilerPass implements CompilerPassInterface
             'validator'                 => 'validator',
             'security_handler'          => 'sonata.admin.security.handler',
             'menu_factory'              => 'knp_menu.factory',
-            'menu_matcher'              => 'knp_menu.matcher',
-            'route_builder'             => 'sonata.admin.route.path_info',
+            //'menu_matcher'              => 'knp_menu.matcher',
+            'route_builder'             => 'sonata.admin.route.path_info' .
+                (($manager_type == 'doctrine_phpcr') ? '_slashes' : ''),
             'label_translator_strategy' => 'sonata.admin.label.strategy.native'
         );
 
