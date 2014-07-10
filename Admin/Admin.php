@@ -1445,7 +1445,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
             $extension->configureTabMenu($this, $menu, $action, $childAdmin);
         }
 
-        $this->menuMatcher->addVoter(new UriVoter($this->getRequest()->getBaseUrl().$this->getRequest()->getPathInfo()));
+        #$this->menuMatcher->addVoter(new UriVoter($this->getRequest()->getBaseUrl().$this->getRequest()->getPathInfo()));
 
         $this->menu = $menu;
         //$this->menu = $renderer->render($menu);
