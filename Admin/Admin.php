@@ -511,7 +511,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     /**
      * {@inheritdoc}
      */
-    protected function configureShowFields(ShowMapper $filter)
+    protected function configureShowFields(ShowMapper $show)
     {
 
     }
