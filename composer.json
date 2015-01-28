@@ -33,13 +33,14 @@
         "symfony/class-loader":"~2.4",
         "sensio/generator-bundle": "~2.3",
         "symfony/translation":"~2.3",
+        "symfony/dependency-injection": "~2.3,>=2.3.3",
         "twig/twig": "~1.15",
         "twig/extensions": "~1.0",
         "knplabs/knp-menu-bundle": "~2.0",
         "sonata-project/exporter": "~1.0",
         "sonata-project/core-bundle": "~2.2",
         "rmzamora/block-bundle": "~2.3",
-        "doctrine/common": "~2.2"
+        "doctrine/common": "~2.4"
     },
     "require-dev": {
         "jms/translation-bundle": "~1.1",
