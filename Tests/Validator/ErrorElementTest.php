@@ -11,7 +11,7 @@
 
 namespace Sonata\AdminBundle\Tests\Validator;
 
-use Sonata\AdminBundle\Validator\ErrorElement;
+use Sonata\CoreBundle\Validator\ErrorElement;
 use Symfony\Component\Validator\ConstraintValidatorFactoryInterface;
 use Sonata\AdminBundle\Tests\Fixtures\Bundle\Entity\Foo;
 use Symfony\Component\Validator\Constraints\NotNull;

@@ -71,7 +71,7 @@ Add the ``InlineConstraint`` class constraint to your bundle's validation config
             xsi:schemaLocation="http://symfony.com/schema/dic/constraint-mapping http://symfony.com/schema/dic/constraint-mapping/constraint-mapping-1.0.xsd">
 
             <class name="Application\Sonata\PageBundle\Entity\Block">
-                <constraint name="Sonata\AdminBundle\Validator\Constraints\InlineConstraint">
+                <constraint name="Sonata\CoreBundle\Validator\Constraints\InlineConstraint">
                     <option name="service">sonata.page.cms.page</option>
                     <option name="method">validateBlock</option>
                 </constraint>
@@ -83,7 +83,7 @@ Add the ``InlineConstraint`` class constraint to your bundle's validation config
         # src/Application/Sonata/PageBundle/Resources/config/validation.yml
         Application\Sonata\PageBundle\Entity\Block:
             constraints:
-                - Sonata\AdminBundle\Validator\Constraints\InlineConstraint:
+                - Sonata\CoreBundle\Validator\Constraints\InlineConstraint:
                     service: sonata.page.cms.page
                     method: validateBlock
 
@@ -107,7 +107,7 @@ Example from the ``SonataPageBundle``
     namespace Sonata\PageBundle\Block;
 
     use Sonata\PageBundle\Model\PageInterface;
-    use Sonata\AdminBundle\Validator\ErrorElement;
+    use Sonata\CoreBundle\Validator\ErrorElement;
     use Sonata\BlockBundle\Block\BaseBlockService;
     use Sonata\BlockBundle\Model\BlockInterface;
 
@@ -145,7 +145,7 @@ the ``Admin`` class itself contains an empty ``validate`` method. This is automa
 .. code-block:: php
 
     // add this to your existing use statements
-    use Sonata\AdminBundle\Validator\ErrorElement;
+    use Sonata\CoreBundle\Validator\ErrorElement;
 
     class MyAdmin extends Admin
     {

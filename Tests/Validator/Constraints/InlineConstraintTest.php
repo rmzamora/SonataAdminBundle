@@ -10,7 +10,7 @@
 
 namespace Sonata\AdminBundle\Test\Validator\Constraints;
 
-use Sonata\AdminBundle\Validator\Constraints\InlineConstraint;
+use Sonata\CoreBundle\Validator\Constraints\InlineConstraint;
 
 /**
  * Test for InlineConstraint
