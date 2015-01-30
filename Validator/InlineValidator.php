@@ -12,6 +12,7 @@ namespace Sonata\AdminBundle\Validator;
 
 use Sonata\CoreBundle\Validator\InlineValidator as BaseInlineValidator;
 use Sonata\AdminBundle\Validator\ErrorElement;
+use Symfony\Component\Validator\Constraint;
 
 /**
  * @deprecated
@@ -31,5 +32,32 @@ class InlineValidator extends BaseInlineValidator
             $this->context,
             $this->context->getGroup()
         );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function validate($value, Constraint $constraint)
+    {
+        $errorElement = new ErrorElement(
+            $value,
+            $this->constraintValidatorFactory,
+            $this->context,
+            $this->context->getGroup()
+        );
+
+        if ($constraint->isClosure()) {
+            $function = $constraint->getClosure();
+        } else {
+            if (is_string($constraint->getService())) {
+                $service = $this->container->get($constraint->getService());
+            } else {
+                $service = $constraint->getService();
+            }
+
+            $function = array($service, $constraint->getMethod());
+        }
+
+        call_user_func($function, $errorElement, $value);
     }
 }
