@@ -898,6 +898,8 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
                     'model_manager' => $this->getModelManager(),
                 ),
                 'operator_type' => 'hidden',
+            ), null, null, array(
+                'admin_code' => $this->getParent()->getCode()
             ));
         }
 
