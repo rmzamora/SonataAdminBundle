@@ -11,7 +11,7 @@
 namespace Sonata\AdminBundle\Validator;
 
 use Sonata\CoreBundle\Validator\InlineValidator as BaseInlineValidator;
-use Sonata\AdminBundle\Validator\ErrorElement;
+use Sonata\CoreBundle\Validator\ErrorElement;
 use Symfony\Component\Validator\Constraint;
 
 /**
