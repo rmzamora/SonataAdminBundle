@@ -65,6 +65,7 @@ abstract class BaseGroupedMapper extends BaseMapper
             'description'        => false,
             'translation_domain' => null,
             'name'               => $name,
+            'box_class'          => 'box box-primary',
         );
 
         $code = $name;
@@ -231,7 +232,7 @@ abstract class BaseGroupedMapper extends BaseMapper
     }
 
     /**
-     * Add the fieldname to the current group
+     * Add the field name to the current group
      *
      * @param string $fieldName
      */
