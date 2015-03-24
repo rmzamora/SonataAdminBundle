@@ -127,7 +127,7 @@ class AdminObjectAclDataTest extends \PHPUnit_Framework_TestCase
     {
         $form = $this->getMock('\Symfony\Component\Form\Form', array(), array(), '', false);
         $adminObjectAclData = $this->createAdminObjectAclData();
-        $ret = $adminObjectAclData->setForm($form);
+        $ret = $adminObjectAclData->setAclUsersForm($form);
 
         $this->assertEquals($adminObjectAclData, $ret);
 
@@ -143,7 +143,7 @@ class AdminObjectAclDataTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetForm($adminObjectAclData)
     {
-        $this->isInstanceOf('Symfony\Component\Form\Form', $adminObjectAclData->getForm());
+        $this->isInstanceOf('Symfony\Component\Form\Form', $adminObjectAclData->getAclUsersForm());
     }
 
     public function testSetAclUsersForm()
