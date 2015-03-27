@@ -14,7 +14,6 @@ namespace Sonata\AdminBundle\Block;
 use Sonata\BlockBundle\Block\BlockContextInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
-use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\CoreBundle\Validator\ErrorElement;
 use Sonata\AdminBundle\Admin\Pool;
 use Sonata\BlockBundle\Model\BlockInterface;
@@ -23,9 +22,9 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  *
- * @author     Thomas Rabaix <thomas.rabaix@sonata-project.org>
+ * @author  Thomas Rabaix <thomas.rabaix@sonata-project.org>
  */
-class AdminListBlockService extends BaseBlockService
+class AdminStatsBlockService extends BaseBlockService
 {
     protected $pool;
 
@@ -46,22 +45,29 @@ class AdminListBlockService extends BaseBlockService
      */
     public function execute(BlockContextInterface $blockContext, Response $response = null)
     {
-        $dashboardGroups = $this->pool->getDashboardGroups();
+        $admin = $this->pool->getAdminByAdminCode($blockContext->getSetting('code'));
 
-        $settings = $blockContext->getSettings();
+        $datagrid = $admin->getDatagrid();
 
-        $visibleGroups = array();
-        foreach ($dashboardGroups as $name => $dashboardGroup) {
-            if (!$settings['groups'] || in_array($name, $settings['groups'])) {
-                $visibleGroups[] = $dashboardGroup;
-            }
+        $filters = $blockContext->getSetting('filters');
+
+        if (!isset($filters['_per_page'])) {
+            $filters['_per_page'] = array('value' => $blockContext->getSetting('limit'));
         }
 
-        return $this->renderPrivateResponse($this->pool->getTemplate('list_block'), array(
-            'block'         => $blockContext->getBlock(),
-            'settings'      => $settings,
-            'admin_pool'    => $this->pool,
-            'groups'        => $visibleGroups
+        foreach($filters as $name => $data) {
+            $datagrid->setValue($name, isset($data['type']) ? $data['type'] : null, $data['value']);
+        }
+
+        $datagrid->buildPager();
+
+        return $this->renderPrivateResponse($blockContext->getTemplate(), array(
+            'block'      => $blockContext->getBlock(),
+            'settings'   => $blockContext->getSettings(),
+            'admin_pool' => $this->pool,
+            'admin'      => $admin,
+            'pager'      => $datagrid->getPager(),
+            'datagrid'   => $datagrid
         ), $response);
     }
 
@@ -70,7 +76,7 @@ class AdminListBlockService extends BaseBlockService
      */
     public function getName()
     {
-        return 'Admin List';
+        return 'Admin Stats';
     }
 
     /**
@@ -79,11 +85,13 @@ class AdminListBlockService extends BaseBlockService
     public function setDefaultSettings(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'groups' => false
-        ));
-
-        $resolver->setAllowedTypes(array(
-            'groups' => array('bool', 'array')
+            'icon'    => 'fa-line-chart',
+            'text'    => 'Statistics',
+            'color'   => 'bg-aqua',
+            'code'    => false,
+            'filters' => array(),
+            'limit'   => 1000,
+            'template' => 'SonataAdminBundle:Block:block_stats.html.twig',
         ));
     }
 }
