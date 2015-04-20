@@ -49,6 +49,12 @@ use Knp\Menu\Util\MenuManipulator;
 use Doctrine\Common\Util\ClassUtils;
 use Sonata\AdminBundle\Datagrid\Pager;
 
+/**
+ * Class Admin
+ *
+ * @package Sonata\AdminBundle\Admin
+ * @author  Thomas Rabaix <thomas.rabaix@sonata-project.org>
+ */
 abstract class Admin implements AdminInterface, DomainObjectInterface
 {
     const CONTEXT_MENU       = 'menu';

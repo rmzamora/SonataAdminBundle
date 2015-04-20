@@ -11,6 +11,12 @@
 
 namespace Sonata\AdminBundle\Filter;
 
+/**
+ * Class Filter
+ *
+ * @package Sonata\AdminBundle\Filter
+ * @author  Thomas Rabaix <thomas.rabaix@sonata-project.org>
+ */
 abstract class Filter implements FilterInterface
 {
     protected $name = null;
@@ -183,7 +189,7 @@ abstract class Filter implements FilterInterface
     public function setOptions(array $options)
     {
         $this->options = array_merge(
-            array('show_filter' => null),
+            array('show_filter' => null, 'advanced_filter' => true),
             $this->getDefaultOptions(),
             $options
         );
