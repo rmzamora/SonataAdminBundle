@@ -14,6 +14,8 @@ namespace Sonata\AdminBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -42,19 +44,34 @@ class AclMatrixType extends AbstractType
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
+     *
+     * @todo Remove it when bumping requirements to SF 2.7+
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $this->configureOptions($resolver);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setRequired(array(
             'permissions',
             'acl_value',
         ));
 
-        $resolver->setAllowedTypes(array(
-            'permissions' => 'array',
-            'acl_value' => array('string', '\Symfony\Component\Security\Core\User\UserInterface'),
-        ));
+        if (version_compare(Kernel::VERSION, '2.6', '<')) {
+            $resolver->setAllowedTypes(array(
+                'permissions' => 'array',
+                'acl_value' => array('string', '\Symfony\Component\Security\Core\User\UserInterface'),
+            ));
+        } else {
+            $resolver->setAllowedTypes('permissions', 'array');
+            $resolver->setAllowedTypes('acl_value', array('string', '\Symfony\Component\Security\Core\User\UserInterface'));
+        }
     }
 
     /**
