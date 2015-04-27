@@ -20,7 +20,8 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  * This information is solely responsible for how the different configuration
  * sections are normalized, and merged.
  *
- * @author Michael Williams <mtotheikle@gmail.com>
+ * @package Sonata\AdminBundle\DependencyInjection
+ * @author  Michael Williams <mtotheikle@gmail.com>
  */
 class Configuration implements ConfigurationInterface
 {
@@ -96,12 +97,28 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode('groups')
                             ->useAttributeAsKey('id')
                             ->prototype('array')
+                                ->beforeNormalization()
+                                    ->ifArray()
+                                    ->then(function($items) {
+                                        if (isset($items['provider'])) {
+                                            $disallowedItems = array('items', 'label');
+                                            foreach($disallowedItems as $item) {
+                                                if (isset($items[$item])) {
+                                                    throw new \InvalidArgumentException(sprintf('The config value "%s" cannot be used alongside "provider" config value', $item));
+                                                }
+                                            }
+                                        }
+
+                                        return $items;
+                                    })
+                                ->end()
                                 ->fixXmlConfig('item')
                                 ->fixXmlConfig('item_add')
                                 ->children()
                                     ->scalarNode('label')->end()
                                     ->scalarNode('label_catalogue')->end()
                                     ->scalarNode('icon')->defaultValue('<i class="fa fa-folder"></i>')->end()
+                                    ->scalarNode('provider')->end()
                                     ->arrayNode('items')
                                         ->beforeNormalization()
                                             ->ifArray()
@@ -313,12 +330,13 @@ class Configuration implements ConfigurationInterface
 
                 ->arrayNode('extensions')
                 ->useAttributeAsKey('id')
-                ->defaultValue(array('admins' => array(), 'excludes' => array(), 'implements' => array(), 'extends' => array(), 'instanceof' => array()))
+                ->defaultValue(array('admins' => array(), 'excludes' => array(), 'implements' => array(), 'extends' => array(), 'instanceof' => array(), 'uses' => array()))
                     ->prototype('array')
                         ->fixXmlConfig('admin')
                         ->fixXmlConfig('exclude')
                         ->fixXmlConfig('implement')
                         ->fixXmlConfig('extend')
+                        ->fixXmlConfig('use')
                         ->children()
                             ->arrayNode('admins')
                                 ->prototype('scalar')->end()
@@ -334,6 +352,15 @@ class Configuration implements ConfigurationInterface
                             ->end()
                             ->arrayNode('instanceof')
                                 ->prototype('scalar')->end()
+                            ->end()
+                            ->arrayNode('uses')
+                                ->prototype('scalar')->end()
+                                ->validate()
+                                    ->ifTrue(function ($v) {
+                                        return !empty($v) && version_compare(PHP_VERSION, '5.4.0', '<');
+                                    })
+                                    ->thenInvalid('PHP >= 5.4.0 is required to use traits.')
+                                ->end()
                             ->end()
                         ->end()
                     ->end()

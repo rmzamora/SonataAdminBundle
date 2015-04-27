@@ -14,16 +14,16 @@ namespace Sonata\AdminBundle\Block;
 use Sonata\BlockBundle\Block\BlockContextInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
-use Sonata\AdminBundle\Form\FormMapper;
-use Sonata\CoreBundle\Validator\ErrorElement;
 use Sonata\AdminBundle\Admin\Pool;
-use Sonata\BlockBundle\Model\BlockInterface;
 use Sonata\BlockBundle\Block\BaseBlockService;
+use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
+ * Class AdminListBlockService
  *
- * @author     Thomas Rabaix <thomas.rabaix@sonata-project.org>
+ * @package Sonata\AdminBundle\Block
+ * @author  Thomas Rabaix <thomas.rabaix@sonata-project.org>
  */
 class AdminListBlockService extends BaseBlockService
 {
@@ -68,22 +68,6 @@ class AdminListBlockService extends BaseBlockService
     /**
      * {@inheritdoc}
      */
-    public function validateBlock(ErrorElement $errorElement, BlockInterface $block)
-    {
-        // TODO: Implement validateBlock() method.
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function buildEditForm(FormMapper $formMapper, BlockInterface $block)
-    {
-
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getName()
     {
         return 'Admin List';
@@ -98,8 +82,12 @@ class AdminListBlockService extends BaseBlockService
             'groups' => false
         ));
 
-        $resolver->setAllowedTypes(array(
-            'groups' => array('bool', 'array')
-        ));
+        if (version_compare(Kernel::VERSION, '2.6', '<')) {
+            $resolver->setAllowedTypes(array(
+                'groups' => array('bool', 'array')
+            ));
+        } else {
+            $resolver->setAllowedTypes('groups', array('bool', 'array'));
+        }
     }
 }

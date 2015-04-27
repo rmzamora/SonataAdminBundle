@@ -222,7 +222,7 @@ a text block and RSS feed block on the right. The configuration for this scenari
                         roles: [POST_READER]
                         settings:
                             title: Sonata Project's Feeds
-                            url: http://sonata-project.org/blog/archive.rss
+                            url: https://sonata-project.org/blog/archive.rss
 
 
 .. note::
@@ -277,7 +277,33 @@ suit this scenario.
 In this example, you would have two ``admin_list`` blocks on your dashboard, each
 of them containing just the respectively configured groups.
 
-.. _`SonataBlock documentation page`:  http://sonata-project.org/bundles/block/master/doc/index.html
+.. _`SonataBlock documentation page`:  https://sonata-project.org/bundles/block/master/doc/index.html
+
+
+Statistic Block
+~~~~~~~~~~~~~~~
+
+A statistic block can be used to display a simple counter with a color, an font awesome icon and a text. A
+counter is related to the filters from one admin
+
+.. configuration-block::
+
+    .. code-block:: yaml
+
+        sonata_admin:
+            dashboard:
+                blocks:
+                    -
+                        class:    col-lg-3 col-xs-6          # twitter bootstrap responsive code
+                        position: top                        # zone in the dashboard
+                        type:     sonata.admin.block.stats   # block id
+                        settings:
+                            code:  sonata.page.admin.page    # admin code - service id
+                            icon:  fa-magic                  # font awesome icon
+                            text:  Edited Pages
+                            color: bg-yellow                 # colors: bg-green, bg-red and bg-aqua
+                            filters:                         # filter values
+                                edited: { value: 1 }
 
 Dashboard Layout
 ~~~~~~~~~~~~~~~~
@@ -299,6 +325,7 @@ TOP     TOP     TOP
  LEFT CENTER RIGHT
 
 BOTTOM BOTTOM BOTTOM
+
 
 On ``top`` and ``bottom`` positions, you can also specify an optionnal ``class`` option to set the width of the block.
 

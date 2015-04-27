@@ -14,7 +14,7 @@ namespace Sonata\AdminBundle\Admin;
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
 use Sonata\CoreBundle\Model\Metadata;
 use Symfony\Component\Form\Form;
-use Symfony\Component\Form\FormBuilder;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\PropertyAccess\PropertyPath;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Validator\ValidatorInterface;
@@ -49,6 +49,12 @@ use Knp\Menu\Util\MenuManipulator;
 use Doctrine\Common\Util\ClassUtils;
 use Sonata\AdminBundle\Datagrid\Pager;
 
+/**
+ * Class Admin
+ *
+ * @package Sonata\AdminBundle\Admin
+ * @author  Thomas Rabaix <thomas.rabaix@sonata-project.org>
+ */
 abstract class Admin implements AdminInterface, DomainObjectInterface
 {
     const CONTEXT_MENU       = 'menu';
@@ -781,9 +787,10 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
 
         if (count($this->getBatchActions()) > 0) {
             $fieldDescription = $this->getModelManager()->getNewFieldDescriptionInstance($this->getClass(), 'batch', array(
-                'label'    => 'batch',
-                'code'     => '_batch',
-                'sortable' => false,
+                'label'         => 'batch',
+                'code'          => '_batch',
+                'sortable'      => false,
+                'virtual_field' => true,
             ));
 
             $fieldDescription->setAdmin($this);
@@ -800,9 +807,10 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
 
         if ($this->hasRequest() && $this->getRequest()->isXmlHttpRequest()) {
             $fieldDescription = $this->getModelManager()->getNewFieldDescriptionInstance($this->getClass(), 'select', array(
-                'label'    => false,
-                'code'     => '_select',
-                'sortable' => false,
+                'label'         => false,
+                'code'          => '_select',
+                'sortable'      => false,
+                'virtual_field' => false,
             ));
 
             $fieldDescription->setAdmin($this);
@@ -1330,11 +1338,11 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
      * This method is being called by the main admin class and the child class,
      * the getFormBuilder is only call by the main admin class
      *
-     * @param \Symfony\Component\Form\FormBuilder $formBuilder
+     * @param \Symfony\Component\Form\FormBuilderInterface $formBuilder
      *
      * @return void
      */
-    public function defineFormBuilder(FormBuilder $formBuilder)
+    public function defineFormBuilder(FormBuilderInterface $formBuilder)
     {
         $mapper = new FormMapper($this->getFormContractor(), $formBuilder, $this);
 
@@ -1749,7 +1757,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     {
         if ($this->subject === null && $this->request) {
             $id = $this->request->get($this->getIdParameter());
-            if (!preg_match('#^[0-9A-Fa-f]+$#', $id)) {
+            if (!preg_match('#^[0-9A-Fa-f\-]+$#', $id)) {
                 $this->subject = false;
             } else {
                 $this->subject = $this->getModelManager()->find($this->class, $id);

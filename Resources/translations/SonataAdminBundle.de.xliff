@@ -36,7 +36,7 @@
             </trans-unit>
             <trans-unit id="btn_advanced_filters">
                 <source>btn_advanced_filters</source>
-                <target>btn_advanced_filters</target>
+                <target>Erweiterte Filter</target>
             </trans-unit>
             <trans-unit id="btn_update">
                 <source>btn_update</source>
@@ -320,7 +320,7 @@
             </trans-unit>
             <trans-unit id="td_role">
                 <source>td_role</source>
-                <target>td_role</target>
+                <target>Rolle</target>
             </trans-unit>
             <trans-unit id="label_view_revision">
                 <source>label_view_revision</source>
@@ -384,7 +384,7 @@
             </trans-unit>
             <trans-unit id="short_object_description_placeholder">
               <source>short_object_description_placeholder</source>
-              <target></target>
+              <target>Nichts ausgewählt</target>
             </trans-unit>
             <trans-unit id="title_search_results">
                 <source>title_search_results</source>
@@ -417,6 +417,18 @@
             <trans-unit id="link_filters">
                 <source>link_filters</source>
                 <target>Filter</target>
+            </trans-unit>
+            <trans-unit id="stats_view_more">
+                <source>stats_view_more</source>
+                <target>mehr</target>
+            </trans-unit>
+            <trans-unit id="title_select_subclass">
+                <source>title_select_subclass</source>
+                <target>Typ auswählen</target>
+            </trans-unit>
+            <trans-unit id="no_subclass_available">
+                <source>no_subclass_available</source>
+                <target>Keine Typen verfügbar.</target>
             </trans-unit>
         </body>
     </file>

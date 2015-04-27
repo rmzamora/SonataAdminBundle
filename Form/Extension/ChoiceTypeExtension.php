@@ -14,21 +14,31 @@ namespace Sonata\AdminBundle\Form\Extension;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * Class ChoiceTypeExtension
  *
  * @package Sonata\AdminBundle\Form\Extension
- *
- * @author Amine Zaghdoudi <amine.zaghdoudi@ekino.com>
+ * @author  Amine Zaghdoudi <amine.zaghdoudi@ekino.com>
  */
 class ChoiceTypeExtension extends AbstractTypeExtension
 {
     /**
      * {@inheritdoc}
+     *
+     * @todo Remove it when bumping requirements to SF 2.7+
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $this->configureOptions($resolver);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function configureOptions(OptionsResolver $resolver)
     {
         $optionalOptions = array('sortable');
 

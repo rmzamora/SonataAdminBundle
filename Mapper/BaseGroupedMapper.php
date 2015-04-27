@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the Sonata package.
  *
@@ -8,11 +9,15 @@
  * file that was distributed with this source code.
  *
  */
+
 namespace Sonata\AdminBundle\Mapper;
 
 /**
+ * Class BaseGroupedMapper
  * This class is used to simulate the Form API
  *
+ * @package Sonata\AdminBundle\Mapper
+ * @author  Thomas Rabaix <thomas.rabaix@sonata-project.org>
  */
 abstract class BaseGroupedMapper extends BaseMapper
 {
@@ -65,6 +70,7 @@ abstract class BaseGroupedMapper extends BaseMapper
             'description'        => false,
             'translation_domain' => null,
             'name'               => $name,
+            'box_class'          => 'box box-primary',
         );
 
         $code = $name;
@@ -231,7 +237,7 @@ abstract class BaseGroupedMapper extends BaseMapper
     }
 
     /**
-     * Add the fieldname to the current group
+     * Add the field name to the current group
      *
      * @param string $fieldName
      */

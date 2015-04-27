@@ -321,6 +321,10 @@ abstract class BaseFieldDescription implements FieldDescriptionInterface
      */
     public function getFieldValue($object, $fieldName)
     {
+        if ($this->isVirtual()) {
+           return null;
+        }
+
         $camelizedFieldName = self::camelize($fieldName);
 
         $getters = array();
@@ -341,6 +345,10 @@ abstract class BaseFieldDescription implements FieldDescriptionInterface
             if (method_exists($object, $getter)) {
                 return call_user_func_array(array($object, $getter), $parameters);
             }
+        }
+
+        if (method_exists($object, '__call')) {
+            return call_user_func_array(array($object, '__call'), array($fieldName, $parameters));
         }
 
         if (isset($object->{$fieldName})) {
@@ -476,5 +484,15 @@ abstract class BaseFieldDescription implements FieldDescriptionInterface
     public function getTranslationDomain()
     {
         return $this->getOption('translation_domain') ?: $this->getAdmin()->getTranslationDomain();
+    }
+
+    /**
+     * Return true if field is virtual.
+     *
+     * @return boolean
+     */
+    public function isVirtual()
+    {
+        return false !== $this->getOption('virtual_field', false);
     }
 }

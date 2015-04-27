@@ -14,6 +14,7 @@ namespace Sonata\AdminBundle\Form\Type;
 
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\FormInterface;
@@ -88,47 +89,57 @@ class ModelAutocompleteType extends AbstractType
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
+     *
+     * @todo Remove it when bumping requirements to SF 2.7+
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $this->configureOptions($resolver);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function configureOptions(OptionsResolver $resolver)
     {
         $compound = function (Options $options) {
             return $options['multiple'];
         };
 
         $resolver->setDefaults(array(
-            'attr'                            => array(),
-            'compound'                        => $compound,
-            'model_manager'                   => null,
-            'class'                           => null,
-            'admin_code'                      => null,
-            'callback'                        => null,
-            'multiple'                        => false,
-            'width'                           => '',
-            'context'                         => '',
+            'attr'                          => array(),
+            'compound'                      => $compound,
+            'model_manager'                 => null,
+            'class'                         => null,
+            'admin_code'                    => null,
+            'callback'                      => null,
+            'multiple'                      => false,
+            'width'                         => '',
+            'context'                       => '',
 
-            'placeholder'                     => '',
-            'minimum_input_length'            => 3, //minimum 3 chars should be typed to load ajax data
-            'items_per_page'                  => 10, //number of items per page
+            'placeholder'                   => '',
+            'minimum_input_length'          => 3, //minimum 3 chars should be typed to load ajax data
+            'items_per_page'                => 10, //number of items per page
 
-            'to_string_callback'              => null,
+            'to_string_callback'            => null,
 
             // ajax parameters
-            'url'                             => '',
-            'route'                           => array('name'=>'sonata_admin_retrieve_autocomplete_items', 'parameters'=>array()),
-            'req_params'                      => array(),
-            'req_param_name_search'           => 'q',
-            'req_param_name_page_number'      => '_page',
-            'req_param_name_items_per_page'   => '_per_page',
+            'url'                           => '',
+            'route'                         => array('name'=>'sonata_admin_retrieve_autocomplete_items', 'parameters'=>array()),
+            'req_params'                    => array(),
+            'req_param_name_search'         => 'q',
+            'req_param_name_page_number'    => '_page',
+            'req_param_name_items_per_page' => '_per_page',
 
             // CSS classes
-            'container_css_class'            => '',
-            'dropdown_css_class'             => '',
-            'dropdown_item_css_class'        => '',
+            'container_css_class'           => '',
+            'dropdown_css_class'            => '',
+            'dropdown_item_css_class'       => '',
 
-            'dropdown_auto_width'            => false,
+            'dropdown_auto_width'           => false,
 
-            'template'                        => 'SonataAdminBundle:Form/Type:sonata_type_model_autocomplete.html.twig'
+            'template'                      => 'SonataAdminBundle:Form/Type:sonata_type_model_autocomplete.html.twig'
         ));
 
         $resolver->setRequired(array('property'));

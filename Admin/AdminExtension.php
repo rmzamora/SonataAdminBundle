@@ -20,6 +20,12 @@ use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
 
 use Knp\Menu\ItemInterface as MenuItemInterface;
 
+/**
+ * Class AdminExtension
+ *
+ * @package Sonata\AdminBundle\Admin
+ * @author  Thomas Rabaix <thomas.rabaix@sonata-project.org>
+ */
 abstract class AdminExtension implements AdminExtensionInterface
 {
     /**
@@ -43,7 +49,7 @@ abstract class AdminExtension implements AdminExtensionInterface
     /**
      * {@inheritdoc}
      */
-    public function configureShowFields(ShowMapper $filter)
+    public function configureShowFields(ShowMapper $show)
     {}
 
     /**

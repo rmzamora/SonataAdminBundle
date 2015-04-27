@@ -24,6 +24,8 @@ use Symfony\Component\EventDispatcher\Event;
  *   - sonata.admin.event.persistence.[pre|post]_[persist|update|remove)
  *   - sonata.admin.event.persistence.[admin_code].[pre|post]_[persist|update|remove)  (not implemented yet)
  *
+ * @package Sonata\AdminBundle\Event
+ * @author  Thomas Rabaix <thomas.rabaix@sonata-project.org>
  */
 class PersistenceEvent extends Event
 {
@@ -32,7 +34,7 @@ class PersistenceEvent extends Event
     const TYPE_PRE_PERSIST  = 'pre_persist';
     const TYPE_POST_PERSIST = 'post_persist';
     const TYPE_PRE_REMOVE   = 'pre_remove';
-    const TYPE_POST_REMOVE  = 'post_update';
+    const TYPE_POST_REMOVE  = 'post_remove';
 
     protected $admin;
 

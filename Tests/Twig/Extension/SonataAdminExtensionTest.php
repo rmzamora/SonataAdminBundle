@@ -11,6 +11,8 @@
 
 namespace Sonata\AdminBundle\Tests\Twig\Extension;
 
+use Knp\Menu\MenuFactory;
+use Knp\Menu\MenuItem;
 use Sonata\AdminBundle\Admin\Pool;
 use Sonata\AdminBundle\Admin\FieldDescriptionInterface;
 use Sonata\AdminBundle\Admin\AdminInterface;
@@ -95,7 +97,15 @@ class SonataAdminExtensionTest extends \PHPUnit_Framework_TestCase
 
         $this->logger = $this->getMock('Psr\Log\LoggerInterface');
 
-        $this->twigExtension = new SonataAdminExtension($this->pool, $this->router, $this->logger);
+        $menu = new MenuItem('bar', new MenuFactory());
+        $menu->addChild('foo');
+        $this->helper = $this->getMockBuilder('Knp\Menu\Twig\Helper')->disableOriginalConstructor()->getMock();
+        $this->helper->expects($this->any())
+            ->method('get')
+            ->with('my_menu')
+            ->willReturn($menu);
+
+        $this->twigExtension = new SonataAdminExtension($this->pool, $this->router, $this->helper, $this->logger);
 
         $loader = new StubFilesystemLoader(array(
             __DIR__.'/../../../Resources/views/CRUD',
@@ -506,7 +516,8 @@ class SonataAdminExtensionTest extends \PHPUnit_Framework_TestCase
             array('<th>Data</th> <td> 1074.6135 % </td>', 'percent', 10.746135, array()),
             array('<th>Data</th> <td> EUR 10.746135 </td>', 'currency', 10.746135, array('currency' => 'EUR')),
             array('<th>Data</th> <td> GBP 51.23456 </td>', 'currency', 51.23456, array('currency' => 'GBP')),
-            array('<th>Data</th> <td> [1 => First] [2 => Second] </td>', 'array', array(1 => 'First', 2 => 'Second'), array('safe' => false)),
+            array('<th>Data</th> <td> [1 => First] <br> [2 => Second] </td>', 'array', array(1 => 'First', 2 => 'Second'), array('safe' => false)),
+            array('<th>Data</th> <td> [1 => First] [2 => Second] </td>', 'array', array(1 => 'First', 2 => 'Second'), array('safe' => false, 'inline' => true)),
             array('<th>Data</th> <td><i class="icon-ok-circle"></i>yes</td>', 'boolean', true, array()),
             array('<th>Data</th> <td><i class="icon-ban-circle"></i>no</td>', 'boolean', false, array()),
             array('<th>Data</th> <td> Delete </td>', 'trans', 'action_delete', array('safe' => false, 'catalogue' => 'SonataAdminBundle')),
@@ -997,17 +1008,8 @@ class SonataAdminExtensionTest extends \PHPUnit_Framework_TestCase
         $menu = $this->twigExtension->getKnpMenu($request);
 
         $this->assertInstanceOf('Knp\Menu\ItemInterface', $menu);
-        $this->assertArrayHasKey('bar', $menu->getChildren());
-
-        foreach ($menu->getChildren() as $key => $child) {
-            $this->assertInstanceOf('Knp\Menu\MenuItem', $child);
-            $this->assertEquals('bar', $child->getName());
-            $this->assertEquals($adminGroups['bar']['label'], $child->getLabel());
-
-            // menu items
-            $children = $child->getChildren();
-            $this->assertCount(0, $children);
-        }
+        $this->assertArrayNotHasKey('bar', $menu->getChildren());
+        $this->assertCount(0, $menu->getChildren());
     }
 
     public function testGetKnpMenuWithNotGrantedList()
@@ -1044,16 +1046,39 @@ class SonataAdminExtensionTest extends \PHPUnit_Framework_TestCase
         $menu = $this->twigExtension->getKnpMenu($request);
 
         $this->assertInstanceOf('Knp\Menu\ItemInterface', $menu);
+        $this->assertArrayNotHasKey('bar', $menu->getChildren());
+        $this->assertCount(0, $menu->getChildren());
+    }
+
+    public function testGetKnpMenuWithProvider()
+    {
+        $request = $this->getMock('Symfony\Component\HttpFoundation\Request');
+
+        $adminGroups = array(
+            "bar" => array(
+                "provider"        => 'my_menu',
+                "label_catalogue" => '',
+                "icon"            => '<i class="fa fa-edit"></i>',
+                "roles"           => array(),
+            ),
+        );
+        $this->pool->setAdminGroups($adminGroups);
+        $menu = $this->twigExtension->getKnpMenu($request);
+
+        $this->assertInstanceOf('Knp\Menu\ItemInterface', $menu);
         $this->assertArrayHasKey('bar', $menu->getChildren());
 
         foreach ($menu->getChildren() as $key => $child) {
             $this->assertInstanceOf('Knp\Menu\MenuItem', $child);
-            $this->assertEquals('bar', $child->getName());
-            $this->assertEquals($adminGroups['bar']['label'], $child->getLabel());
+            $this->assertEquals("bar", $child->getName());
+            $this->assertEquals("bar", $child->getLabel());
 
             // menu items
             $children = $child->getChildren();
-            $this->assertCount(0, $children);
+            $this->assertCount(1, $children);
+            $this->assertArrayHasKey('foo', $children);
+            $this->assertInstanceOf('Knp\Menu\MenuItem', $child['foo']);
+            $this->assertEquals('foo', $child['foo']->getLabel());
         }
     }
 }

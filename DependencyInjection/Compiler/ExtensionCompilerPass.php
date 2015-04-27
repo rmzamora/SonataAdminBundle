@@ -17,7 +17,10 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
- * @author Thomas Rabaix <thomas.rabaix@sonata-project.org>
+ * Class ExtensionCompilerPass
+ *
+ * @package Sonata\AdminBundle\DependencyInjection\Compiler
+ * @author  Thomas Rabaix <thomas.rabaix@sonata-project.org>
  */
 class ExtensionCompilerPass implements CompilerPassInterface
 {
@@ -64,7 +67,7 @@ class ExtensionCompilerPass implements CompilerPassInterface
             $extensions = $this->getExtensionsForAdmin($id, $admin, $container, $extensionMap);
 
             foreach ($extensions as $extension) {
-                if (!$container->hasDefinition($extension)) {
+                if (!$container->has($extension)) {
                     throw new \InvalidArgumentException(sprintf('Unable to find extension service for id %s', $extension));
                 }
                 $admin->addMethodCall('addExtension', array(new Reference($extension)));
@@ -121,6 +124,12 @@ class ExtensionCompilerPass implements CompilerPassInterface
                         $extensions = array_merge($extensions, $extensionList);
                     }
                 }
+
+                if ('uses' == $type) {
+                    if ($this->hasTrait($classReflection, $subject)) {
+                        $extensions = array_merge($extensions, $extensionList);
+                    }
+                }
             }
         }
 
@@ -152,11 +161,12 @@ class ExtensionCompilerPass implements CompilerPassInterface
     protected function flattenExtensionConfiguration(array $config)
     {
         $extensionMap = array(
-            'excludes'      => array(),
-            'admins'        => array(),
-            'implements'    => array(),
-            'extends'       => array(),
-            'instanceof'    => array(),
+            'excludes'   => array(),
+            'admins'     => array(),
+            'implements' => array(),
+            'extends'    => array(),
+            'instanceof' => array(),
+            'uses'       => array(),
         );
 
         foreach ($config as $extension => $options) {
@@ -171,5 +181,18 @@ class ExtensionCompilerPass implements CompilerPassInterface
         }
 
         return $extensionMap;
+    }
+
+    protected function hasTrait(\ReflectionClass $class, $traitName)
+    {
+        if (in_array($traitName, $class->getTraitNames())) {
+            return true;
+        }
+
+        if (!$parentClass = $class->getParentClass()) {
+            return false;
+        }
+
+        return $this->hasTrait($parentClass, $traitName);
     }
 }

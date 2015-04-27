@@ -16,6 +16,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 use Sonata\AdminBundle\Form\DataTransformer\ModelToIdTransformer;
@@ -54,17 +55,27 @@ class ModelTypeList extends AbstractType
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
+     *
+     * @todo Remove it when bumping requirements to SF 2.7+
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
+        $this->configureOptions($resolver);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
         $resolver->setDefaults(array(
-            'model_manager'     => null,
-            'class'             => null,
-            'btn_add'           => 'link_add',
-            'btn_list'          => 'link_list',
-            'btn_delete'        => 'link_delete',
-            'btn_catalogue'     => 'SonataAdminBundle'
+            'model_manager' => null,
+            'class'         => null,
+            'btn_add'       => 'link_add',
+            'btn_list'      => 'link_list',
+            'btn_delete'    => 'link_delete',
+            'btn_catalogue' => 'SonataAdminBundle'
         ));
     }
 

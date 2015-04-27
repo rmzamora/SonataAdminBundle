@@ -14,7 +14,7 @@ namespace Sonata\AdminBundle\Form\Type;
 
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\OptionsResolver\Options;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 use Sonata\AdminBundle\Form\DataTransformer\ModelToIdTransformer;
@@ -22,8 +22,8 @@ use Sonata\AdminBundle\Form\DataTransformer\ModelToIdTransformer;
 /**
  * This type define a standard hidden field, that stored id to a object
  *
- * @author Andrej Hudec <pulzarraider@gmail.com>
- *
+ * @package Sonata\AdminBundle\Form\Type
+ * @author  Andrej Hudec <pulzarraider@gmail.com>
  */
 class ModelHiddenType extends AbstractType
 {
@@ -38,13 +38,23 @@ class ModelHiddenType extends AbstractType
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
+     *
+     * @todo Remove it when bumping requirements to SF 2.7+
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
+        $this->configureOptions($resolver);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
         $resolver->setDefaults(array(
-            'model_manager'     => null,
-            'class'             => null,
+            'model_manager' => null,
+            'class'         => null,
         ));
     }
 

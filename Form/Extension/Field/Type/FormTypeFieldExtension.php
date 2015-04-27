@@ -16,21 +16,30 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 use Sonata\AdminBundle\Admin\FieldDescriptionInterface;
 use Sonata\AdminBundle\Exception\NoValueException;
 
+/**
+ * Class FormTypeFieldExtension
+ *
+ * @package Sonata\AdminBundle\Form\Extension\Field\Type
+ * @author  Thomas Rabaix <thomas.rabaix@sonata-project.org>
+ */
 class FormTypeFieldExtension extends AbstractTypeExtension
 {
     protected $defaultClasses = array();
+    protected $options;
 
     /**
      * @param array $defaultClasses
      */
-    public function __construct(array $defaultClasses = array())
+    public function __construct(array $defaultClasses, array $options)
     {
         $this->defaultClasses = $defaultClasses;
+        $this->options = $options;
     }
 
     /**
@@ -46,7 +55,8 @@ class FormTypeFieldExtension extends AbstractTypeExtension
             'edit'              => 'standard',
             'inline'            => 'natural',
             'field_description' => null,
-            'block_name'        => false
+            'block_name'        => false,
+            'options'           => $this->options,
         );
 
         $builder->setAttribute('sonata_admin_enabled', false);
@@ -134,7 +144,8 @@ class FormTypeFieldExtension extends AbstractTypeExtension
                 'edit'              => 'standard',
                 'inline'            => 'natural',
                 'block_name'        => false,
-                'class'             => false
+                'class'             => false,
+                'options'           => $this->options,
             );
             $view->vars['sonata_admin_code']    = $view->parent->vars['sonata_admin_code'];
 
@@ -192,11 +203,19 @@ class FormTypeFieldExtension extends AbstractTypeExtension
     }
 
     /**
-     * Sets the default options
+     * {@inheritdoc}
      *
-     * @param OptionsResolverInterface $resolver Options Resolver
+     * @todo Remove it when bumping requirements to SF 2.7+
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $this->configureOptions($resolver);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
             'sonata_admin'             => null,

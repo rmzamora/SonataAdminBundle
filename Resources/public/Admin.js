@@ -74,53 +74,26 @@ var Admin = {
             Admin.log('[core|setup_select2] configure Select2 on', subject);
 
             jQuery('select:not([data-sonata-select2="false"])', subject).each(function() {
-
-                var select = jQuery(this);
+                var select            = jQuery(this);
                 var allowClearEnabled = false;
+                var popover           = select.data('popover');
 
                 select.removeClass('form-control');
 
-                if (select.find('option[value=""]').length) {
-                    allowClearEnabled = true;
-                }
-
-                if (select.attr('data-sonata-select2-allow-clear')==='true') {
+                if (select.find('option[value=""]').length || select.attr('data-sonata-select2-allow-clear')==='true') {
                     allowClearEnabled = true;
                 } else if (select.attr('data-sonata-select2-allow-clear')==='false') {
                     allowClearEnabled = false;
                 }
 
-                ereg = /width:(auto|(([-+]?([0-9]*\.)?[0-9]+)(px|em|ex|%|in|cm|mm|pt|pc)))/i;
                 select.select2({
-                    width: function() {
-
-                    // this code is an adaptation of select2 code (initContainerWidth function)
-                    style = this.element.attr('style');
-                    //console.log("main style", style);
-                    if (style !== undefined) {
-                        attrs = style.split(';');
-                        for (i = 0, l = attrs.length; i < l; i = i + 1) {
-
-                            matches = attrs[i].replace(/\s/g, '').match(ereg);
-
-                            if (matches !== null && matches.length >= 1)
-                                return matches[1];
-                            }
-                        }
-
-                        style = this.element.css('width');
-                        if (style.indexOf("%") > 0) {
-                            return style;
-                        }
-
-                        return '100%';
+                    width: function(){
+                        return Admin.get_select2_width(this.element);
                     },
                     dropdownAutoWidth: true,
                     minimumResultsForSearch: 10,
                     allowClear: allowClearEnabled
                 });
-
-                var popover = select.data('popover');
 
                 if (undefined !== popover) {
                     select
@@ -145,7 +118,7 @@ var Admin = {
     setup_xeditable: function(subject) {
         Admin.log('[core|setup_xeditable] configure xeditable on', subject);
         jQuery('.x-editable', subject).editable({
-            emptyclass: 'editable-empty btn btn-sm',
+            emptyclass: 'editable-empty btn btn-sm btn-default',
             emptytext: '<i class="glyphicon glyphicon-edit"></i>',
             container: 'body',
             success: function(response) {
@@ -334,20 +307,37 @@ var Admin = {
     setup_collection_buttons: function(subject) {
         Admin.log('[core|setup_collection_buttons] setup collection buttons', subject);
 
+        var counters = [];
+
+        // Count and save element of each collection
+        var highestCounterRegexp = new RegExp('_([0-9])+$');
+        jQuery(subject).find('[data-prototype]').each(function() {
+            var collection = jQuery(this);
+            var counter = 0;
+            collection.children().each(function() {
+                var matches = highestCounterRegexp.exec(jQuery('[id^="sonata-ba-field-container"]', this).attr('id'));
+                if (matches && matches[1] && matches[1] > counter) {
+                    counter = parseInt(matches[1], 10);
+                }
+            });
+            counters[collection.attr('id')] = counter;
+        });
+
         jQuery(subject).on('click', '.sonata-collection-add', function(event) {
             Admin.stopEvent(event);
 
             var container = jQuery(this).closest('[data-prototype]');
+            var counter = ++counters[container.attr('id')];
             var proto = container.attr('data-prototype');
             var protoName = container.attr('data-prototype-name') || '__name__';
             // Set field id
             var idRegexp = new RegExp(container.attr('id')+'_'+protoName,'g');
-            proto = proto.replace(idRegexp, container.attr('id')+'_'+(container.children().length - 1));
+            proto = proto.replace(idRegexp, container.attr('id')+'_'+counter);
 
             // Set field name
             var parts = container.attr('id').split('_');
             var nameRegexp = new RegExp(parts[parts.length-1]+'\\]\\['+protoName,'g');
-            proto = proto.replace(nameRegexp, parts[parts.length-1]+']['+(container.children().length - 1));
+            proto = proto.replace(nameRegexp, parts[parts.length-1]+']['+counter);
             jQuery(proto)
                 .insertBefore(jQuery(this).parent())
                 .trigger('sonata-admin-append-form-element')
@@ -468,19 +458,44 @@ var Admin = {
         jQuery('ul.js-treeview', subject).treeView();
     },
 
-    /**
-     * Setup sortable multiple select2
-     */
-    setup_sortable_select2: function(subject, data) {
-        Admin.log('[core|setup_sortable_select2] configure sortable Select2 on', subject);
+    /** Return the width for simple and sortable select2 element **/
+    get_select2_width: function(element){
+        var ereg = /width:(auto|(([-+]?([0-9]*\.)?[0-9]+)(px|em|ex|%|in|cm|mm|pt|pc)))/i;
 
+        // this code is an adaptation of select2 code (initContainerWidth function)
+        var style = element.attr('style');
+        //console.log("main style", style);
+
+        if (style !== undefined) {
+            var attrs = style.split(';');
+
+            for (i = 0, l = attrs.length; i < l; i = i + 1) {
+                var matches = attrs[i].replace(/\s/g, '').match(ereg);
+                if (matches !== null && matches.length >= 1)
+                    return matches[1];
+            }
+        }
+
+        style = element.css('width');
+        if (style.indexOf("%") > 0) {
+            return style;
+        }
+
+        return '100%';
+    },
+
+    setup_sortable_select2: function(subject, data) {
         var transformedData = [];
         for (var i = 0 ; i < data.length ; i++) {
             transformedData[i] = {id: data[i].data, text: data[i].label};
         }
 
         subject.select2({
-            data:     transformedData,
+            width: function(){
+                return Admin.get_select2_width(this.element);
+            },
+            dropdownAutoWidth: true,
+            data: transformedData,
             multiple: true
         });
 

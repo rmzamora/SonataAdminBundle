@@ -24,6 +24,12 @@ use Sonata\AdminBundle\Admin\AdminInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Sonata\AdminBundle\Filter\FilterInterface;
 
+/**
+ * Class HelperController
+ *
+ * @package Sonata\AdminBundle\Controller
+ * @author  Thomas Rabaix <thomas.rabaix@sonata-project.org>
+ */
 class HelperController
 {
     /**
@@ -92,7 +98,7 @@ class HelperController
 
         $admin->setSubject($subject);
 
-        list($fieldDescription, $form) = $this->helper->appendFormFieldElement($admin, $subject, $elementId);
+        list(, $form) = $this->helper->appendFormFieldElement($admin, $subject, $elementId);
 
         /** @var $form \Symfony\Component\Form\Form */
         $view = $this->helper->getChildFormView($form->createView(), $elementId);

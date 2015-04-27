@@ -16,7 +16,10 @@ use Sonata\AdminBundle\Admin\Pool;
 use Sonata\AdminBundle\Filter\FilterInterface;
 
 /**
- * @author Thomas Rabaix <thomas.rabaix@sonata-project.org>
+ * Class SearchHandler
+ *
+ * @package Sonata\AdminBundle\Search
+ * @author  Thomas Rabaix <thomas.rabaix@sonata-project.org>
  */
 class SearchHandler
 {
@@ -49,7 +52,7 @@ class SearchHandler
             /** @var $filter FilterInterface */
             if ($filter->getOption('global_search', false)) {
                 $filter->setCondition(FilterInterface::CONDITION_OR);
-                $datagrid->setValue($name, null, $term);
+                $datagrid->setValue($filter->getFormName(), null, $term);
                 $found = true;
             }
         }

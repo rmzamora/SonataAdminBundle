@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the Sonata package.
  *
@@ -17,10 +18,19 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 
 use Symfony\Component\OptionsResolver\Options;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 use Sonata\AdminBundle\Form\DataTransformer\ArrayToModelTransformer;
+use Symfony\Component\PropertyAccess\Exception\NoSuchIndexException;
+use Symfony\Component\PropertyAccess\PropertyAccessor;
 
+/**
+ * Class AdminType
+ *
+ * @package Sonata\AdminBundle\Form\Type
+ * @author  Thomas Rabaix <thomas.rabaix@sonata-project.org>
+ */
 class AdminType extends AbstractType
 {
     /**
@@ -42,6 +52,21 @@ class AdminType extends AbstractType
             $builder->add('_delete', $options['delete_options']['type'], $options['delete_options']['type_options']);
         }
 
+        // hack to make sure the subject is correctly set
+        // https://github.com/sonata-project/SonataAdminBundle/pull/2076
+        if ($builder->getData() === null) {
+            $p = new PropertyAccessor(false, true);
+            try {
+                $subject = $p->getValue(
+                    $admin->getParentFieldDescription()->getAdmin()->getSubject(),
+                    $this->getFieldDescription($options)->getFieldName().$options['property_path']
+                );
+                $builder->setData($subject);
+            } catch (NoSuchIndexException $e) {
+                // no object here
+            }
+        }
+
         $admin->setSubject($builder->getData());
 
         $admin->defineFormBuilder($builder);
@@ -61,9 +86,19 @@ class AdminType extends AbstractType
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
+     *
+     * @todo Remove it when bumping requirements to SF 2.7+
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $this->configureOptions($resolver);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
             'delete'          => function (Options $options) {

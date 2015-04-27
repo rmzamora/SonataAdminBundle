@@ -14,6 +14,7 @@ namespace Sonata\AdminBundle\Twig\Extension;
 use Doctrine\Common\Util\ClassUtils;
 use Knp\Menu\MenuFactory;
 use Knp\Menu\ItemInterface;
+use Knp\Menu\Twig\Helper;
 use Psr\Log\LoggerInterface;
 use Sonata\AdminBundle\Admin\AdminInterface;
 use Sonata\AdminBundle\Admin\FieldDescriptionInterface;
@@ -23,6 +24,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Routing\RouterInterface;
 
+/**
+ * Class SonataAdminExtension
+ *
+ * @package Sonata\AdminBundle\Twig\Extension
+ * @author  Thomas Rabaix <thomas.rabaix@sonata-project.org>
+ */
 class SonataAdminExtension extends \Twig_Extension
 {
     /**
@@ -41,19 +48,27 @@ class SonataAdminExtension extends \Twig_Extension
     protected $router;
 
     /**
+     * @var Helper
+     */
+    protected $knpHelper;
+
+    /**
      * @var LoggerInterface
      */
     protected $logger;
 
     /**
      * @param Pool            $pool
+     * @param RouterInterface $router
+     * @param Helper          $knpHelper
      * @param LoggerInterface $logger
      */
-    public function __construct(Pool $pool, RouterInterface $router, LoggerInterface $logger = null)
+    public function __construct(Pool $pool, RouterInterface $router, Helper $knpHelper, LoggerInterface $logger = null)
     {
-        $this->pool   = $pool;
-        $this->logger = $logger;
-        $this->router = $router;
+        $this->pool      = $pool;
+        $this->logger    = $logger;
+        $this->router    = $router;
+        $this->knpHelper = $knpHelper;
     }
 
     /**
@@ -379,6 +394,22 @@ class SonataAdminExtension extends \Twig_Extension
         ;
 
         foreach ($this->pool->getAdminGroups() as $name => $group) {
+
+            // Check if the menu group is built by a menu provider
+            if (isset($group['provider'])) {
+                $subMenu = $this->knpHelper->get($group['provider']);
+
+                $menu->addChild($subMenu)
+                    ->setAttributes(array(
+                        'icon'            => $group['icon'],
+                        'label_catalogue' => $group['label_catalogue']
+                    ))
+                    ->setExtra('roles', $group['roles']);
+
+                continue;
+            }
+
+            // The menu group is built by config
             $menu
                 ->addChild($name, array('label' => $group['label']))
                 ->setAttributes(
@@ -414,6 +445,10 @@ class SonataAdminExtension extends \Twig_Extension
                     ->setExtra('translationdomain', $translationDomain)
                     ->setExtra('admin', $admin)
                 ;
+            }
+
+            if (0 === count($menu[$name]->getChildren())) {
+                $menu->removeChild($name);
             }
         }
 

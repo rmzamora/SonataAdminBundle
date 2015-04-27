@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the Sonata package.
  *
@@ -8,36 +9,41 @@
  * file that was distributed with this source code.
  *
  */
+
 namespace Sonata\AdminBundle\Form;
 
 use Sonata\AdminBundle\Builder\FormContractorInterface;
 use Sonata\AdminBundle\Admin\AdminInterface;
-use Symfony\Component\Form\FormBuilder;
 use Sonata\AdminBundle\Mapper\BaseGroupedMapper;
+use Symfony\Component\Form\FormBuilderInterface;
 
 /**
+ * Class FormMapper
  * This class is use to simulate the Form API
  *
+ * @package Sonata\AdminBundle\Form
+ * @author  Thomas Rabaix <thomas.rabaix@sonata-project.org>
  */
 class FormMapper extends BaseGroupedMapper
 {
+    /**
+     * @var FormBuilderInterface
+     */
     protected $formBuilder;
 
     /**
-     * @param \Sonata\AdminBundle\Builder\FormContractorInterface $formContractor
-     * @param \Symfony\Component\Form\FormBuilder                 $formBuilder
-     * @param \Sonata\AdminBundle\Admin\AdminInterface            $admin
+     * @param FormContractorInterface $formContractor
+     * @param FormBuilderInterface    $formBuilder
+     * @param AdminInterface          $admin
      */
-    public function __construct(FormContractorInterface $formContractor, FormBuilder $formBuilder, AdminInterface $admin)
+    public function __construct(FormContractorInterface $formContractor, FormBuilderInterface $formBuilder, AdminInterface $admin)
     {
         parent::__construct($formContractor, $admin);
-        $this->formBuilder    = $formBuilder;
+        $this->formBuilder = $formBuilder;
     }
 
     /**
-     * @param array $keys field names
-     *
-     * @return \Sonata\AdminBundle\Form\FormMapper
+     * {@inheritdoc}
      */
     public function reorder(array $keys)
     {
@@ -52,7 +58,7 @@ class FormMapper extends BaseGroupedMapper
      * @param array  $options
      * @param array  $fieldDescriptionOptions
      *
-     * @return \Sonata\AdminBundle\Form\FormMapper
+     * @return $this
      */
     public function add($name, $type = null, array $options = array(), array $fieldDescriptionOptions = array())
     {
@@ -60,14 +66,14 @@ class FormMapper extends BaseGroupedMapper
             return $this;
         }
 
-        if ($name instanceof FormBuilder) {
+        if ($name instanceof FormBuilderInterface) {
             $fieldName = $name->getName();
         } else {
             $fieldName = $name;
         }
 
         // "Dot" notation is not allowed as form name, but can be used as property path to access nested data.
-        if (!$name instanceof FormBuilder && strpos($fieldName, '.')!==false && !isset($options['property_path'])) {
+        if (!$name instanceof FormBuilderInterface && strpos($fieldName, '.')!==false && !isset($options['property_path'])) {
              $options['property_path'] = $fieldName;
 
              // fix the form name
@@ -94,7 +100,7 @@ class FormMapper extends BaseGroupedMapper
 
         $fieldDescription = $this->admin->getModelManager()->getNewFieldDescriptionInstance(
             $this->admin->getClass(),
-            $name instanceof FormBuilder ? $name->getName() : $name,
+            $name instanceof FormBuilderInterface ? $name->getName() : $name,
             $fieldDescriptionOptions
         );
 
@@ -107,7 +113,7 @@ class FormMapper extends BaseGroupedMapper
 
         $this->admin->addFormFieldDescription($fieldName, $fieldDescription);
 
-        if ($name instanceof FormBuilder) {
+        if ($name instanceof FormBuilderInterface) {
             $this->formBuilder->add($name);
         } else {
             // Note that the builder var is actually the formContractor:
@@ -140,9 +146,7 @@ class FormMapper extends BaseGroupedMapper
     }
 
     /**
-     * @param string $name
-     *
-     * @return \Symfony\Component\Form\FormInterface
+     * {@inheritdoc}
      */
     public function get($name)
     {
@@ -150,9 +154,7 @@ class FormMapper extends BaseGroupedMapper
     }
 
     /**
-     * @param string $key
-     *
-     * @return boolean
+     * {@inheritdoc}
      */
     public function has($key)
     {
@@ -160,9 +162,7 @@ class FormMapper extends BaseGroupedMapper
     }
 
     /**
-     * @param string $key
-     *
-     * @return \Sonata\AdminBundle\Form\FormMapper
+     * {@inheritdoc}
      */
     public function remove($key)
     {
@@ -174,7 +174,7 @@ class FormMapper extends BaseGroupedMapper
     }
 
     /**
-     * @return \Symfony\Component\Form\FormBuilder
+     * @return \Symfony\Component\Form\FormBuilderInterface
      */
     public function getFormBuilder()
     {
@@ -186,7 +186,7 @@ class FormMapper extends BaseGroupedMapper
      * @param mixed  $type
      * @param array  $options
      *
-     * @return \Symfony\Component\Form\FormBuilder
+     * @return \Symfony\Component\Form\FormBuilderInterface
      */
     public function create($name, $type = null, array $options = array())
     {

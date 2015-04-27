@@ -1,12 +1,9 @@
 Inline Validation
 =================
 
-The inline validation is about delegating model validation to a dedicated service.
-The current validation implementation built in the Symfony2 framework is very powerful
-as it allows to declare validation on a : class, field and getter. However these declarations
-can take a while to code for complex rules. As rules must be a set of a ``Constraint``
-and a ``Validator`` instances.
+The inline validation code is now part of the SonataCoreBundle. You can refer to the related documentation for more information.
 
+<<<<<<< HEAD
 The inline validation tries to provide a nice solution by introducing an ``ErrorElement``
 object. The object can be used to check assertions against the model :
 
@@ -140,6 +137,9 @@ Using the Admin class
 This feature is deprecated and will be removed on the 2.2 branch.
 
 The above examples show how to delegate validation to a service. For completeness, it's worth remembering that
+=======
+The above examples show how the integration has been done with the SonataAdminBundle. For completeness, it's worth remembering that
+>>>>>>> sonata-project/master
 the ``Admin`` class itself contains an empty ``validate`` method. This is automatically called, so you can override it in your own admin class:
 
 .. code-block:: php

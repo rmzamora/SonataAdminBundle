@@ -87,7 +87,8 @@ class FormMapperTest extends \PHPUnit_Framework_TestCase
             'auto_created' => true,
             'groups' => array('foobar'),
             'tab' => true,
-            'name' => 'default'
+            'name' => 'default',
+            'box_class' => 'box box-primary'
         )), $this->admin->getFormTabs());
 
         $this->assertEquals(array('foobar' => array(
@@ -96,7 +97,8 @@ class FormMapperTest extends \PHPUnit_Framework_TestCase
             'description' => false,
             'translation_domain' => null,
             'fields' => array (),
-            'name' => 'foobar'
+            'name' => 'foobar',
+            'box_class' => 'box box-primary'
         )), $this->admin->getFormGroups());
     }
 
@@ -112,7 +114,8 @@ class FormMapperTest extends \PHPUnit_Framework_TestCase
             'description' => false,
             'translation_domain' => 'Foobar',
             'fields' => array (),
-            'name' => 'foobar'
+            'name' => 'foobar',
+            'box_class' => 'box box-primary'
         )), $this->admin->getFormGroups());
 
         $this->assertEquals(array('default' => array (
@@ -123,7 +126,8 @@ class FormMapperTest extends \PHPUnit_Framework_TestCase
             'auto_created' => true,
             'groups' => array('foobar'),
             'tab' => true,
-            'name' => 'default'
+            'name' => 'default',
+            'box_class' => 'box box-primary'
         )), $this->admin->getFormTabs());
     }
 
@@ -154,7 +158,8 @@ class FormMapperTest extends \PHPUnit_Framework_TestCase
             'auto_created' => true,
             'groups' => array ('foobar'),
             'tab' => true,
-            'name' => 'default'
+            'name' => 'default',
+            'box_class' => 'box box-primary'
         )), $this->admin->getFormTabs());
 
         $this->assertEquals(array('foobar' => array(
@@ -165,7 +170,8 @@ class FormMapperTest extends \PHPUnit_Framework_TestCase
             'fields' => array(
                 'foo' => 'foo'
             ),
-            'name' => 'foobar'
+            'name' => 'foobar',
+            'box_class' => 'box box-primary'
         )), $this->admin->getFormGroups());
     }
 
@@ -319,6 +325,21 @@ class FormMapperTest extends \PHPUnit_Framework_TestCase
     {
         $this->formMapper->ifTrue(false);
         $this->formMapper->ifFalse(true);
+    }
+
+    public function testAddAcceptFormBuilder()
+    {
+        $formBuilder = $this
+            ->getMockBuilder('Symfony\Component\Form\FormBuilder')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $formBuilder->expects($this->any())
+            ->method('getName')
+            ->will($this->returnValue('foo'));
+
+        $this->formMapper->add($formBuilder);
+        $this->assertEquals($this->formMapper->get('foo'), $formBuilder);
     }
 
     private function getFieldDescriptionMock($name = null, $label = null, $translationDomain = null)

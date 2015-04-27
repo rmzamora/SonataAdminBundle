@@ -11,7 +11,7 @@
         <form
               {% if admin_pool.getOption('form_type') == 'horizontal' %}class="form-horizontal"{% endif %}
               role="form"
-              action="{{ admin.generateUrl(url, {'id': admin.id(object), 'uniqid': admin.uniqid, 'subclass': app.request.get('subclass')}) }}" {{ form_enctype(form) }}
+              action="{% block sonata_form_action_url %}{{ admin.generateUrl(url, {'id': admin.id(object), 'uniqid': admin.uniqid, 'subclass': app.request.get('subclass')}) }}{% endblock %}" {{ form_enctype(form) }}
               method="POST"
               {% if not admin_pool.getOption('html5_validate') %}novalidate="novalidate"{% endif %}
               >
@@ -33,13 +33,13 @@
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs" role="tablist">
                                 {% for name, form_tab in admin.formtabs %}
-                                    <li{% if loop.index == 1 %} class="active"{% endif %}><a href="#tab_{{ loop.index }}" data-toggle="tab"><span class="glyphicon glyphicon-exclamation-sign has-errors hide"></span> {{ admin.trans(name, {}, form_tab.translation_domain) }}</a></li>
+                                    <li{% if loop.index == 1 %} class="active"{% endif %}><a href="#tab_{{ admin.uniqid }}_{{ loop.index }}" data-toggle="tab"><span class="glyphicon glyphicon-exclamation-sign has-errors hide"></span> {{ admin.trans(name, {}, form_tab.translation_domain) }}</a></li>
                                 {% endfor %}
                             </ul>
                             <div class="tab-content">
                                 {% for code, form_tab in admin.formtabs %}
-                                    <div class="tab-pane fade{% if loop.first %} in active{% endif %}" id="tab_{{ loop.index }}">
-                                        <div class="box-body">
+                                    <div class="tab-pane fade{% if loop.first %} in active{% endif %}" id="tab_{{ admin.uniqid }}_{{ loop.index }}">
+                                        <div class="box-body  container-fluid">
                                             <div class="sonata-ba-collapsed-fields">
                                                 {% if form_tab.description != false %}
                                                     <p>{{ form_tab.description|raw }}</p>
@@ -66,6 +66,7 @@
 
             {% block formactions %}
                 <div class="well well-small form-actions">
+                {% block sonata_form_actions %}
                     {% if app.request.isxmlhttprequest %}
                         {% if admin.id(object) is not null %}
                             <button type="submit" class="btn btn-success" name="btn_update"><i class="fa fa-save"></i> {{ 'btn_update'|trans({}, 'SonataAdminBundle') }}</button>
@@ -104,6 +105,7 @@
                             <button class="btn btn-success" type="submit" name="btn_create_and_create"><i class="fa fa-plus-circle"></i> {{ 'btn_create_and_create_a_new_one'|trans({}, 'SonataAdminBundle') }}</button>
                         {% endif %}
                     {% endif %}
+                {% endblock %}
                 </div>
             {% endblock formactions %}
         </form>

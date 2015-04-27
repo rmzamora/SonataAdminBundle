@@ -100,9 +100,7 @@ to implement a ``clone`` action.
     {
         public function cloneAction()
         {
-            $id = $this->get('request')->get($this->admin->getIdParameter());
-
-            $object = $this->admin->getObject($id);
+            $object = $this->admin->getSubject();
 
             if (!$object) {
                 throw new NotFoundHttpException(sprintf('unable to find the object with id : %s', $id));
@@ -122,6 +120,20 @@ to implement a ``clone`` action.
 
 Here we first get the id of the object, see if it exists then clone it and insert the clone
 as a new object. Finally we set a flash message indicating success and redirect to the list view.
+
+Using template in new controller
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you want to render something here you can create new template anywhere, extend sonata layout
+and use `sonata_admin_content` block.
+
+.. code-block:: html+jinja
+
+    {% extends 'SonataAdminBundle::standard_layout.html.twig' %} 
+
+    {% block sonata_admin_content %}
+        Your content here
+    {% endblock %}
 
 Create a template for the new action
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

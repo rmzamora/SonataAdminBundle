@@ -14,6 +14,7 @@ namespace Sonata\AdminBundle\Form\Extension\Field\Type;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
@@ -23,13 +24,24 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  * Class MopaCompatibilityTypeFieldExtension
  *
  * @package Sonata\AdminBundle\Form\Extension\Field\Type
+ * @author  Thomas Rabaix <thomas.rabaix@sonata-project.org>
  */
 class MopaCompatibilityTypeFieldExtension extends AbstractTypeExtension
 {
     /**
      * {@inheritdoc}
+     *
+     * @todo Remove it when bumping requirements to SF 2.7+
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $this->configureOptions($resolver);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
             'horizontal_label_class'         => '',
