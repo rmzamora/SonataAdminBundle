@@ -24,9 +24,9 @@ class FormMapper extends BaseGroupedMapper
     protected $formBuilder;
 
     /**
-     * @param \Sonata\AdminBundle\Builder\FormContractorInterface $formContractor
-     * @param \Symfony\Component\Form\FormBuilder                 $formBuilder
-     * @param \Sonata\AdminBundle\Admin\AdminInterface            $admin
+     * @param FormContractorInterface $formContractor
+     * @param FormBuilder                 $formBuilder
+     * @param AdminInterface            $admin
      */
     public function __construct(FormContractorInterface $formContractor, FormBuilder $formBuilder, AdminInterface $admin)
     {
@@ -35,9 +35,7 @@ class FormMapper extends BaseGroupedMapper
     }
 
     /**
-     * @param array $keys field names
-     *
-     * @return \Sonata\AdminBundle\Form\FormMapper
+     * {@inheritdoc}
      */
     public function reorder(array $keys)
     {
@@ -52,7 +50,7 @@ class FormMapper extends BaseGroupedMapper
      * @param array  $options
      * @param array  $fieldDescriptionOptions
      *
-     * @return \Sonata\AdminBundle\Form\FormMapper
+     * @return $this
      */
     public function add($name, $type = null, array $options = array(), array $fieldDescriptionOptions = array())
     {
@@ -140,9 +138,7 @@ class FormMapper extends BaseGroupedMapper
     }
 
     /**
-     * @param string $name
-     *
-     * @return \Symfony\Component\Form\FormInterface
+     * {@inheritdoc}
      */
     public function get($name)
     {
@@ -150,9 +146,7 @@ class FormMapper extends BaseGroupedMapper
     }
 
     /**
-     * @param string $key
-     *
-     * @return boolean
+     * {@inheritdoc}
      */
     public function has($key)
     {
@@ -160,9 +154,7 @@ class FormMapper extends BaseGroupedMapper
     }
 
     /**
-     * @param string $key
-     *
-     * @return \Sonata\AdminBundle\Form\FormMapper
+     * {@inheritdoc}
      */
     public function remove($key)
     {
@@ -174,7 +166,7 @@ class FormMapper extends BaseGroupedMapper
     }
 
     /**
-     * @return \Symfony\Component\Form\FormBuilder
+     * @return FormBuilder
      */
     public function getFormBuilder()
     {
@@ -186,7 +178,7 @@ class FormMapper extends BaseGroupedMapper
      * @param mixed  $type
      * @param array  $options
      *
-     * @return \Symfony\Component\Form\FormBuilder
+     * @return FormBuilder
      */
     public function create($name, $type = null, array $options = array())
     {

@@ -12,6 +12,7 @@
 namespace Sonata\AdminBundle\Admin;
 
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
+use Sonata\AdminBundle\Route\RoutesCache;
 use Sonata\CoreBundle\Model\Metadata;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormBuilder;
@@ -21,12 +22,16 @@ use Symfony\Component\Validator\ValidatorInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Acl\Model\DomainObjectInterface;
+
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
+
+use Sonata\AdminBundle\Admin\Pool;
 use Sonata\AdminBundle\Validator\ErrorElement;
 use Sonata\AdminBundle\Validator\Constraints\InlineConstraint;
+
 use Sonata\AdminBundle\Translator\LabelTranslatorStrategyInterface;
 use Sonata\AdminBundle\Builder\FormContractorInterface;
 use Sonata\AdminBundle\Builder\ListBuilderInterface;
@@ -34,10 +39,12 @@ use Sonata\AdminBundle\Builder\DatagridBuilderInterface;
 use Sonata\AdminBundle\Builder\ShowBuilderInterface;
 use Sonata\AdminBundle\Builder\RouteBuilderInterface;
 use Sonata\AdminBundle\Route\RouteGeneratorInterface;
+
 use Sonata\AdminBundle\Security\Handler\SecurityHandlerInterface;
 use Sonata\AdminBundle\Security\Handler\AclSecurityHandlerInterface;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Model\ModelManagerInterface;
+
 use Knp\Menu\FactoryInterface as MenuFactoryInterface;
 use Knp\Menu\ItemInterface as MenuItemInterface;
 use Knp\Menu\Matcher\MatcherInterface;
@@ -206,7 +213,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
      */
     protected $datagridValues = array(
         '_page'       => 1,
-        '_per_page'   => 32,
+        '_per_page'   => 25,
     );
 
     /**
@@ -214,7 +221,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
      *
      * @var array
      */
-    protected $perPageOptions = array(16, 32, 64, 128, 192);
+    protected $perPageOptions = array(15, 25, 50, 100, 150, 200);
 
     /**
      * Pager type
@@ -268,7 +275,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     /**
      * Reference the parent collection
      *
-     * @var AdminInterface|null
+     * @var Admin
      */
     protected $parent = null;
 
@@ -473,18 +480,6 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
 
     protected $cacheIsGranted = array();
 
-    protected $listModes = array(
-        'list' => array(
-            'class' => 'fa fa-list fa-fw',
-        ),
-        'mosaic' => array(
-            'class' => 'fa fa-th-large fa-fw',
-        ),
-//        'tree' => array(
-//            'class' => 'fa fa-sitemap fa-fw',
-//        ),
-    );
-
     /**
      * {@inheritdoc}
      */
@@ -539,7 +534,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
      * Configures the tab menu in your admin
      *
      * @param MenuItemInterface $menu
-     * @param string            $action
+     * @param                   $action
      * @param AdminInterface    $childAdmin
      *
      * @return mixed
@@ -557,7 +552,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     public function getExportFormats()
     {
         return array(
-            'json', 'xml', 'csv', 'xls',
+            'json', 'xml', 'csv', 'xls'
         );
     }
 
@@ -696,43 +691,37 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
      * {@inheritdoc}
      */
     public function preUpdate($object)
-    {
-    }
+    {}
 
     /**
      * {@inheritdoc}
      */
     public function postUpdate($object)
-    {
-    }
+    {}
 
     /**
      * {@inheritdoc}
      */
     public function prePersist($object)
-    {
-    }
+    {}
 
     /**
      * {@inheritdoc}
      */
     public function postPersist($object)
-    {
-    }
+    {}
 
     /**
      * {@inheritdoc}
      */
     public function preRemove($object)
-    {
-    }
+    {}
 
     /**
      * {@inheritdoc}
      */
     public function postRemove($object)
-    {
-    }
+    {}
 
     /**
      * {@inheritdoc}
@@ -781,7 +770,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
             $fieldDescription = $this->getModelManager()->getNewFieldDescriptionInstance($this->getClass(), 'batch', array(
                 'label'    => 'batch',
                 'code'     => '_batch',
-                'sortable' => false,
+                'sortable' => false
             ));
 
             $fieldDescription->setAdmin($this);
@@ -894,7 +883,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
                 'field_options' => array(
                     'model_manager' => $this->getModelManager(),
                 ),
-                'operator_type' => 'hidden',
+                'operator_type' => 'hidden'
             ));
         }
 
@@ -970,6 +959,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
                     $this->urlize($matches[5], '-')
                 );
             } else {
+
                 $this->baseRoutePattern = sprintf('/%s%s/%s',
                     empty($matches[1]) ? '' : $this->urlize($matches[1], '-').'/',
                     $this->urlize($matches[3], '-'),
@@ -1116,7 +1106,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     public function getActiveSubClass()
     {
         if (!$this->hasActiveSubClass()) {
-            return;
+            return null;
         }
 
         return $this->getClass();
@@ -1128,13 +1118,13 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     public function getActiveSubclassCode()
     {
         if (!$this->hasActiveSubClass()) {
-            return;
+            return null;
         }
 
         $subClass = $this->getRequest()->query->get('subclass');
 
         if (!$this->hasSubClass($subClass)) {
-            return;
+            return null;
         }
 
         return $subClass;
@@ -1213,7 +1203,9 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param string $name
+     *
+     * @return bool
      */
     public function hasRoute($name)
     {
@@ -1247,7 +1239,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
      */
     public function generateMenuUrl($name, array $parameters = array(), $absolute = false)
     {
-        return $this->routeGenerator->generateMenuUrl($this, $name, $parameters, $absolute);
+        return $this->routeGenerator->generateMenuUrl($this, $name,$parameters, $absolute);
     }
 
     /**
@@ -1288,7 +1280,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
             return $this->templates[$name];
         }
 
-        return;
+        return null;
     }
 
     /**
@@ -1368,7 +1360,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
                 foreach ($admin->getExtensions() as $extension) {
                     $extension->validate($admin, $errorElement, $object);
                 }
-            },
+            }
         )));
     }
 
@@ -1907,7 +1899,11 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Returns a filter FieldDescription
+     *
+     * @param string $name
+     *
+     * @return array|null
      */
     public function getFilterFieldDescription($name)
     {
@@ -2053,7 +2049,6 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     public function getPersistentParameters()
     {
         $parameters = array();
-
         foreach ($this->getExtensions() as $extension) {
             $params = $extension->getPersistentParameters($this);
 
@@ -2096,7 +2091,6 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
 
         $breadcrumbs = array_reverse($breadcrumbs);
         array_shift($breadcrumbs);
-
         return $breadcrumbs;
     }
 
@@ -2141,7 +2135,9 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
             );
 
             return $childAdmin->buildBreadcrumbs($action, $menu);
+
         } elseif ($this->isChild()) {
+
             if ($action == 'list') {
                 $menu->setUri(false);
             } elseif ($action != 'create' && $this->hasSubject()) {
@@ -2151,6 +2147,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
                     $this->trans($this->getLabelTranslatorStrategy()->getLabel(sprintf('%s_%s', $this->getClassnameLabel(), $action), 'breadcrumb', 'link'))
                 );
             }
+
         } elseif ($action != 'list' && $this->hasSubject()) {
             $menu = $menu->addChild($this->toString($this->getSubject()));
         } elseif ($action != 'list') {
@@ -2191,7 +2188,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
             }
         }
 
-        return;
+        return null;
     }
 
     /**
@@ -2209,13 +2206,13 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
     }
 
     /**
-     * Translate a message id
+     * translate a message id
      *
-     * @param string      $id
-     * @param integer     $count
-     * @param array       $parameters
-     * @param string|null $domain
-     * @param string|null $locale
+     * @param string  $id
+     * @param integer $count
+     * @param array   $parameters
+     * @param null    $domain
+     * @param null    $locale
      *
      * @return string the translated string
      */
@@ -2541,7 +2538,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
      */
     public function isGranted($name, $object = null)
     {
-        $key = md5(json_encode($name).($object ? '/'.spl_object_hash($object) : ''));
+        $key = md5(json_encode($name) . ($object ? '/'.spl_object_hash($object) : ''));
 
         if (!array_key_exists($key, $this->cacheIsGranted)) {
             $this->cacheIsGranted[$key] = $this->securityHandler->isGranted($this, $name, $object ?: $this);
