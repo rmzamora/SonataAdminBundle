@@ -60,6 +60,7 @@ Full Configuration Options
                 confirm_exit:         true
                 use_select2:          true
                 use_icheck:           true
+                use_bootlint:         false
                 pager_links:          null
                 form_type:            standard
                 dropdown_number_groups_per_colums:  2
@@ -172,7 +173,7 @@ Full Configuration Options
                     - bundles/sonatacore/vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js
                     - bundles/sonataadmin/vendor/jqueryui/ui/minified/jquery-ui.min.js
                     - bundles/sonataadmin/vendor/jqueryui/ui/minified/i18n/jquery-ui-i18n.min.js
-                    - bundles/sonataadmin/jquery/jquery.form.js
+                    - bundles/sonataadmin/vendor/jquery-form/jquery.form.js
                     - bundles/sonataadmin/jquery/jquery.confirmExit.js
                     - bundles/sonataadmin/vendor/x-editable/dist/bootstrap3-editable/js/bootstrap-editable.min.js
                     - bundles/sonatacore/vendor/select2/select2.min.js

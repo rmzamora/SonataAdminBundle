@@ -79,6 +79,7 @@ class Configuration implements ConfigurationInterface
                         ->booleanNode('confirm_exit')->defaultValue(true)->end()
                         ->booleanNode('use_select2')->defaultValue(true)->end()
                         ->booleanNode('use_icheck')->defaultValue(true)->end()
+                        ->booleanNode('use_bootlint')->defaultValue(false)->end()
                         ->integerNode('pager_links')->defaultValue(null)->end()
                         ->scalarNode('form_type')->defaultValue('standard')->end()
                         ->integerNode('dropdown_number_groups_per_colums')->defaultValue(2)->end()
@@ -309,7 +310,7 @@ class Configuration implements ConfigurationInterface
                                 'bundles/sonataadmin/vendor/jqueryui/ui/minified/jquery-ui.min.js',
                                 'bundles/sonataadmin/vendor/jqueryui/ui/minified/i18n/jquery-ui-i18n.min.js',
 
-                                'bundles/sonataadmin/jquery/jquery.form.js',
+                                'bundles/sonataadmin/vendor/jquery-form/jquery.form.js',
                                 'bundles/sonataadmin/jquery/jquery.confirmExit.js',
 
                                 'bundles/sonataadmin/vendor/x-editable/dist/bootstrap3-editable/js/bootstrap-editable.min.js',
