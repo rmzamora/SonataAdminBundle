@@ -39,39 +39,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyPath;
-use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Validator\ValidatorInterface as LegacyValidatorInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Translation\TranslatorInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Acl\Model\DomainObjectInterface;
-use Sonata\AdminBundle\Form\FormMapper;
-use Sonata\AdminBundle\Datagrid\ListMapper;
-use Sonata\AdminBundle\Datagrid\DatagridMapper;
-use Sonata\AdminBundle\Show\ShowMapper;
-
-use Sonata\CoreBundle\Validator\ErrorElement;
-use Sonata\CoreBundle\Validator\Constraints\InlineConstraint;
-
-use Sonata\AdminBundle\Translator\LabelTranslatorStrategyInterface;
-use Sonata\AdminBundle\Builder\FormContractorInterface;
-use Sonata\AdminBundle\Builder\ListBuilderInterface;
-use Sonata\AdminBundle\Builder\DatagridBuilderInterface;
-use Sonata\AdminBundle\Builder\ShowBuilderInterface;
-use Sonata\AdminBundle\Builder\RouteBuilderInterface;
-use Sonata\AdminBundle\Route\RouteGeneratorInterface;
-use Sonata\AdminBundle\Security\Handler\SecurityHandlerInterface;
-use Sonata\AdminBundle\Security\Handler\AclSecurityHandlerInterface;
-use Sonata\AdminBundle\Route\RouteCollection;
-use Sonata\AdminBundle\Model\ModelManagerInterface;
-use Knp\Menu\FactoryInterface as MenuFactoryInterface;
-use Knp\Menu\ItemInterface as MenuItemInterface;
-use Knp\Menu\Matcher\MatcherInterface;
-use Knp\Menu\Matcher\Voter\UriVoter;
-use Knp\Menu\Util\MenuManipulator;
-
-use Doctrine\Common\Util\ClassUtils;
-use Sonata\AdminBundle\Datagrid\Pager;
 
 /**
  * Class Admin.
