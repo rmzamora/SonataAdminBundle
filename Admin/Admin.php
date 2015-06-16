@@ -42,6 +42,7 @@ use Symfony\Component\PropertyAccess\PropertyPath;
 use Symfony\Component\Validator\ValidatorInterface as LegacyValidatorInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\Security\Acl\Model\DomainObjectInterface;
 
 /**
  * Class Admin.
