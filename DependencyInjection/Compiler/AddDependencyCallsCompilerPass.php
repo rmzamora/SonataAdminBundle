@@ -23,7 +23,6 @@ use Sonata\AdminBundle\Datagrid\Pager;
  * Add all dependencies to the Admin class, this avoid to write too many lines
  * in the configuration files.
  *
- * @package Sonata\AdminBundle\DependencyInjection\Compiler
  * @author  Thomas Rabaix <thomas.rabaix@sonata-project.org>
  */
 class AddDependencyCallsCompilerPass implements CompilerPassInterface
@@ -88,8 +87,8 @@ class AddDependencyCallsCompilerPass implements CompilerPassInterface
                     $groupDefaults[$resolvedGroupName] = array(
                         'label'           => $resolvedGroupName,
                         'label_catalogue' => $labelCatalogue,
-                        'icon' => $icon,
-                        'roles' => array()
+                        'icon'            => $icon,
+                        'roles'           => array(),
                     );
                 }
 
@@ -97,7 +96,7 @@ class AddDependencyCallsCompilerPass implements CompilerPassInterface
                     'admin'        => $id,
                     'label'        => '',
                     'route'        => '',
-                    'route_params' => array()
+                    'route_params' => array(),
                 );
             }
         }
@@ -112,7 +111,7 @@ class AddDependencyCallsCompilerPass implements CompilerPassInterface
                     $groupDefaults[$resolvedGroupName] = array(
                         'items' => array(),
                         'label' => $resolvedGroupName,
-                        'roles' => array()
+                        'roles' => array(),
                     );
                 }
 
@@ -153,7 +152,7 @@ class AddDependencyCallsCompilerPass implements CompilerPassInterface
     }
 
     /**
-     * This method read the attribute keys and configure admin class to use the related dependency
+     * This method read the attribute keys and configure admin class to use the related dependency.
      *
      * @param Definition $definition
      * @param array      $attributes
@@ -172,13 +171,12 @@ class AddDependencyCallsCompilerPass implements CompilerPassInterface
             'validator',
             'security_handler',
             'menu_factory',
-            //'menu_matcher',
             'route_builder',
             'label_translator_strategy',
         );
 
         foreach ($keys as $key) {
-            $method = 'set' . BaseFieldDescription::camelize($key);
+            $method = 'set'.BaseFieldDescription::camelize($key);
             if (!isset($attributes[$key]) || $definition->hasMethodCall($method)) {
                 continue;
             }
@@ -188,7 +186,7 @@ class AddDependencyCallsCompilerPass implements CompilerPassInterface
     }
 
     /**
-     * Apply the default values required by the AdminInterface to the Admin service definition
+     * Apply the default values required by the AdminInterface to the Admin service definition.
      *
      * @param ContainerBuilder $container
      * @param string           $serviceId
@@ -219,16 +217,15 @@ class AddDependencyCallsCompilerPass implements CompilerPassInterface
             'validator'                 => 'validator',
             'security_handler'          => 'sonata.admin.security.handler',
             'menu_factory'              => 'knp_menu.factory',
-            //'menu_matcher'              => 'knp_menu.matcher',
-            'route_builder'             => 'sonata.admin.route.path_info' .
+            'route_builder'             => 'sonata.admin.route.path_info'.
                 (($manager_type == 'doctrine_phpcr') ? '_slashes' : ''),
-            'label_translator_strategy' => 'sonata.admin.label.strategy.native'
+            'label_translator_strategy' => 'sonata.admin.label.strategy.native',
         );
 
         $definition->addMethodCall('setManagerType', array($manager_type));
 
         foreach ($defaultAddServices as $attr => $addServiceId) {
-            $method = 'set' . BaseFieldDescription::camelize($attr);
+            $method = 'set'.BaseFieldDescription::camelize($attr);
 
             if (isset($overwriteAdminConfiguration[$attr]) || !$definition->hasMethodCall($method)) {
                 $definition->addMethodCall($method, array(new Reference(isset($overwriteAdminConfiguration[$attr]) ? $overwriteAdminConfiguration[$attr] : $addServiceId)));
@@ -278,8 +275,6 @@ class AddDependencyCallsCompilerPass implements CompilerPassInterface
      * @param ContainerBuilder $container
      * @param Definition       $definition
      * @param array            $overwrittenTemplates
-     *
-     * @return void
      */
     public function fixTemplates(ContainerBuilder $container, Definition $definition, array $overwrittenTemplates = array())
     {
@@ -306,12 +301,11 @@ class AddDependencyCallsCompilerPass implements CompilerPassInterface
                     || $definedTemplates['pager_results'] === 'SonataAdminBundle:Pager:results.html.twig'
                 )
             ) {
-
                 $definedTemplates['pager_results'] = 'SonataAdminBundle:Pager:simple_pager_results.html.twig';
             }
 
             $methods[$pos] = $method;
-            $pos++;
+            ++$pos;
         }
 
         $definition->setMethodCalls($methods);
