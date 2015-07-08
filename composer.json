@@ -40,8 +40,8 @@
         "knplabs/knp-menu-bundle": "~2.0",
         "sonata-project/exporter": "~1.0",
         "sonata-project/core-bundle": "dev-master",
-        "rmzamora/block-bundle": "~2.3",
-        "doctrine/common": "~2.4"
+        "doctrine/common": "~2.4",
+        "rmzamora/block-bundle": "2.4.1.*"
     },
     "require-dev": {
         "jms/translation-bundle": "~1.1",
@@ -61,7 +61,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-2.4": "2.4.x-dev"
+            "dev-2.4.1": "2.4.1.x-dev"
         }
     }
 }
