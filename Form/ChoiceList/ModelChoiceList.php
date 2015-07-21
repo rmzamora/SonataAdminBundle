@@ -1,9 +1,9 @@
 <?php
 
 /*
- * This file is part of the Sonata Project package.
+ * This file is part of the Symfony package.
  *
- * (c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
+ * (c) Fabien Potencier <fabien@symfony.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -15,7 +15,8 @@ use Doctrine\Common\Util\ClassUtils;
 use Sonata\AdminBundle\Model\ModelManagerInterface;
 use Symfony\Component\Form\Exception\InvalidArgumentException;
 use Symfony\Component\Form\Exception\RuntimeException;
-use Symfony\Component\Form\Extension\Core\ChoiceList\SimpleChoiceList;
+use Symfony\Component\Form\ChoiceList\ArrayChoiceList;
+
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyPath;
 
@@ -24,7 +25,7 @@ use Symfony\Component\PropertyAccess\PropertyPath;
  *
  * @author  Thomas Rabaix <thomas.rabaix@sonata-project.org>
  */
-class ModelChoiceList extends SimpleChoiceList
+class ModelChoiceList extends ArrayChoiceList
 {
     /**
      * @var \Sonata\AdminBundle\Model\ModelManagerInterface
