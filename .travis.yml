@@ -13,7 +13,6 @@ sudo: false
 cache:
   directories:
     - $HOME/.composer/cache
-    - $HOME/.composer/vendor
     - $HOME/.cache/pip
 
 env:
@@ -47,7 +46,7 @@ matrix:
 before_script:
   - mkdir -p ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d && echo "memory_limit=-1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - composer selfupdate
-  - composer config -q github-oauth.github.com $GITHUB_OAUTH_TOKEN
+  - composer config -q -g github-oauth.github.com $GITHUB_OAUTH_TOKEN
   - composer global require phpunit/phpunit fabpot/php-cs-fixer --no-update
   - composer global update --prefer-dist --no-interaction
   - if [ "$SYMFONY_VERSION" = "2.8.*@dev" ] || [ "$SYMFONY_VERSION" = "3.0.x-dev as 2.8" ]; then SYMFONY_DEPRECATIONS_HELPER=strict; fi;
