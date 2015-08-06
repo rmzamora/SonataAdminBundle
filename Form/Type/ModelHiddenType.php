@@ -20,12 +20,12 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 /**
  * This type define a standard hidden field, that stored id to a object.
  *
- * @author  Andrej Hudec <pulzarraider@gmail.com>
+ * @author Andrej Hudec <pulzarraider@gmail.com>
  */
 class ModelHiddenType extends AbstractType
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -45,7 +45,7 @@ class ModelHiddenType extends AbstractType
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function configureOptions(OptionsResolver $resolver)
     {
@@ -56,7 +56,7 @@ class ModelHiddenType extends AbstractType
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getParent()
     {
@@ -64,7 +64,7 @@ class ModelHiddenType extends AbstractType
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getName()
     {

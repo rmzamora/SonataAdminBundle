@@ -28,7 +28,7 @@ use Sonata\AdminBundle\Datagrid\Pager;
 class AddDependencyCallsCompilerPass implements CompilerPassInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function process(ContainerBuilder $container)
     {
