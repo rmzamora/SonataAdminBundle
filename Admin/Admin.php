@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Sonata package.
+ * This file is part of the Sonata Project package.
  *
  * (c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
  *
@@ -1367,6 +1367,7 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
                     $extension->validate($admin, $errorElement, $object);
                 }
             },
+            'serializingWarning' => true,
         )));
     }
 
