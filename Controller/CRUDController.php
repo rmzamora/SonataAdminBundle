@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Sonata Project package.
+ * This file is part of the Sonata package.
  *
  * (c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
  *
@@ -15,7 +15,6 @@ use Psr\Log\NullLogger;
 use Sonata\AdminBundle\Admin\AdminInterface;
 use Sonata\AdminBundle\Admin\BaseFieldDescription;
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
-use Sonata\AdminBundle\Exception\LockException;
 use Sonata\AdminBundle\Exception\ModelManagerException;
 use Sonata\AdminBundle\Util\AdminObjectAclData;
 use Sonata\AdminBundle\Util\AdminObjectAclManipulator;
@@ -416,9 +415,8 @@ class CRUDController extends Controller
 
                     if ($this->isXmlHttpRequest($request)) {
                         return $this->renderJson(array(
-                            'result'     => 'ok',
-                            'objectId'   => $this->admin->getNormalizedIdentifier($object),
-                            'objectName' => $this->escapeHtml($this->admin->toString($object)),
+                            'result'    => 'ok',
+                            'objectId'  => $this->admin->getNormalizedIdentifier($object),
                         ), 200, array(), $request);
                     }
 
@@ -437,12 +435,6 @@ class CRUDController extends Controller
                     $this->handleModelManagerException($e);
 
                     $isFormValid = false;
-                } catch (LockException $e) {
-                    $this->addFlash('sonata_flash_error', $this->admin->trans('flash_lock_error', array(
-                        '%name%'       => $this->escapeHtml($this->admin->toString($object)),
-                        '%link_start%' => '<a href="'.$this->admin->generateObjectUrl('edit', $object).'">',
-                        '%link_end%'   => '</a>',
-                    ), 'SonataAdminBundle'));
                 }
             }
 

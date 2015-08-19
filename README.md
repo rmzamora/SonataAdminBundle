@@ -7,7 +7,6 @@ Demo
 ----
 
 The demo website can be found in http://demo.sonata-project.org/admin/dashboard
-
 **Username and password is:** ```admin```
 
 Documentation

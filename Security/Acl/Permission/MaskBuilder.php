@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Sonata Project package.
+ * This file is part of the Sonata project.
  *
  * (c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
  *
@@ -14,7 +14,7 @@ namespace Sonata\AdminBundle\Security\Acl\Permission;
 use Symfony\Component\Security\Acl\Permission\MaskBuilder as BaseMaskBuilder;
 
 /**
- * {@inheritdoc}
+ * {@inheritDoc}
  * - LIST: the SID is allowed to view a list of the domain objects / fields.
  */
 class MaskBuilder extends BaseMaskBuilder

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Sonata Project package.
+ * This file is part of the Sonata package.
  *
  * (c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
  *
@@ -15,7 +15,6 @@ use Sonata\AdminBundle\Admin\AdminInterface;
 use Sonata\AdminBundle\Admin\FieldDescriptionCollection;
 use Sonata\AdminBundle\Admin\Pool;
 use Sonata\AdminBundle\Controller\CRUDController;
-use Sonata\AdminBundle\Exception\LockException;
 use Sonata\AdminBundle\Exception\ModelManagerException;
 use Sonata\AdminBundle\Tests\Fixtures\Controller\BatchAdminController;
 use Sonata\AdminBundle\Tests\Fixtures\Controller\PreCRUDController;
@@ -106,7 +105,7 @@ class CRUDControllerTest extends \PHPUnit_Framework_TestCase
     private $kernel;
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     protected function setUp()
     {
@@ -1539,17 +1538,13 @@ class CRUDControllerTest extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo($object))
             ->will($this->returnValue('foo_normalized'));
 
-        $this->admin->expects($this->once())
-            ->method('toString')
-            ->will($this->returnValue('foo'));
-
         $this->request->setMethod('POST');
         $this->request->headers->set('X-Requested-With', 'XMLHttpRequest');
 
         $response = $this->controller->editAction(null, $this->request);
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
-        $this->assertEquals(json_encode(array('result' => 'ok', 'objectId'  => 'foo_normalized', 'objectName' => 'foo')), $response->getContent());
+        $this->assertEquals(json_encode(array('result' => 'ok', 'objectId'  => 'foo_normalized')), $response->getContent());
         $this->assertEquals(array(), $this->session->getFlashBag()->all());
     }
 
@@ -1724,65 +1719,6 @@ class CRUDControllerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(array(), $this->session->getFlashBag()->all());
         $this->assertEquals('SonataAdminBundle:CRUD:preview.html.twig', $this->template);
-    }
-
-    public function testEditActionWithLockException()
-    {
-        $object = new \stdClass();
-        $class = get_class($object);
-
-        $this->admin->expects($this->any())
-            ->method('getObject')
-            ->will($this->returnValue($object));
-
-        $this->admin->expects($this->any())
-            ->method('isGranted')
-            ->with($this->equalTo('EDIT'))
-            ->will($this->returnValue(true));
-
-        $this->admin->expects($this->any())
-            ->method('getClass')
-            ->will($this->returnValue($class));
-
-        $form = $this->getMockBuilder('Symfony\Component\Form\Form')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $form->expects($this->any())
-            ->method('isValid')
-            ->will($this->returnValue(true));
-
-        $this->admin->expects($this->any())
-            ->method('getForm')
-            ->will($this->returnValue($form));
-
-        $form->expects($this->any())
-            ->method('isSubmitted')
-            ->will($this->returnValue(true));
-        $this->request->setMethod('POST');
-
-        $this->admin->expects($this->any())
-            ->method('update')
-            ->will($this->throwException(new LockException()));
-
-        $this->admin->expects($this->any())
-            ->method('toString')
-            ->with($this->equalTo($object))
-            ->will($this->returnValue($class));
-
-        $formView = $this->getMock('Symfony\Component\Form\FormView');
-
-        $form->expects($this->any())
-            ->method('createView')
-            ->will($this->returnValue($formView));
-
-        $this->expectTranslate('flash_lock_error', array(
-            '%name%'       => $class,
-            '%link_start%' => '<a href="stdClass_edit">',
-            '%link_end%'   => '</a>',
-        ), 'SonataAdminBundle');
-
-        $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $this->controller->editAction(null, $this->request));
     }
 
     public function testCreateActionAccessDenied()

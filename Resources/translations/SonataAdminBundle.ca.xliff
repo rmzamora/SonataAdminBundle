@@ -36,7 +36,7 @@
             </trans-unit>
             <trans-unit id="btn_advanced_filters">
                 <source>btn_advanced_filters</source>
-                <target>Filtres avançats</target>
+                <target>btn_advanced_filters</target>
             </trans-unit>
             <trans-unit id="btn_update">
                 <source>btn_update</source>
@@ -116,7 +116,7 @@
             </trans-unit>
             <trans-unit id="Admin">
                 <source>Admin</source>
-                <target>Administrador</target>
+                <target>Administració</target>
             </trans-unit>
             <trans-unit id="link_expand">
                 <source>link_expand</source>
@@ -320,7 +320,7 @@
             </trans-unit>
             <trans-unit id="td_role">
                 <source>td_role</source>
-                <target>Rol</target>
+                <target>td_role</target>
             </trans-unit>
             <trans-unit id="label_view_revision">
                 <source>label_view_revision</source>
@@ -432,19 +432,19 @@
             </trans-unit>
             <trans-unit id="link_filters">
                 <source>link_filters</source>
-                <target>Filtres</target>
+                <target>link_filters</target>
             </trans-unit>
             <trans-unit id="stats_view_more">
                 <source>stats_view_more</source>
-                <target>Veure més gràfics</target>
+                <target>stats_view_more</target>
             </trans-unit>
             <trans-unit id="title_select_subclass">
                 <source>title_select_subclass</source>
-                <target>Escull tipus d'objecte</target>
+                <target>Select object type</target>
             </trans-unit>
             <trans-unit id="no_subclass_available">
                 <source>no_subclass_available</source>
-                <target>No hi ha tipus d'objecte disponibles</target>
+                <target>No object types available</target>
             </trans-unit>
         </body>
     </file>

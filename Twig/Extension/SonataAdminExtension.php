@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Sonata Project package.
+ * This file is part of the Sonata package.
  *
  * (c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
  *
@@ -60,7 +60,7 @@ class SonataAdminExtension extends \Twig_Extension
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getFilters()
     {
@@ -75,7 +75,7 @@ class SonataAdminExtension extends \Twig_Extension
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getFunctions()
     {
@@ -83,7 +83,7 @@ class SonataAdminExtension extends \Twig_Extension
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getTokenParsers()
     {
@@ -91,7 +91,7 @@ class SonataAdminExtension extends \Twig_Extension
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getName()
     {
@@ -342,7 +342,6 @@ class SonataAdminExtension extends \Twig_Extension
             'boolean'    => 'select',
             'text'       => 'text',
             'textarea'   => 'textarea',
-            'html'       => 'textarea',
             'email'      => 'email',
             'string'     => 'text',
             'smallint'   => 'text',

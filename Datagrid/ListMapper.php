@@ -1,12 +1,13 @@
 <?php
 
 /*
- * This file is part of the Sonata Project package.
+ * This file is part of the Sonata package.
  *
  * (c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ *
  */
 
 namespace Sonata\AdminBundle\Datagrid;
@@ -75,7 +76,7 @@ class ListMapper extends BaseMapper
         // Change deprecated inline action "view" to "show"
         if ($name == '_action' && $type == 'actions') {
             if (isset($fieldDescriptionOptions['actions']['view'])) {
-                @trigger_error('Inline action "view" is deprecated since version 2.2.4. Use inline action "show" instead.', E_USER_DEPRECATED);
+                trigger_error('Inline action "view" is deprecated since version 2.2.4. Use inline action "show" instead.', E_USER_DEPRECATED);
 
                 $fieldDescriptionOptions['actions']['show'] = $fieldDescriptionOptions['actions']['view'];
 

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Sonata Project package.
+ * This file is part of the Sonata project.
  *
  * (c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
  *
@@ -21,7 +21,7 @@ use Sonata\AdminBundle\Admin\AdminInterface;
 class NoopSecurityHandler implements SecurityHandlerInterface
 {
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function isGranted(AdminInterface $admin, $attributes, $object = null)
     {
@@ -29,7 +29,7 @@ class NoopSecurityHandler implements SecurityHandlerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getBaseRole(AdminInterface $admin)
     {
@@ -37,7 +37,7 @@ class NoopSecurityHandler implements SecurityHandlerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function buildSecurityInformation(AdminInterface $admin)
     {
@@ -45,14 +45,14 @@ class NoopSecurityHandler implements SecurityHandlerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function createObjectSecurity(AdminInterface $admin, $object)
     {
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function deleteObjectSecurity(AdminInterface $admin, $object)
     {

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Sonata Project package.
+ * This file is part of the Sonata project.
  *
  * (c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
  *
@@ -59,7 +59,7 @@ class FormBuilderIterator extends \RecursiveArrayIterator
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function rewind()
     {
@@ -67,7 +67,7 @@ class FormBuilderIterator extends \RecursiveArrayIterator
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function valid()
     {
@@ -75,7 +75,7 @@ class FormBuilderIterator extends \RecursiveArrayIterator
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function key()
     {
@@ -85,7 +85,7 @@ class FormBuilderIterator extends \RecursiveArrayIterator
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function next()
     {
@@ -93,7 +93,7 @@ class FormBuilderIterator extends \RecursiveArrayIterator
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function current()
     {
@@ -101,7 +101,7 @@ class FormBuilderIterator extends \RecursiveArrayIterator
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getChildren()
     {
@@ -109,7 +109,7 @@ class FormBuilderIterator extends \RecursiveArrayIterator
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function hasChildren()
     {

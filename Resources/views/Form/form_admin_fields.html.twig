@@ -155,7 +155,7 @@ file that was distributed with this source code.
         {% set required = false %}
     {% endif %}
     {% set attr = attr|merge({'class': attr.class|default('') ~ ' form-control'}) %}
-    {% if (sortable is defined) and sortable and multiple %}
+    {% if sortable and multiple %}
         {{ block('sonata_type_choice_multiple_sortable') }}
     {% else %}
         <select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %} >
@@ -274,6 +274,10 @@ file that was distributed with this source code.
 
         {% if sonata_admin is defined and sonata_admin_enabled %}
             {% set div_class = div_class ~ ' sonata-ba-field-' ~ sonata_admin.edit ~ '-' ~ sonata_admin.inline %}
+
+            {% if sonata_admin.edit == 'inline' and sonata_admin.inline == 'table' %}
+                {% set div_class = div_class ~ ' form-inline' %}
+            {% endif %}
         {% endif %}
 
         {% if errors|length > 0 %}

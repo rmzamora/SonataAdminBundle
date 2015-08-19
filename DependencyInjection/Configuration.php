@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Sonata Project package.
+ * This file is part of the Sonata project.
  *
  * (c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
  *
@@ -86,10 +86,6 @@ class Configuration implements ConfigurationInterface
                             ->values(array('single_text', 'single_image', 'both'))
                             ->defaultValue('both')
                             ->cannotBeEmpty()
-                        ->end()
-                        ->booleanNode('lock_protection')
-                            ->defaultFalse()
-                            ->info('Enable locking when editing an object, if the corresponding object manager supports it.')
                         ->end()
                     ->end()
                 ->end()
@@ -306,12 +302,12 @@ class Configuration implements ConfigurationInterface
 
                                 'bundles/sonatacore/vendor/moment/min/moment.min.js',
 
-                                'bundles/sonataadmin/vendor/jqueryui/ui/minified/jquery-ui.min.js',
-                                'bundles/sonataadmin/vendor/jqueryui/ui/minified/i18n/jquery-ui-i18n.min.js',
-
                                 'bundles/sonatacore/vendor/bootstrap/dist/js/bootstrap.min.js',
 
                                 'bundles/sonatacore/vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
+
+                                'bundles/sonataadmin/vendor/jqueryui/ui/minified/jquery-ui.min.js',
+                                'bundles/sonataadmin/vendor/jqueryui/ui/minified/i18n/jquery-ui-i18n.min.js',
 
                                 'bundles/sonataadmin/vendor/jquery-form/jquery.form.js',
                                 'bundles/sonataadmin/jquery/jquery.confirmExit.js',

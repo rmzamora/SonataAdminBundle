@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Sonata Project package.
+ * This file is part of the Sonata package.
  *
  * (c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
  *
@@ -41,8 +41,7 @@ class ExporterTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
         $this->assertEquals($contentType, $response->headers->get('Content-Type'));
-        // Quotes does not appear on some sonata versions.
-        $this->assertRegExp('/attachment; filename="?'.$filename.'"?/', $response->headers->get('Content-Disposition'));
+        $this->assertEquals('attachment; filename="'.$filename.'"', $response->headers->get('Content-Disposition'));
     }
 
     public function getGetResponseTests()

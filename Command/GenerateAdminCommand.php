@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Sonata Project package.
+ * This file is part of the Sonata package.
  *
  * (c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
  *
@@ -41,7 +41,7 @@ class GenerateAdminCommand extends ContainerAwareCommand
     private $managerTypes;
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function configure()
     {
@@ -59,7 +59,7 @@ class GenerateAdminCommand extends ContainerAwareCommand
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function isEnabled()
     {
@@ -67,7 +67,7 @@ class GenerateAdminCommand extends ContainerAwareCommand
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -137,7 +137,7 @@ class GenerateAdminCommand extends ContainerAwareCommand
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     protected function interact(InputInterface $input, OutputInterface $output)
     {

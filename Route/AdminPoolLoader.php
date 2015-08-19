@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Sonata Project package.
+ * This file is part of the Sonata project.
  *
  * (c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
  *
@@ -43,7 +43,7 @@ class AdminPoolLoader extends FileLoader
      * @param array                                                     $adminServiceIds
      * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
      */
-    public function __construct(Pool $pool, array $adminServiceIds, ContainerInterface $container)
+    public function __construct(Pool $pool, $adminServiceIds, ContainerInterface $container)
     {
         $this->pool             = $pool;
         $this->adminServiceIds  = $adminServiceIds;
@@ -51,7 +51,7 @@ class AdminPoolLoader extends FileLoader
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function supports($resource, $type = null)
     {
@@ -59,7 +59,7 @@ class AdminPoolLoader extends FileLoader
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function load($resource, $type = null)
     {

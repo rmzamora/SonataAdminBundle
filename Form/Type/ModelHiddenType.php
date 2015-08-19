@@ -1,12 +1,13 @@
 <?php
 
 /*
- * This file is part of the Sonata Project package.
+ * This file is part of the Sonata package.
  *
  * (c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ *
  */
 
 namespace Sonata\AdminBundle\Form\Type;
@@ -20,12 +21,12 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 /**
  * This type define a standard hidden field, that stored id to a object.
  *
- * @author Andrej Hudec <pulzarraider@gmail.com>
+ * @author  Andrej Hudec <pulzarraider@gmail.com>
  */
 class ModelHiddenType extends AbstractType
 {
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -45,7 +46,7 @@ class ModelHiddenType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function configureOptions(OptionsResolver $resolver)
     {
@@ -56,7 +57,7 @@ class ModelHiddenType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getParent()
     {
@@ -64,7 +65,7 @@ class ModelHiddenType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getName()
     {

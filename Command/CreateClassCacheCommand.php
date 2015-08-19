@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Sonata Project package.
+ * This file is part of the Sonata package.
  *
  * (c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
  *
@@ -24,7 +24,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CreateClassCacheCommand extends ContainerAwareCommand
 {
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function configure()
     {
@@ -33,7 +33,7 @@ class CreateClassCacheCommand extends ContainerAwareCommand
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {

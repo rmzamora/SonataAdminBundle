@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the Sonata Project package.
- *
- * (c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace Sonata\AdminBundle\Translator\Extractor\JMSTranslatorBundle;
 
 use JMS\TranslationBundle\Model\FileSource;
@@ -155,7 +146,7 @@ class AdminExtractor implements ExtractorInterface, TranslatorInterface, Securit
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function trans($id, array $parameters = array(), $domain = null, $locale = null)
     {
@@ -165,7 +156,7 @@ class AdminExtractor implements ExtractorInterface, TranslatorInterface, Securit
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function transChoice($id, $number, array $parameters = array(), $domain = null, $locale = null)
     {
@@ -175,7 +166,7 @@ class AdminExtractor implements ExtractorInterface, TranslatorInterface, Securit
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function setLocale($locale)
     {
@@ -183,7 +174,7 @@ class AdminExtractor implements ExtractorInterface, TranslatorInterface, Securit
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getLocale()
     {
@@ -191,7 +182,7 @@ class AdminExtractor implements ExtractorInterface, TranslatorInterface, Securit
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function isGranted(AdminInterface $admin, $attributes, $object = null)
     {
@@ -199,35 +190,35 @@ class AdminExtractor implements ExtractorInterface, TranslatorInterface, Securit
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function buildSecurityInformation(AdminInterface $admin)
     {
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function createObjectSecurity(AdminInterface $admin, $object)
     {
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function deleteObjectSecurity(AdminInterface $admin, $object)
     {
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getBaseRole(AdminInterface $admin)
     {
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getLabel($label, $context = '', $type = '')
     {

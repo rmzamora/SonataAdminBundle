@@ -1,9 +1,9 @@
 <?php
 
 /*
- * This file is part of the Sonata Project package.
+ * This file is part of the Symfony package.
  *
- * (c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
+ * (c) Fabien Potencier <fabien@symfony.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,7 +12,6 @@
 namespace Sonata\AdminBundle\Form\DataTransformer;
 
 use Sonata\AdminBundle\Form\ChoiceList\ModelChoiceList;
-use Symfony\Component\Form\ChoiceList\LegacyChoiceListAdapter;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\Exception\UnexpectedTypeException;
@@ -24,27 +23,18 @@ use Symfony\Component\Form\Exception\UnexpectedTypeException;
  */
 class ModelsToArrayTransformer implements DataTransformerInterface
 {
-    /**
-     * @var ModelChoiceList
-     */
     protected $choiceList;
 
     /**
-     * @param ModelChoiceList|LegacyChoiceListAdapter $choiceList
+     * @param \Sonata\AdminBundle\Form\ChoiceList\ModelChoiceList $choiceList
      */
-    public function __construct($choiceList)
+    public function __construct(ModelChoiceList $choiceList)
     {
-        if ($choiceList instanceof LegacyChoiceListAdapter && $choiceList->getAdaptedList() instanceof ModelChoiceList) {
-            $this->choiceList = $choiceList->getAdaptedList();
-        } elseif ($choiceList instanceof ModelChoiceList) {
-            $this->choiceList = $choiceList;
-        } else {
-            new \InvalidArgumentException('Argument 1 passed to '.__CLASS__.'::'.__METHOD__.' must be an instance of Sonata\AdminBundle\Form\ChoiceList\ModelChoiceList, instance of '.get_class($choiceList).' given');
-        }
+        $this->choiceList = $choiceList;
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function transform($collection)
     {
@@ -73,7 +63,7 @@ class ModelsToArrayTransformer implements DataTransformerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function reverseTransform($keys)
     {

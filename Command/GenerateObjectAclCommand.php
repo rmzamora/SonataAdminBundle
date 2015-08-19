@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Sonata Project package.
+ * This file is part of the Sonata package.
  *
  * (c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
  *
@@ -31,7 +31,7 @@ class GenerateObjectAclCommand extends ContainerAwareCommand
     protected $userEntityClass = '';
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function configure()
     {
@@ -45,7 +45,7 @@ class GenerateObjectAclCommand extends ContainerAwareCommand
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {

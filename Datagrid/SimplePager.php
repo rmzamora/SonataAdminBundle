@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Sonata Project package.
+ * This file is part of the Sonata package.
  *
  * (c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
  *
@@ -105,7 +105,7 @@ class SimplePager extends Pager
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function haveToPaginate()
     {
@@ -113,7 +113,7 @@ class SimplePager extends Pager
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     protected function resetIterator()
     {
@@ -122,7 +122,7 @@ class SimplePager extends Pager
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      *
      * @throws \RuntimeException the QueryBuilder is uninitialized.
      */
