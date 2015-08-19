@@ -65,12 +65,12 @@ class SonataAdminExtension extends \Twig_Extension
     public function getFilters()
     {
         return array(
-           new \Twig_SimpleFilter('render_list_element',   'renderListElement', array('is_safe' => array('html'))),
-           new \Twig_SimpleFilter('render_view_element',   'renderViewElement', array('is_safe' => array('html'))),
-           new \Twig_SimpleFilter('render_view_element_compare',   'renderViewElementCompare', array('is_safe' => array('html'))),
-           new \Twig_SimpleFilter('render_relation_element',   'renderRelationElement'),
-           new \Twig_SimpleFilter('sonata_urlsafeid',   'getUrlsafeIdentifier'),
-           new \Twig_SimpleFilter('sonata_xeditable_type',   'getXEditableType'),
+            'render_list_element'           => new \Twig_Filter_Method($this,   'renderListElement', array('is_safe' => array('html'))),
+            'render_view_element'           => new \Twig_Filter_Method($this,   'renderViewElement', array('is_safe' => array('html'))),
+            'render_view_element_compare'   => new \Twig_Filter_Method($this,   'renderViewElementCompare', array('is_safe' => array('html'))),
+            'render_relation_element'       => new \Twig_Filter_Method($this,   'renderRelationElement'),
+            'sonata_urlsafeid'              => new \Twig_Filter_Method($this,   'getUrlsafeIdentifier'),
+            'sonata_xeditable_type'         => new \Twig_Filter_Method($this,   'getXEditableType'),
         );
     }
 
