@@ -1,9 +1,9 @@
 <?php
 
 /*
- * This file is part of the Symfony package.
+ * This file is part of the Sonata Project package.
  *
- * (c) Fabien Potencier <fabien@symfony.com>
+ * (c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -109,7 +109,7 @@ class AdminPermissionMap implements PermissionMapInterface
     );
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getMasks($permission, $object)
     {
@@ -121,7 +121,7 @@ class AdminPermissionMap implements PermissionMapInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function contains($permission)
     {
