@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Sonata package.
+ * This file is part of the Sonata Project package.
  *
  * (c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
  *
@@ -11,29 +11,30 @@
 
 namespace Sonata\AdminBundle\Tests\Controller;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
-use Sonata\AdminBundle\Controller\CRUDController;
+use Sonata\AdminBundle\Admin\AdminInterface;
+use Sonata\AdminBundle\Admin\FieldDescriptionCollection;
 use Sonata\AdminBundle\Admin\Pool;
-use Symfony\Component\HttpFoundation\Response;
+use Sonata\AdminBundle\Controller\CRUDController;
+use Sonata\AdminBundle\Exception\LockException;
+use Sonata\AdminBundle\Exception\ModelManagerException;
+use Sonata\AdminBundle\Tests\Fixtures\Controller\BatchAdminController;
+use Sonata\AdminBundle\Tests\Fixtures\Controller\PreCRUDController;
+use Sonata\AdminBundle\Util\AdminObjectAclManipulator;
 use Symfony\Bridge\Twig\Extension\FormExtension;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Form\Extension\Csrf\CsrfProvider\CsrfProviderInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
-use Sonata\AdminBundle\Exception\ModelManagerException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-use Sonata\AdminBundle\Util\AdminObjectAclManipulator;
-use Sonata\AdminBundle\Admin\FieldDescriptionCollection;
-use Sonata\AdminBundle\Tests\Fixtures\Controller\BatchAdminController;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\HttpKernel\KernelInterface;
-use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\Form\Extension\Csrf\CsrfProvider\CsrfProviderInterface;
-use Sonata\AdminBundle\Admin\AdminInterface;
-use Sonata\AdminBundle\Tests\Fixtures\Controller\PreCRUDController;
 
 /**
- * Test for CRUDController
+ * Test for CRUDController.
  *
  * @author Andrej Hudec <pulzarraider@gmail.com>
  */
@@ -105,7 +106,7 @@ class CRUDControllerTest extends \PHPUnit_Framework_TestCase
     private $kernel;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function setUp()
     {
@@ -720,7 +721,7 @@ class CRUDControllerTest extends \PHPUnit_Framework_TestCase
         $this->logger->expects($this->once())
             ->method('error')
             ->with($message, array(
-                'exception' => $exception,
+                'exception'                  => $exception,
                 'previous_exception_message' => $previousExceptionMessage,
             ));
     }
@@ -1538,13 +1539,17 @@ class CRUDControllerTest extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo($object))
             ->will($this->returnValue('foo_normalized'));
 
+        $this->admin->expects($this->once())
+            ->method('toString')
+            ->will($this->returnValue('foo'));
+
         $this->request->setMethod('POST');
         $this->request->headers->set('X-Requested-With', 'XMLHttpRequest');
 
         $response = $this->controller->editAction(null, $this->request);
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $response);
-        $this->assertEquals(json_encode(array('result' => 'ok', 'objectId'  => 'foo_normalized')), $response->getContent());
+        $this->assertEquals(json_encode(array('result' => 'ok', 'objectId'  => 'foo_normalized', 'objectName' => 'foo')), $response->getContent());
         $this->assertEquals(array(), $this->session->getFlashBag()->all());
     }
 
@@ -1719,6 +1724,65 @@ class CRUDControllerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(array(), $this->session->getFlashBag()->all());
         $this->assertEquals('SonataAdminBundle:CRUD:preview.html.twig', $this->template);
+    }
+
+    public function testEditActionWithLockException()
+    {
+        $object = new \stdClass();
+        $class = get_class($object);
+
+        $this->admin->expects($this->any())
+            ->method('getObject')
+            ->will($this->returnValue($object));
+
+        $this->admin->expects($this->any())
+            ->method('isGranted')
+            ->with($this->equalTo('EDIT'))
+            ->will($this->returnValue(true));
+
+        $this->admin->expects($this->any())
+            ->method('getClass')
+            ->will($this->returnValue($class));
+
+        $form = $this->getMockBuilder('Symfony\Component\Form\Form')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $form->expects($this->any())
+            ->method('isValid')
+            ->will($this->returnValue(true));
+
+        $this->admin->expects($this->any())
+            ->method('getForm')
+            ->will($this->returnValue($form));
+
+        $form->expects($this->any())
+            ->method('isSubmitted')
+            ->will($this->returnValue(true));
+        $this->request->setMethod('POST');
+
+        $this->admin->expects($this->any())
+            ->method('update')
+            ->will($this->throwException(new LockException()));
+
+        $this->admin->expects($this->any())
+            ->method('toString')
+            ->with($this->equalTo($object))
+            ->will($this->returnValue($class));
+
+        $formView = $this->getMock('Symfony\Component\Form\FormView');
+
+        $form->expects($this->any())
+            ->method('createView')
+            ->will($this->returnValue($formView));
+
+        $this->expectTranslate('flash_lock_error', array(
+            '%name%'       => $class,
+            '%link_start%' => '<a href="stdClass_edit">',
+            '%link_end%'   => '</a>',
+        ), 'SonataAdminBundle');
+
+        $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $this->controller->editAction(null, $this->request));
     }
 
     public function testCreateActionAccessDenied()
@@ -3405,6 +3469,58 @@ class CRUDControllerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\Response', $result);
         $this->assertEquals('batchActionBar executed', $result->getContent());
+    }
+
+    public function testBatchActionWithRequesData()
+    {
+        $batchActions = array('delete' => array('label' => 'Foo Bar', 'ask_confirmation' => false));
+
+        $this->admin->expects($this->once())
+            ->method('getBatchActions')
+            ->will($this->returnValue($batchActions));
+
+        $datagrid = $this->getMock('\Sonata\AdminBundle\Datagrid\DatagridInterface');
+
+        $query = $this->getMock('\Sonata\AdminBundle\Datagrid\ProxyQueryInterface');
+        $datagrid->expects($this->once())
+            ->method('getQuery')
+            ->will($this->returnValue($query));
+
+        $this->admin->expects($this->once())
+            ->method('getDatagrid')
+            ->will($this->returnValue($datagrid));
+
+        $modelManager = $this->getMock('Sonata\AdminBundle\Model\ModelManagerInterface');
+
+        $this->admin->expects($this->once())
+            ->method('isGranted')
+            ->with($this->equalTo('DELETE'))
+            ->will($this->returnValue(true));
+
+        $this->admin->expects($this->any())
+            ->method('getModelManager')
+            ->will($this->returnValue($modelManager));
+
+        $this->admin->expects($this->any())
+            ->method('getClass')
+            ->will($this->returnValue('Foo'));
+
+        $modelManager->expects($this->once())
+            ->method('addIdentifiersToQuery')
+            ->with($this->equalTo('Foo'), $this->equalTo($query), $this->equalTo(array('123', '456')))
+            ->will($this->returnValue(true));
+
+        $this->request->setMethod('POST');
+        $this->request->request->set('data', json_encode(array('action' => 'delete', 'idx' => array('123', '456'), 'all_elements' => false)));
+        $this->request->request->set('foo', 'bar');
+        $this->request->request->set('_sonata_csrf_token', 'csrf-token-123_sonata.batch');
+
+        $result = $this->controller->batchAction($this->request);
+
+        $this->assertInstanceOf('Symfony\Component\HttpFoundation\RedirectResponse', $result);
+        $this->assertSame(array('flash_batch_delete_success'), $this->session->getFlashBag()->get('sonata_flash_success'));
+        $this->assertEquals('list?', $result->getTargetUrl());
+        $this->assertEquals('bar', $this->request->request->get('foo'));
     }
 
     public function getCsrfProvider()

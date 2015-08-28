@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Sonata package.
+ * This file is part of the Sonata Project package.
  *
  * (c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
  *
@@ -30,17 +30,17 @@ class ControllerGeneratorTest extends \PHPUnit_Framework_TestCase
     private $bundlePath;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function setUp()
     {
-        $this->controllerGenerator = new ControllerGenerator(__DIR__ . '/../../Resources/skeleton');
+        $this->controllerGenerator = new ControllerGenerator(__DIR__.'/../../Resources/skeleton');
         $this->bundleMock = $this->createBundleMock();
         $this->bundlePath = $this->bundleMock->getPath();
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function tearDown()
     {
@@ -57,7 +57,7 @@ class ControllerGeneratorTest extends \PHPUnit_Framework_TestCase
             $this->controllerGenerator->getClass()
         );
         $this->assertEquals('ModelAdminController.php', basename($file));
-        $this->assertFileEquals(__DIR__ . '/../Fixtures/Controller/ModelAdminController.php', $file);
+        $this->assertFileEquals(__DIR__.'/../Fixtures/Controller/ModelAdminController.php', $file);
 
         try {
             $this->controllerGenerator->generate($this->bundleMock, 'ModelAdminController');

@@ -162,6 +162,10 @@
               <source>flash_edit_error</source>
               <target>An error has occurred during update of item "%name%".</target>
             </trans-unit>
+            <trans-unit id='flash_lock_error'>
+                <source>flash_lock_error</source>
+                <target>Another user has modified item "%name%". Please %link_start%click here%link_end% to reload the page and apply the changes again.</target>
+            </trans-unit>
             <trans-unit id='flash_batch_delete_success'>
                 <source>flash_batch_delete_success</source>
                 <target>Selected items have been successfully deleted.</target>
@@ -345,6 +349,22 @@
             <trans-unit id="label_export_download">
                 <source>label_export_download</source>
                 <target>Download</target>
+            </trans-unit>
+            <trans-unit id="export_format_json">
+                <source>export_format_json</source>
+                <target>JSON</target>
+            </trans-unit>
+            <trans-unit id="export_format_xml">
+                <source>export_format_xml</source>
+                <target>XML</target>
+            </trans-unit>
+            <trans-unit id="export_format_csv">
+                <source>export_format_csv</source>
+                <target>CSV</target>
+            </trans-unit>
+            <trans-unit id="export_format_xls">
+                <source>export_format_xls</source>
+                <target>XLS</target>
             </trans-unit>
             <trans-unit id="loading_information">
                 <source>loading_information</source>
