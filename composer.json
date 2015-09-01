@@ -40,8 +40,8 @@
 		"knplabs/knp-menu-bundle": ">=2.0,<3.0.0",
         "knplabs/knp-menu": ">=2.0,<3.0",
         "sonata-project/exporter": "~1.0",
-        "sonata-project/core-bundle": "^2.3.6",
-        "rmzamora/block-bundle": "~2.4.2",
+        "rmzamora/core-bundle": "2.5.0.*",
+        "rmzamora/block-bundle": "2.5.0.*",
         "doctrine/common": "~2.4",
         "doctrine/inflector": "~1.0"
     },
