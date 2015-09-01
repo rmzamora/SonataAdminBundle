@@ -16,6 +16,7 @@ use Symfony\Component\Config\Loader\FileLoader;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\RouteCollection as SymfonyRouteCollection;
+use Symfony\Component\Config\FileLocator;
 
 /**
  * Class AdminPoolLoader.
@@ -48,6 +49,8 @@ class AdminPoolLoader extends FileLoader
         $this->pool             = $pool;
         $this->adminServiceIds  = $adminServiceIds;
         $this->container        = $container;
+
+        parent::__construct(new FileLocator(__DIR__.'/../Resources/config'));
     }
 
     /**
