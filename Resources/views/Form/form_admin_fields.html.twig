@@ -81,14 +81,14 @@ file that was distributed with this source code.
 {# Labels #}
 {% block form_label %}
 {% spaceless %}
-    {% if label is not sameas(false) and sonata_admin.options['form_type'] == 'horizontal' %}
+    {% if label is not same as(false) and sonata_admin.options['form_type'] == 'horizontal' %}
         {% set label_class = 'col-sm-3' %}
     {% endif %}
 
     {% set label_class = label_class|default('') ~ ' control-label' %}
 
     {#{{ sonata_admin.admin.getConfigurationPool().getOption('form_type') }}#}
-    {% if label is not sameas(false) %}
+    {% if label is not same as(false) %}
         {% set label_attr = label_attr|merge({'class': label_attr.class|default('') ~ label_class }) %}
 
         {% if not compound %}
@@ -254,12 +254,12 @@ file that was distributed with this source code.
 
         {% set div_class = 'sonata-ba-field' %}
 
-        {% if label is sameas(false) %}
+        {% if label is same as(false) %}
             {% set div_class = div_class ~ ' sonata-collection-row-without-label' %}
         {% endif %}
 
         {% if sonata_admin.options['form_type'] == 'horizontal' %}
-            {% if label is sameas(false) %}
+            {% if label is same as(false) %}
                 {% if 'collection' in form.parent.vars.block_prefixes %}
                     {% set div_class = div_class ~ ' col-sm-12' %}
                 {% else %}

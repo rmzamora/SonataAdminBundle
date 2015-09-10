@@ -77,22 +77,6 @@ class SonataAdminExtension extends \Twig_Extension
     /**
      * {@inheritdoc}
      */
-    public function getFunctions()
-    {
-        return array();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getTokenParsers()
-    {
-        return array();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getName()
     {
         return 'sonata_admin';
@@ -104,7 +88,7 @@ class SonataAdminExtension extends \Twig_Extension
      * @param FieldDescriptionInterface $fieldDescription
      * @param string                    $defaultTemplate
      *
-     * @return \Twig_TemplateInterface
+     * @return \Twig_Template
      */
     protected function getTemplate(FieldDescriptionInterface $fieldDescription, $defaultTemplate)
     {
@@ -146,12 +130,12 @@ class SonataAdminExtension extends \Twig_Extension
 
     /**
      * @param FieldDescriptionInterface $fieldDescription
-     * @param \Twig_TemplateInterface   $template
+     * @param \Twig_Template            $template
      * @param array                     $parameters
      *
      * @return string
      */
-    public function output(FieldDescriptionInterface $fieldDescription, \Twig_TemplateInterface $template, array $parameters = array())
+    public function output(FieldDescriptionInterface $fieldDescription, \Twig_Template $template, array $parameters = array())
     {
         $content = $template->render($parameters);
 
@@ -323,9 +307,7 @@ class SonataAdminExtension extends \Twig_Extension
     public function getUrlsafeIdentifier($model, AdminInterface $admin = null)
     {
         if (is_null($admin)) {
-            $admin = $this->pool->getAdminByClass(
-                ClassUtils::getClass($model)
-            );
+            $admin = $this->pool->getAdminByClass(ClassUtils::getClass($model));
         }
 
         return $admin->getUrlsafeIdentifier($model);
