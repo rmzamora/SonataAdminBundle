@@ -151,7 +151,7 @@ Available types and associated options
 +           +                +                                                                       +
 |           |   parameters   | Route parameters                                                      |
 +           +----------------+-----------------------------------------------------------------------+
-|           | hide_protocol  | Hide http:// or https:// (default false)                              |
+|           | hide_protocol  | Hide http:// or https:// (default: false)                             |
 +-----------+----------------+-----------------------------------------------------------------------+
 
 If you have the SonataDoctrineORMAdminBundle installed, you have access to more field types, see `SonataDoctrineORMAdminBundle Documentation <https://sonata-project.org/bundles/doctrine-orm-admin/master/doc/reference/list_field_definition.html>`_.
@@ -320,8 +320,8 @@ This is an example using these constants for an ``boolean`` type:
 .. code-block:: php
 
     use Sonata\UserBundle\Admin\Model\UserAdmin as SonataUserAdmin;
-    use SonataCoreBundle/blob/master/Form/Type/EqualType.php;
-    use SonataCoreBundle/blob/master/Form/Type/BooleanType;
+    use Sonata\CoreBundle\Form\Type\EqualType;
+    use Sonata\CoreBundle\Form\Type\BooleanType;
 
     class UserAdmin extends SonataUserAdmin
     {
@@ -347,8 +347,8 @@ Default filters can also be added to the datagrid values by overriding the ``get
 
 .. code-block:: php
 
-    use SonataCoreBundle/blob/master/Form/Type/EqualType.php;
-    use SonataCoreBundle/blob/master/Form/Type/BooleanType;
+    use Sonata\CoreBundle\Form\Type\EqualType;
+    use Sonata\CoreBundle\Form\Type\BooleanType;
 
     class UserAdmin extends SonataUserAdmin
     {
