@@ -280,6 +280,10 @@ class HelperController
             $value = new \DateTime($value);
         }
 
+        if ('' !== $value && $fieldDescription->getType() == 'datetime') {
+            $value = new \DateTime($value);
+        }
+
         $propertyAccessor->setValue($object, $propertyPath, '' !== $value ? $value : null);
 
         $violations = $this->validator->validate($object);

@@ -335,6 +335,7 @@ class SonataAdminExtension extends \Twig_Extension
             'percent'    => 'number',
             'url'        => 'url',
             'date'       => 'date',
+            'datetime'   => 'combodate',
         );
 
         return isset($mapping[$type]) ? $mapping[$type] : false;
