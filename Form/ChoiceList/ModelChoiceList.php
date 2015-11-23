@@ -28,7 +28,7 @@ use Symfony\Component\PropertyAccess\PropertyPath;
 class ModelChoiceList extends ArrayChoiceList
 {
     /**
-     * @var \Sonata\AdminBundle\Model\ModelManagerInterface
+     * @var ModelManagerInterface
      */
     private $modelManager;
 
@@ -78,6 +78,9 @@ class ModelChoiceList extends ArrayChoiceList
      */
     private $reflProperties = array();
 
+    /**
+     * @var PropertyPath
+     */
     private $propertyPath;
 
     /**
@@ -262,7 +265,7 @@ class ModelChoiceList extends ArrayChoiceList
     }
 
     /**
-     * @return \Sonata\AdminBundle\Model\ModelManagerInterface
+     * @return ModelManagerInterface
      */
     public function getModelManager()
     {
