@@ -39,7 +39,9 @@ file that was distributed with this source code.
                 multiple: {{ multiple ? 'true' : 'false' }},
                 width: '{{ width }}',
                 dropdownAutoWidth: {{ dropdown_auto_width ? 'true' : 'false' }},
-                containerCssClass: '{{ container_css_class ~ ' form-control' }}',
+                {# ~RZ-FIX #}
+                {#containerCssClass: '{{ container_css_class ~ ' form-control' }}',#}
+                containerCssClass: '{{ container_css_class }}',
                 dropdownCssClass: '{{ dropdown_css_class }}',
                 ajax: {
                     url:  '{{ url ?: path(route.name, route.parameters|default([]))|e('js') }}',

@@ -114,7 +114,9 @@ class ModelAutocompleteType extends AbstractType
             'admin_code'                    => null,
             'callback'                      => null,
             'multiple'                      => false,
-            'width'                         => '',
+            /* ~RZ-FIX */
+            //'width'                       => '100%',
+            'width'                         => '100%',
             'context'                       => '',
 
             'placeholder'                   => '',
