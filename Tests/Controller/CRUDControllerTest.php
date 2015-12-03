@@ -234,8 +234,9 @@ class CRUDControllerTest extends \PHPUnit_Framework_TestCase
 
             $this->csrfProvider->expects($this->any())
                 ->method('isTokenValid')
-                ->will($this->returnCallback(function ($intention, $token) {
-                    if ((string) $token == 'csrf-token-123_'.$intention) {
+                ->will($this->returnCallback(function (CsrfToken $token) {
+
+                    if ($token->getValue() == 'csrf-token-123_'.$token->getId()) {
                         return true;
                     }
 
@@ -318,7 +319,7 @@ class CRUDControllerTest extends \PHPUnit_Framework_TestCase
                     return true;
                 }
 
-                if ($id == 'security.csrf.token_manager' && Kernel::MAJOR_VERSION >= 3) {
+                if ($id == 'security.csrf.token_manager' && Kernel::MAJOR_VERSION >= 3  && $tthis->getCsrfProvider() !== null) {
                     return true;
                 }
 
@@ -1980,7 +1981,7 @@ class CRUDControllerTest extends \PHPUnit_Framework_TestCase
                     return true;
                 }
 
-                return ($objectIn === $object);
+                return $objectIn === $object;
             }));
 
         $this->admin->expects($this->once())
@@ -2232,7 +2233,7 @@ class CRUDControllerTest extends \PHPUnit_Framework_TestCase
                     return true;
                 }
 
-                return ($objectIn === $object);
+                return $objectIn === $object;
             }));
 
         $this->admin->expects($this->once())
@@ -3401,11 +3402,16 @@ class CRUDControllerTest extends \PHPUnit_Framework_TestCase
 
     public function testBatchActionWithConfirmation()
     {
-        $batchActions = array('delete' => array('label' => 'Foo Bar', 'ask_confirmation' => true));
+        $batchActions = array('delete' => array('label' => 'Foo Bar', 'translation_domain' => 'FooBarBaz', 'ask_confirmation' => true));
 
         $this->admin->expects($this->once())
             ->method('getBatchActions')
             ->will($this->returnValue($batchActions));
+
+        $this->admin->expects($this->once())
+            ->method('trans')
+            ->with($this->equalTo('Foo Bar'), $this->anything(), $this->equalTo('FooBarBaz'))
+            ->will($this->returnValue('Foo Bar'));
 
         $data = array('action' => 'delete', 'idx' => array('123', '456'), 'all_elements' => false);
 
