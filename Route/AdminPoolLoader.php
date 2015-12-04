@@ -12,7 +12,7 @@
 namespace Sonata\AdminBundle\Route;
 
 use Sonata\AdminBundle\Admin\Pool;
-use Symfony\Component\Config\Loader\FileLoader;
+use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\RouteCollection as SymfonyRouteCollection;
@@ -23,7 +23,7 @@ use Symfony\Component\Config\FileLocator;
  *
  * @author  Thomas Rabaix <thomas.rabaix@sonata-project.org>
  */
-class AdminPoolLoader extends FileLoader
+class AdminPoolLoader extends Loader
 {
     const ROUTE_TYPE_NAME = 'sonata_admin';
 
