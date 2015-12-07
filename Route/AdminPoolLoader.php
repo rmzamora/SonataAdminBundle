@@ -52,8 +52,6 @@ class AdminPoolLoader extends Loader
         $this->pool             = $pool;
         $this->adminServiceIds  = $adminServiceIds;
         $this->container        = $container;
-
-        parent::__construct(new FileLocator(__DIR__.'/../Resources/config'));
     }
 
     /**
