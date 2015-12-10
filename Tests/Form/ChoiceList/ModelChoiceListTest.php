@@ -20,6 +20,10 @@ class ModelChoiceListTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        if (false === interface_exists('Symfony\Component\Form\Extension\Core\ChoiceList\SimpleChoiceList')) {
+            $this->markTestSkipped('Test only available for < SF3.0');
+        }
+
         $this->modelManager = $this->getMock('Sonata\AdminBundle\Model\ModelManagerInterface');
 
         $this->modelManager->expects($this->any())
@@ -83,4 +87,3 @@ class ModelChoiceListTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame(array_keys($result), $modelChoice->getChoices());
     }
-}
