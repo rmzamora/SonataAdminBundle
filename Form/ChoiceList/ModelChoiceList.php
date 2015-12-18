@@ -28,7 +28,7 @@ use Symfony\Component\PropertyAccess\PropertyPath;
 class ModelChoiceList extends ArrayChoiceList
 {
     /**
-     * @var \Sonata\AdminBundle\Model\ModelManagerInterface
+     * @var ModelManagerInterface
      */
     private $modelManager;
 
@@ -78,6 +78,9 @@ class ModelChoiceList extends ArrayChoiceList
      */
     private $reflProperties = array();
 
+    /**
+     * @var PropertyPath
+     */
     private $propertyPath;
 
     /**
@@ -126,12 +129,16 @@ class ModelChoiceList extends ArrayChoiceList
      */
     protected function load($choices)
     {
-        if (is_array($choices)) {
+        if (is_array($choices) && count($choices) > 0) {
             $entities = $choices;
         } elseif ($this->query) {
             $entities = $this->modelManager->executeQuery($this->query);
         } else {
             $entities = $this->modelManager->findBy($this->class);
+        }
+
+        if (null === $entities) {
+            return array();
         }
 
         $choices = array();
@@ -262,7 +269,7 @@ class ModelChoiceList extends ArrayChoiceList
     }
 
     /**
-     * @return \Sonata\AdminBundle\Model\ModelManagerInterface
+     * @return ModelManagerInterface
      */
     public function getModelManager()
     {

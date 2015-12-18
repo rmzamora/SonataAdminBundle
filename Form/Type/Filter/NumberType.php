@@ -34,10 +34,13 @@ class NumberType extends AbstractType
 
     const TYPE_LESS_THAN = 5;
 
+    /**
+     * @var TranslatorInterface
+     */
     protected $translator;
 
     /**
-     * @param \Symfony\Component\Translation\TranslatorInterface $translator
+     * @param TranslatorInterface $translator
      */
     public function __construct(TranslatorInterface $translator)
     {
@@ -45,11 +48,19 @@ class NumberType extends AbstractType
     }
 
     /**
-     * Returns the name of this type.
+     * {@inheritdoc}
      *
-     * @return string The name of this type
+     * @todo Remove when dropping Symfony <2.8 support
      */
     public function getName()
+    {
+        return $this->getBlockPrefix();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBlockPrefix()
     {
         return 'sonata_type_filter_number';
     }

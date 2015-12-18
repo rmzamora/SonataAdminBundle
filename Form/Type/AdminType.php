@@ -12,6 +12,8 @@
 namespace Sonata\AdminBundle\Form\Type;
 
 use Doctrine\Common\Collections\Collection;
+use Sonata\AdminBundle\Admin\AdminInterface;
+use Sonata\AdminBundle\Admin\FieldDescriptionInterface;
 use Sonata\AdminBundle\Form\DataTransformer\ArrayToModelTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -115,7 +117,7 @@ class AdminType extends AbstractType
     {
         $resolver->setDefaults(array(
             'delete'          => function (Options $options) {
-                return ($options['btn_delete'] !== false);
+                return $options['btn_delete'] !== false;
             },
             'delete_options'  => array(
                 'type'         => 'checkbox',
@@ -135,7 +137,7 @@ class AdminType extends AbstractType
     /**
      * @param array $options
      *
-     * @return \Sonata\AdminBundle\Admin\FieldDescriptionInterface
+     * @return FieldDescriptionInterface
      *
      * @throws \RuntimeException
      */
@@ -151,7 +153,7 @@ class AdminType extends AbstractType
     /**
      * @param array $options
      *
-     * @return \Sonata\AdminBundle\Admin\AdminInterface
+     * @return AdminInterface
      */
     protected function getAdmin(array $options)
     {
@@ -160,8 +162,18 @@ class AdminType extends AbstractType
 
     /**
      * {@inheritdoc}
+     *
+     * @todo Remove when dropping Symfony <2.8 support
      */
     public function getName()
+    {
+        return $this->getBlockPrefix();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBlockPrefix()
     {
         return 'sonata_type_admin';
     }

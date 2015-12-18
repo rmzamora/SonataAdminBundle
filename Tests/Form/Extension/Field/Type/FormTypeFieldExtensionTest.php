@@ -23,7 +23,7 @@ class FormTypeFieldExtensionTest extends \PHPUnit_Framework_TestCase
     {
         $extension = new FormTypeFieldExtension(array(), array());
 
-        $this->assertEquals('field', $extension->getExtendedType());
+        $this->assertSame('form', $extension->getExtendedType());
     }
 
     public function testDefaultOptions()
@@ -31,7 +31,11 @@ class FormTypeFieldExtensionTest extends \PHPUnit_Framework_TestCase
         $extension = new FormTypeFieldExtension(array(), array());
 
         $resolver = new OptionsResolver();
-        $extension->setDefaultOptions($resolver);
+        if (!method_exists('Symfony\Component\Form\AbstractType', 'getBlockPrefix')) {
+            $extension->setDefaultOptions($resolver);
+        } else {
+            $extension->configureOptions($resolver);
+        }
 
         $options = $resolver->resolve();
 
@@ -121,9 +125,9 @@ class FormTypeFieldExtensionTest extends \PHPUnit_Framework_TestCase
             'my_admin_reference_name_text_username',
         );
 
-        $this->assertEquals($expected, $formView->vars['block_prefixes']);
+        $this->assertSame($expected, $formView->vars['block_prefixes']);
         $this->assertTrue($formView->vars['sonata_admin_enabled']);
-        $this->assertEquals('help text', $formView->vars['sonata_help']);
+        $this->assertSame('help text', $formView->vars['sonata_help']);
     }
 
     public function testbuildViewWithNestedForm()
@@ -181,7 +185,7 @@ class FormTypeFieldExtensionTest extends \PHPUnit_Framework_TestCase
             'sonata_admin_code' => 'parent_code',
         );
 
-        $this->assertEquals($expected, $formView->vars);
+        $this->assertSame($expected, $formView->vars);
     }
 
     public function testbuildViewWithNestedFormWithNoParent()

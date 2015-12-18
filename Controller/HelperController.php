@@ -15,6 +15,7 @@ use Sonata\AdminBundle\Admin\AdminHelper;
 use Sonata\AdminBundle\Admin\AdminInterface;
 use Sonata\AdminBundle\Admin\Pool;
 use Sonata\AdminBundle\Filter\FilterInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,7 +23,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyPath;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\Validator\ValidatorInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\Validator\ValidatorInterface as LegacyValidatorInterface;
 
 /**
  * Class HelperController.
@@ -37,28 +39,32 @@ class HelperController
     protected $twig;
 
     /**
-     * @var \Sonata\AdminBundle\Admin\AdminHelper
+     * @var AdminHelper
      */
     protected $helper;
 
     /**
-     * @var \Sonata\AdminBundle\Admin\Pool
+     * @var Pool
      */
     protected $pool;
 
     /**
-     * @var \Symfony\Component\Validator\ValidatorInterface
+     * @var ValidatorInterface|ValidatorInterface
      */
     protected $validator;
 
     /**
-     * @param \Twig_Environment                               $twig
-     * @param \Sonata\AdminBundle\Admin\Pool                  $pool
-     * @param \Sonata\AdminBundle\Admin\AdminHelper           $helper
-     * @param \Symfony\Component\Validator\ValidatorInterface $validator
+     * @param \Twig_Environment  $twig
+     * @param Pool               $pool
+     * @param AdminHelper        $helper
+     * @param ValidatorInterface $validator
      */
-    public function __construct(\Twig_Environment $twig, Pool $pool, AdminHelper $helper, ValidatorInterface $validator)
+    public function __construct(\Twig_Environment $twig, Pool $pool, AdminHelper $helper, $validator)
     {
+        if (!($validator instanceof ValidatorInterface) && !($validator instanceof LegacyValidatorInterface)) {
+            throw new \InvalidArgumentException('Argument 4 is an instance of '.get_class($validator).', expecting an instance of \Symfony\Component\Validator\Validator\ValidatorInterface or \Symfony\Component\Validator\ValidatorInterface');
+        }
+
         $this->twig      = $twig;
         $this->pool      = $pool;
         $this->helper    = $helper;
@@ -66,11 +72,11 @@ class HelperController
     }
 
     /**
-     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     * @throws NotFoundHttpException
      *
-     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function appendFormFieldElementAction(Request $request)
     {
@@ -113,11 +119,11 @@ class HelperController
     }
 
     /**
-     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     * @throws NotFoundHttpException
      *
-     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function retrieveFormFieldElementAction(Request $request)
     {
@@ -161,11 +167,11 @@ class HelperController
     }
 
     /**
-     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException|\RuntimeException
+     * @throws NotFoundHttpException|\RuntimeException
      *
-     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function getShortObjectDescriptionAction(Request $request)
     {
@@ -214,9 +220,9 @@ class HelperController
     }
 
     /**
-     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param Request $request
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function setObjectFieldValueAction(Request $request)
     {
@@ -275,6 +281,11 @@ class HelperController
             $propertyPath = new PropertyPath($field);
         }
 
+        // Handle date type has setter expect a DateTime object
+        if ('' !== $value && $fieldDescription->getType() == 'date') {
+            $value = new \DateTime($value);
+        }
+
         $propertyAccessor->setValue($object, $propertyPath, '' !== $value ? $value : null);
 
         $violations = $this->validator->validate($object);
@@ -317,14 +328,21 @@ class HelperController
         $admin->setRequest($request);
         $context = $request->get('_context', '');
 
-        if (false === $admin->isGranted('CREATE') && false === $admin->isGranted('EDIT')) {
+        if ($context === 'filter' && false === $admin->isGranted('LIST')) {
+            throw new AccessDeniedException();
+        }
+
+        if ($context !== 'filter'
+            && false === $admin->isGranted('CREATE')
+            && false === $admin->isGranted('EDIT')
+        ) {
             throw new AccessDeniedException();
         }
 
         // subject will be empty to avoid unnecessary database requests and keep autocomplete function fast
         $admin->setSubject($admin->getNewInstance());
 
-        if ($context == 'filter') {
+        if ($context === 'filter') {
             // filter
             $fieldDescription = $this->retrieveFilterFieldDescription($admin, $request->get('field'));
             $filterAutocomplete = $admin->getDatagrid()->getFilter($fieldDescription->getName());
@@ -365,6 +383,7 @@ class HelperController
             return new JsonResponse(array('status' => 'KO', 'message' => 'Too short search string.'), 403);
         }
 
+        $targetAdmin->setPersistFilters(false);
         $datagrid = $targetAdmin->getDatagrid();
 
         if ($callback !== null) {
@@ -435,7 +454,7 @@ class HelperController
      * @param AdminInterface $admin
      * @param string         $field
      *
-     * @return \Symfony\Component\Form\FormInterface
+     * @return FormInterface
      *
      * @throws \RuntimeException
      */
@@ -447,10 +466,6 @@ class HelperController
 
         if (!$fieldDescription) {
             throw new \RuntimeException(sprintf('The field "%s" does not exist.', $field));
-        }
-
-        if ($fieldDescription->getType() !== 'sonata_type_model_autocomplete') {
-            throw new \RuntimeException(sprintf('Unsupported form type "%s" for field "%s".', $fieldDescription->getType(), $field));
         }
 
         if (null === $fieldDescription->getTargetEntity()) {
@@ -466,7 +481,7 @@ class HelperController
      * @param AdminInterface $admin
      * @param string         $field
      *
-     * @return \Symfony\Component\Form\FormInterface
+     * @return FormInterface
      *
      * @throws \RuntimeException
      */

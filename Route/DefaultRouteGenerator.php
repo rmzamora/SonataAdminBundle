@@ -12,6 +12,7 @@
 namespace Sonata\AdminBundle\Route;
 
 use Sonata\AdminBundle\Admin\AdminInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
@@ -21,12 +22,24 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class DefaultRouteGenerator implements RouteGeneratorInterface
 {
+    /**
+     * @var RouterInterface
+     */
     private $router;
 
+    /**
+     * @var RoutesCache
+     */
     private $cache;
 
+    /**
+     * @var array
+     */
     private $caches = array();
 
+    /**
+     * @var string[]
+     */
     private $loaded = array();
 
     /**
@@ -42,7 +55,7 @@ class DefaultRouteGenerator implements RouteGeneratorInterface
     /**
      * {@inheritdoc}
      */
-    public function generate($name, array $parameters = array(), $absolute = false)
+    public function generate($name, array $parameters = array(), $absolute = UrlGeneratorInterface::ABSOLUTE_PATH)
     {
         return $this->router->generate($name, $parameters, $absolute);
     }
@@ -50,7 +63,7 @@ class DefaultRouteGenerator implements RouteGeneratorInterface
     /**
      * {@inheritdoc}
      */
-    public function generateUrl(AdminInterface $admin, $name, array $parameters = array(), $absolute = false)
+    public function generateUrl(AdminInterface $admin, $name, array $parameters = array(), $absolute = UrlGeneratorInterface::ABSOLUTE_PATH)
     {
         $arrayRoute = $this->generateMenuUrl($admin, $name, $parameters, $absolute);
 
@@ -60,7 +73,7 @@ class DefaultRouteGenerator implements RouteGeneratorInterface
     /**
      * {@inheritdoc}
      */
-    public function generateMenuUrl(AdminInterface $admin, $name, array $parameters = array(), $absolute = false)
+    public function generateMenuUrl(AdminInterface $admin, $name, array $parameters = array(), $absolute = UrlGeneratorInterface::ABSOLUTE_PATH)
     {
         // if the admin is a child we automatically append the parent's id
         if ($admin->isChild() && $admin->hasRequest() && $admin->getRequest()->attributes->has($admin->getParent()->getIdParameter())) {

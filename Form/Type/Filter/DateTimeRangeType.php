@@ -27,10 +27,13 @@ class DateTimeRangeType extends AbstractType
     const TYPE_BETWEEN = 1;
     const TYPE_NOT_BETWEEN = 2;
 
+    /**
+     * @var TranslatorInterface
+     */
     protected $translator;
 
     /**
-     * @param \Symfony\Component\Translation\TranslatorInterface $translator
+     * @param TranslatorInterface $translator
      */
     public function __construct(TranslatorInterface $translator)
     {
@@ -39,8 +42,18 @@ class DateTimeRangeType extends AbstractType
 
     /**
      * {@inheritdoc}
+     *
+     * @todo Remove when dropping Symfony <2.8 support
      */
     public function getName()
+    {
+        return $this->getBlockPrefix();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBlockPrefix()
     {
         return 'sonata_type_filter_datetime_range';
     }

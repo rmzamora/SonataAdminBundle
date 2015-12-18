@@ -9,7 +9,19 @@ Admin Bundle
 * `SonataDoctrinePhpcrAdminBundle <https://github.com/sonata-project/SonataDoctrinePhpcrAdminBundle>`_: integrates PHPCR with the core admin bundle (early stage)
 * `SonataPropelAdminBundle <https://github.com/sonata-project/SonataPropelAdminBundle>`_: integrates Propel with the core admin bundle (early stage)
 
-The demo website can be found in http://demo.sonata-project.org/admin/dashboard (``admin`` as user and password).
+The demo website can be found in http://demo.sonata-project.org (``admin`` as user and password).
+
+Getting Started
+---------------
+
+.. toctree::
+    :maxdepth: 1
+    :numbered:
+
+    getting_started/installation
+    getting_started/creating_an_admin
+    getting_started/the_form_view
+    getting_started/the_list_view
 
 Reference Guide
 ---------------
@@ -75,3 +87,5 @@ Cookbook
    cookbook/recipe_virtual_field
    cookbook/recipe_bootlint
    cookbook/recipe_lock_protection
+   cookbook/recipe_sortable_sonata_type_model
+   cookbook/recipe_delete_field_group

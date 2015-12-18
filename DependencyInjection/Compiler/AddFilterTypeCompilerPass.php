@@ -23,15 +23,19 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class AddFilterTypeCompilerPass implements CompilerPassInterface
 {
     /**
-     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
+     * @param ContainerBuilder $container
      */
     public function process(ContainerBuilder $container)
     {
         $definition = $container->getDefinition('sonata.admin.builder.filter.factory');
-        $types      = array();
+        $types = array();
 
         foreach ($container->findTaggedServiceIds('sonata.admin.filter.type') as $id => $attributes) {
-            $container->getDefinition($id)->setScope(ContainerInterface::SCOPE_PROTOTYPE);
+            if (method_exists($definition, 'setShared')) { // Symfony 2.8+
+                $container->getDefinition($id)->setShared(false);
+            } else { // For Symfony <2.8 compatibility
+                $container->getDefinition($id)->setScope(ContainerInterface::SCOPE_PROTOTYPE);
+            }
 
             foreach ($attributes as $eachTag) {
                 $types[$eachTag['alias']] = $id;

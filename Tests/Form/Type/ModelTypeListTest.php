@@ -23,15 +23,19 @@ class ModelTypeListTest extends TypeTestCase
 
         $optionResolver = new OptionsResolver();
 
-        $type->setDefaultOptions($optionResolver);
+        if (!method_exists('Symfony\Component\Form\AbstractType', 'getBlockPrefix')) {
+            $type->setDefaultOptions($optionResolver);
+        } else {
+            $type->configureOptions($optionResolver);
+        }
 
         $options = $optionResolver->resolve();
 
         $this->assertNull($options['model_manager']);
         $this->assertNull($options['class']);
-        $this->assertEquals('link_add', $options['btn_add']);
-        $this->assertEquals('link_list', $options['btn_list']);
-        $this->assertEquals('link_delete', $options['btn_delete']);
-        $this->assertEquals('SonataAdminBundle', $options['btn_catalogue']);
+        $this->assertSame('link_add', $options['btn_add']);
+        $this->assertSame('link_list', $options['btn_list']);
+        $this->assertSame('link_delete', $options['btn_delete']);
+        $this->assertSame('SonataAdminBundle', $options['btn_catalogue']);
     }
 }

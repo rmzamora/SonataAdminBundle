@@ -36,7 +36,11 @@ class AclMatrixTypeTest extends TypeTestCase
 
         $optionResolver = new OptionsResolver();
 
-        $type->setDefaultOptions($optionResolver);
+        if (!method_exists('Symfony\Component\Form\AbstractType', 'getBlockPrefix')) {
+            $type->setDefaultOptions($optionResolver);
+        } else {
+            $type->configureOptions($optionResolver);
+        }
 
         $options = $optionResolver->resolve(array(
             'acl_value'   => $user,
@@ -44,7 +48,7 @@ class AclMatrixTypeTest extends TypeTestCase
         ));
 
         $this->assertInstanceOf('Symfony\Component\Security\Core\User\UserInterface', $options['acl_value']);
-        $this->assertEquals($user, $options['acl_value']);
-        $this->assertEquals($permissions, $options['permissions']);
+        $this->assertSame($user, $options['acl_value']);
+        $this->assertSame($permissions, $options['permissions']);
     }
 }

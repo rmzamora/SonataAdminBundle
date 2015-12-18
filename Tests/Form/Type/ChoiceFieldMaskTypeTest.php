@@ -23,7 +23,12 @@ class ChoiceFieldMaskTypeTest extends TypeTestCase
 
         $optionResolver = new OptionsResolver();
 
-        $type->setDefaultOptions($optionResolver);
+        if (!method_exists('Symfony\Component\Form\AbstractType', 'getBlockPrefix')) {
+            $type->setDefaultOptions($optionResolver);
+        } else {
+            $type->configureOptions($optionResolver);
+        }
+
         $options = $optionResolver->resolve(
             array(
                 'map' => array(
@@ -38,12 +43,12 @@ class ChoiceFieldMaskTypeTest extends TypeTestCase
     public function testGetName()
     {
         $type = new ChoiceFieldMaskType();
-        $this->assertEquals('sonata_type_choice_field_mask', $type->getName());
+        $this->assertSame('sonata_type_choice_field_mask', $type->getName());
     }
 
     public function testGetParent()
     {
         $type = new ChoiceFieldMaskType();
-        $this->assertEquals('choice', $type->getParent());
+        $this->assertSame('choice', $type->getParent());
     }
 }

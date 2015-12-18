@@ -16,7 +16,7 @@ file that was distributed with this source code.
         {% if not form.parent %}<div class="alert alert-danger">{% endif %}
             <ul class="list-unstyled">
                 {% for error in errors %}
-                    <li><i class="glyphicon glyphicon-exclamation-sign"></i> {{ error.message }}</li>
+                    <li><i class="fa fa-exclamation-circle"></i> {{ error.message }}</li>
                 {% endfor %}
             </ul>
         {% if not form.parent %}</div>{% endif %}
@@ -81,14 +81,14 @@ file that was distributed with this source code.
 {# Labels #}
 {% block form_label %}
 {% spaceless %}
-    {% if label is not sameas(false) and sonata_admin.options['form_type'] == 'horizontal' %}
+    {% if label is not same as(false) and sonata_admin.options['form_type'] == 'horizontal' %}
         {% set label_class = 'col-sm-3' %}
     {% endif %}
 
     {% set label_class = label_class|default('') ~ ' control-label' %}
 
     {#{{ sonata_admin.admin.getConfigurationPool().getOption('form_type') }}#}
-    {% if label is not sameas(false) %}
+    {% if label is not same as(false) %}
         {% set label_attr = label_attr|merge({'class': label_attr.class|default('') ~ label_class }) %}
 
         {% if not compound %}
@@ -151,15 +151,20 @@ file that was distributed with this source code.
 
 {% block choice_widget_collapsed %}
 {% spaceless %}
-    {% if required and empty_value is none and not empty_value_in_choices and not multiple %}
+
+    {# this line only work with sf<3, as empty_value_in_choices and empty_value are now deprecated#}
+    {% if required and empty_value is defined and empty_value_in_choices is defined and empty_value is none and not empty_value_in_choices and not multiple %}
         {% set required = false %}
     {% endif %}
+
     {% set attr = attr|merge({'class': attr.class|default('') ~ ' form-control'}) %}
     {% if (sortable is defined) and sortable and multiple %}
         {{ block('sonata_type_choice_multiple_sortable') }}
     {% else %}
         <select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %} >
-            {% if empty_value is not none %}
+
+            {# this line only work with sf<3, as empty_value_in_choices and empty_value are now deprecated#}
+            {% if empty_value is defined and empty_value is not none %}
                 <option value=""{% if required and value is empty %} selected="selected"{% endif %}>
                     {% if not sonata_admin.admin %}
                         {{- empty_value|trans({}, translation_domain) -}}
@@ -254,12 +259,12 @@ file that was distributed with this source code.
 
         {% set div_class = 'sonata-ba-field' %}
 
-        {% if label is sameas(false) %}
+        {% if label is same as(false) %}
             {% set div_class = div_class ~ ' sonata-collection-row-without-label' %}
         {% endif %}
 
         {% if sonata_admin.options['form_type'] == 'horizontal' %}
-            {% if label is sameas(false) %}
+            {% if label is same as(false) %}
                 {% if 'collection' in form.parent.vars.block_prefixes %}
                     {% set div_class = div_class ~ ' col-sm-12' %}
                 {% else %}
