@@ -24,7 +24,6 @@ use Sonata\AdminBundle\Security\Handler\SecurityHandlerInterface;
 use Sonata\AdminBundle\Translator\LabelTranslatorStrategyInterface;
 use Sonata\CoreBundle\Validator\ErrorElement;
 use Sonata\CoreBundle\Model\Metadata;
-use Sonata\CoreBundle\Validator\ErrorElement;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\Request;
