@@ -15,8 +15,7 @@ use Doctrine\Common\Util\ClassUtils;
 use Sonata\AdminBundle\Model\ModelManagerInterface;
 use Symfony\Component\Form\Exception\InvalidArgumentException;
 use Symfony\Component\Form\Exception\RuntimeException;
-use Symfony\Component\Form\ChoiceList\ArrayChoiceList;
-
+use Symfony\Component\Form\Extension\Core\ChoiceList\SimpleChoiceList;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyPath;
 
@@ -25,7 +24,7 @@ use Symfony\Component\PropertyAccess\PropertyPath;
  *
  * @author  Thomas Rabaix <thomas.rabaix@sonata-project.org>
  */
-class ModelChoiceList extends ArrayChoiceList
+class ModelChoiceList extends SimpleChoiceList
 {
     /**
      * @var ModelManagerInterface
