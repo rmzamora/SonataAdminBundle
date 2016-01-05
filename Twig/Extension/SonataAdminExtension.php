@@ -60,7 +60,7 @@ class SonataAdminExtension extends \Twig_Extension implements \Twig_Extension_In
     }
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function getFilters()
     {
