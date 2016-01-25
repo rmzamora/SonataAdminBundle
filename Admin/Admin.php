@@ -596,7 +596,15 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
      */
     public function getExportFields()
     {
-        return $this->getModelManager()->getExportFields($this->getClass());
+        $fields = $this->getModelManager()->getExportFields($this->getClass());
+
+        foreach ($this->getExtensions() as $extension) {
+            if (method_exists($extension, 'configureExportFields')) {
+                $fields = $extension->configureExportFields($this, $fields);
+            }
+        }
+
+        return $fields;
     }
 
     /**
@@ -1223,6 +1231,13 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
                 'translation_domain' => 'SonataAdminBundle',
                 'ask_confirmation'   => true, // by default always true
             );
+        }
+
+        foreach ($this->getExtensions() as $extension) {
+            // TODO: remove method check in next major release
+            if (method_exists($extension, 'configureBatchActions')) {
+                $actions = $extension->configureBatchActions($this, $actions);
+            }
         }
 
         return $actions;

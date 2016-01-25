@@ -126,6 +126,22 @@ abstract class AdminExtension implements AdminExtensionInterface
     /**
      * {@inheritdoc}
      */
+    public function configureBatchActions(AdminInterface $admin, array $actions)
+    {
+        return $actions;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function configureExportFields(AdminInterface $admin, array $fields)
+    {
+        return $fields;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function preUpdate(AdminInterface $admin, $object)
     {
     }
