@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Sonata project.
+ * This file is part of the Sonata Project package.
  *
  * (c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
  *
@@ -11,17 +11,17 @@
 
 namespace Sonata\AdminBundle\Security\Handler;
 
-use Symfony\Component\Security\Core\SecurityContextInterface;
-use Symfony\Component\Security\Core\Exception\AuthenticationCredentialsNotFoundException;
-use Symfony\Component\Security\Acl\Model\MutableAclProviderInterface;
-use Symfony\Component\Security\Acl\Model\AclInterface;
+use Sonata\AdminBundle\Admin\AdminInterface;
 use Symfony\Component\Security\Acl\Domain\ObjectIdentity;
-use Symfony\Component\Security\Acl\Model\ObjectIdentityInterface;
-use Symfony\Component\Security\Acl\Domain\UserSecurityIdentity;
 use Symfony\Component\Security\Acl\Domain\RoleSecurityIdentity;
+use Symfony\Component\Security\Acl\Domain\UserSecurityIdentity;
 use Symfony\Component\Security\Acl\Exception\AclNotFoundException;
 use Symfony\Component\Security\Acl\Exception\NotAllAclsFoundException;
-use Sonata\AdminBundle\Admin\AdminInterface;
+use Symfony\Component\Security\Acl\Model\AclInterface;
+use Symfony\Component\Security\Acl\Model\MutableAclProviderInterface;
+use Symfony\Component\Security\Acl\Model\ObjectIdentityInterface;
+use Symfony\Component\Security\Core\Exception\AuthenticationCredentialsNotFoundException;
+use Symfony\Component\Security\Core\SecurityContextInterface;
 
 class AclSecurityHandler implements AclSecurityHandlerInterface
 {
@@ -47,7 +47,7 @@ class AclSecurityHandler implements AclSecurityHandlerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setAdminPermissions(array $permissions)
     {
@@ -55,7 +55,7 @@ class AclSecurityHandler implements AclSecurityHandlerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getAdminPermissions()
     {
@@ -63,7 +63,7 @@ class AclSecurityHandler implements AclSecurityHandlerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setObjectPermissions(array $permissions)
     {
@@ -71,7 +71,7 @@ class AclSecurityHandler implements AclSecurityHandlerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getObjectPermissions()
     {
@@ -79,7 +79,7 @@ class AclSecurityHandler implements AclSecurityHandlerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function isGranted(AdminInterface $admin, $attributes, $object = null)
     {
@@ -97,15 +97,15 @@ class AclSecurityHandler implements AclSecurityHandlerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getBaseRole(AdminInterface $admin)
     {
-        return 'ROLE_' . str_replace('.', '_', strtoupper($admin->getCode())) . '_%s';
+        return 'ROLE_'.str_replace('.', '_', strtoupper($admin->getCode())).'_%s';
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function buildSecurityInformation(AdminInterface $admin)
     {
@@ -120,7 +120,7 @@ class AclSecurityHandler implements AclSecurityHandlerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function createObjectSecurity(AdminInterface $admin, $object)
     {
@@ -141,7 +141,7 @@ class AclSecurityHandler implements AclSecurityHandlerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function deleteObjectSecurity(AdminInterface $admin, $object)
     {
@@ -150,21 +150,21 @@ class AclSecurityHandler implements AclSecurityHandlerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getObjectAcl(ObjectIdentityInterface $objectIdentity)
     {
         try {
             $acl = $this->aclProvider->findAcl($objectIdentity);
         } catch (AclNotFoundException $e) {
-            return null;
+            return;
         }
 
         return $acl;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function findObjectAcls(\Traversable $oids, array $sids = array())
     {
@@ -185,7 +185,7 @@ class AclSecurityHandler implements AclSecurityHandlerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function addObjectOwner(AclInterface $acl, UserSecurityIdentity $securityIdentity = null)
     {
@@ -196,7 +196,7 @@ class AclSecurityHandler implements AclSecurityHandlerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function addObjectClassAces(AclInterface $acl, array $roleInformation = array())
     {
@@ -229,7 +229,7 @@ class AclSecurityHandler implements AclSecurityHandlerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function createAcl(ObjectIdentityInterface $objectIdentity)
     {
@@ -237,7 +237,7 @@ class AclSecurityHandler implements AclSecurityHandlerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function updateAcl(AclInterface $acl)
     {
@@ -245,7 +245,7 @@ class AclSecurityHandler implements AclSecurityHandlerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function deleteAcl(ObjectIdentityInterface $objectIdentity)
     {
@@ -253,7 +253,7 @@ class AclSecurityHandler implements AclSecurityHandlerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function findClassAceIndexByRole(AclInterface $acl, $role)
     {
@@ -267,7 +267,7 @@ class AclSecurityHandler implements AclSecurityHandlerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function findClassAceIndexByUsername(AclInterface $acl, $username)
     {

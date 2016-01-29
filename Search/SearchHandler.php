@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Sonata package.
+ * This file is part of the Sonata Project package.
  *
  * (c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
  *
@@ -63,6 +63,7 @@ class SearchHandler
         $pager = $datagrid->getPager();
         $pager->setPage($page);
         $pager->setMaxPerPage($offset);
+        $pager->init();
 
         return $pager;
     }

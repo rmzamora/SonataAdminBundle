@@ -1,6 +1,7 @@
 <?php
+
 /*
- * This file is part of the Sonata package.
+ * This file is part of the Sonata Project package.
  *
  * (c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
  *
@@ -10,32 +11,27 @@
 
 namespace Sonata\AdminBundle\Validator;
 
-use Sonata\CoreBundle\Validator\InlineValidator as BaseInlineValidator;
-use Sonata\AdminBundle\Validator\ErrorElement;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\ConstraintValidator;
+use Symfony\Component\Validator\ConstraintValidatorFactoryInterface;
 
-/**
- * @deprecated
- */
-class InlineValidator extends BaseInlineValidator
+class InlineValidator extends ConstraintValidator
 {
+    protected $container;
+
     /**
-     * @param mixed $value
-     *
-     * @return ErrorElement
+     * @param \Symfony\Component\DependencyInjection\ContainerInterface            $container
+     * @param \Symfony\Bundle\FrameworkBundle\Validator\ConstraintValidatorFactory $constraintValidatorFactory
      */
-    protected function getErrorElement($value)
+    public function __construct(ContainerInterface $container, ConstraintValidatorFactoryInterface $constraintValidatorFactory)
     {
-        return new ErrorElement(
-            $value,
-            $this->constraintValidatorFactory,
-            $this->context,
-            $this->context->getGroup()
-        );
+        $this->container                  = $container;
+        $this->constraintValidatorFactory = $constraintValidatorFactory;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function validate($value, Constraint $constraint)
     {

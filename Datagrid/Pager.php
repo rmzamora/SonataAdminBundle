@@ -1,8 +1,9 @@
 <?php
 
 /*
- * This file is part of the symfony package.
- * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
+ * This file is part of the Sonata Project package.
+ *
+ * (c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,6 +13,7 @@ namespace Sonata\AdminBundle\Datagrid;
 
 /**
  * Pager class.
+ *
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @author     Thomas Rabaix <thomas.rabaix@sonata-project.org>
  */
@@ -39,7 +41,7 @@ abstract class Pager implements \Iterator, \Countable, \Serializable, PagerInter
     /**
      * Constructor.
      *
-     * @param integer $maxPerPage Number of records to display per page
+     * @param int $maxPerPage Number of records to display per page
      */
     public function __construct($maxPerPage = 10)
     {
@@ -49,7 +51,7 @@ abstract class Pager implements \Iterator, \Countable, \Serializable, PagerInter
     /**
      * Returns the current pager's max link.
      *
-     * @return integer
+     * @return int
      */
     public function getCurrentMaxLink()
     {
@@ -59,7 +61,7 @@ abstract class Pager implements \Iterator, \Countable, \Serializable, PagerInter
     /**
      * Returns the current pager's max record limit.
      *
-     * @return integer
+     * @return int
      */
     public function getMaxRecordLimit()
     {
@@ -69,7 +71,7 @@ abstract class Pager implements \Iterator, \Countable, \Serializable, PagerInter
     /**
      * Sets the current pager's max record limit.
      *
-     * @param integer $limit
+     * @param int $limit
      */
     public function setMaxRecordLimit($limit)
     {
@@ -79,7 +81,7 @@ abstract class Pager implements \Iterator, \Countable, \Serializable, PagerInter
     /**
      * Returns an array of page numbers to use in pagination links.
      *
-     * @param integer $nbLinks The maximum number of page numbers to return
+     * @param int $nbLinks The maximum number of page numbers to return
      *
      * @return array
      */
@@ -107,7 +109,7 @@ abstract class Pager implements \Iterator, \Countable, \Serializable, PagerInter
     /**
      * Returns true if the current query requires pagination.
      *
-     * @return boolean
+     * @return bool
      */
     public function haveToPaginate()
     {
@@ -117,7 +119,7 @@ abstract class Pager implements \Iterator, \Countable, \Serializable, PagerInter
     /**
      * Returns the current cursor.
      *
-     * @return integer
+     * @return int
      */
     public function getCursor()
     {
@@ -127,7 +129,7 @@ abstract class Pager implements \Iterator, \Countable, \Serializable, PagerInter
     /**
      * Sets the current cursor.
      *
-     * @param integer $pos
+     * @param int $pos
      */
     public function setCursor($pos)
     {
@@ -145,7 +147,7 @@ abstract class Pager implements \Iterator, \Countable, \Serializable, PagerInter
     /**
      * Returns an object by cursor position.
      *
-     * @param integer $pos
+     * @param int $pos
      *
      * @return mixed
      */
@@ -174,7 +176,7 @@ abstract class Pager implements \Iterator, \Countable, \Serializable, PagerInter
     public function getNext()
     {
         if ($this->cursor + 1 > $this->nbResults) {
-            return null;
+            return;
         } else {
             return $this->retrieveObject($this->cursor + 1);
         }
@@ -188,7 +190,7 @@ abstract class Pager implements \Iterator, \Countable, \Serializable, PagerInter
     public function getPrevious()
     {
         if ($this->cursor - 1 < 1) {
-            return null;
+            return;
         } else {
             return $this->retrieveObject($this->cursor - 1);
         }
@@ -197,7 +199,7 @@ abstract class Pager implements \Iterator, \Countable, \Serializable, PagerInter
     /**
      * Returns the first index on the current page.
      *
-     * @return integer
+     * @return int
      */
     public function getFirstIndice()
     {
@@ -211,7 +213,7 @@ abstract class Pager implements \Iterator, \Countable, \Serializable, PagerInter
     /**
      * Returns the last index on the current page.
      *
-     * @return integer
+     * @return int
      */
     public function getLastIndice()
     {
@@ -229,7 +231,7 @@ abstract class Pager implements \Iterator, \Countable, \Serializable, PagerInter
     /**
      * Returns the number of results.
      *
-     * @return integer
+     * @return int
      */
     public function getNbResults()
     {
@@ -239,7 +241,7 @@ abstract class Pager implements \Iterator, \Countable, \Serializable, PagerInter
     /**
      * Sets the number of results.
      *
-     * @param integer $nb
+     * @param int $nb
      */
     protected function setNbResults($nb)
     {
@@ -249,7 +251,7 @@ abstract class Pager implements \Iterator, \Countable, \Serializable, PagerInter
     /**
      * Returns the first page number.
      *
-     * @return integer
+     * @return int
      */
     public function getFirstPage()
     {
@@ -259,7 +261,7 @@ abstract class Pager implements \Iterator, \Countable, \Serializable, PagerInter
     /**
      * Returns the last page number.
      *
-     * @return integer
+     * @return int
      */
     public function getLastPage()
     {
@@ -269,7 +271,7 @@ abstract class Pager implements \Iterator, \Countable, \Serializable, PagerInter
     /**
      * Sets the last page number.
      *
-     * @param integer $page
+     * @param int $page
      */
     protected function setLastPage($page)
     {
@@ -283,7 +285,7 @@ abstract class Pager implements \Iterator, \Countable, \Serializable, PagerInter
     /**
      * Returns the current page.
      *
-     * @return integer
+     * @return int
      */
     public function getPage()
     {
@@ -293,7 +295,7 @@ abstract class Pager implements \Iterator, \Countable, \Serializable, PagerInter
     /**
      * Returns the next page.
      *
-     * @return integer
+     * @return int
      */
     public function getNextPage()
     {
@@ -303,7 +305,7 @@ abstract class Pager implements \Iterator, \Countable, \Serializable, PagerInter
     /**
      * Returns the previous page.
      *
-     * @return integer
+     * @return int
      */
     public function getPreviousPage()
     {
@@ -355,7 +357,9 @@ abstract class Pager implements \Iterator, \Countable, \Serializable, PagerInter
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the maximum number of page numbers.
+     *
+     * @return int
      */
     public function getMaxPageLinks()
     {
@@ -363,7 +367,9 @@ abstract class Pager implements \Iterator, \Countable, \Serializable, PagerInter
     }
 
     /**
-     * {@inheritdoc}
+     * Sets the maximum number of page numbers.
+     *
+     * @param int $maxPageLinks
      */
     public function setMaxPageLinks($maxPageLinks)
     {
@@ -373,7 +379,7 @@ abstract class Pager implements \Iterator, \Countable, \Serializable, PagerInter
     /**
      * Returns true if on the first page.
      *
-     * @return boolean
+     * @return bool
      */
     public function isFirstPage()
     {
@@ -383,7 +389,7 @@ abstract class Pager implements \Iterator, \Countable, \Serializable, PagerInter
     /**
      * Returns true if on the last page.
      *
-     * @return boolean
+     * @return bool
      */
     public function isLastPage()
     {
@@ -418,7 +424,7 @@ abstract class Pager implements \Iterator, \Countable, \Serializable, PagerInter
      *
      * @param string $name
      *
-     * @return boolean
+     * @return bool
      */
     public function hasParameter($name)
     {
@@ -439,7 +445,7 @@ abstract class Pager implements \Iterator, \Countable, \Serializable, PagerInter
     /**
      * Returns true if the properties used for iteration have been initialized.
      *
-     * @return boolean
+     * @return bool
      */
     protected function isIteratorInitialized()
     {
@@ -578,9 +584,9 @@ abstract class Pager implements \Iterator, \Countable, \Serializable, PagerInter
     }
 
     /**
-     * Retrieve the object for a certain offset
+     * Retrieve the object for a certain offset.
      *
-     * @param integer $offset
+     * @param int $offset
      *
      * @return object
      */

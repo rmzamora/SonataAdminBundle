@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Sonata project.
+ * This file is part of the Sonata Project package.
  *
  * (c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
  *
@@ -11,9 +11,9 @@
 
 namespace Sonata\AdminBundle\DependencyInjection\Compiler;
 
-use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
@@ -22,7 +22,7 @@ use Symfony\Component\DependencyInjection\Reference;
 class ExtensionCompilerPass implements CompilerPassInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function process(ContainerBuilder $container)
     {
@@ -90,7 +90,6 @@ class ExtensionCompilerPass implements CompilerPassInterface
 
         foreach ($extensionMap as $type => $subjects) {
             foreach ($subjects as $subject => $extensionList) {
-
                 if ('admins' == $type) {
                     if ($id == $subject) {
                         $extensions = array_merge($extensions, $extensionList);
@@ -132,7 +131,7 @@ class ExtensionCompilerPass implements CompilerPassInterface
     }
 
     /**
-     * Resolves the class argument of the admin to an actual class (in case of %parameter%)
+     * Resolves the class argument of the admin to an actual class (in case of %parameter%).
      *
      * @param Definition       $admin
      * @param ContainerBuilder $container

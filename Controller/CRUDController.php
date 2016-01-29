@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Sonata package.
+ * This file is part of the Sonata Project package.
  *
  * (c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
  *
@@ -11,37 +11,36 @@
 
 namespace Sonata\AdminBundle\Controller;
 
-use Sonata\AdminBundle\Util\AdminObjectAclManipulator;
+use Psr\Log\NullLogger;
+use Sonata\AdminBundle\Admin\AdminInterface;
+use Sonata\AdminBundle\Admin\BaseFieldDescription;
+use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
+use Sonata\AdminBundle\Exception\ModelManagerException;
+use Sonata\AdminBundle\Util\AdminObjectAclData;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sonata\AdminBundle\Exception\ModelManagerException;
-use Symfony\Component\HttpFoundation\Request;
-use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
-use Sonata\AdminBundle\Admin\BaseFieldDescription;
-use Sonata\AdminBundle\Util\AdminObjectAclData;
-use Sonata\AdminBundle\Admin\AdminInterface;
-use Psr\Log\NullLogger;
 
 class CRUDController extends Controller
 {
     /**
-     * The related Admin class
+     * The related Admin class.
      *
      * @var AdminInterface
      */
     protected $admin;
 
     /**
-     * Render JSON
+     * Render JSON.
      *
-     * @param mixed   $data
-     * @param integer $status
-     * @param array   $headers
+     * @param mixed $data
+     * @param int   $status
+     * @param array $headers
      *
      * @return Response with json encoded data
      */
@@ -99,7 +98,7 @@ class CRUDController extends Controller
     }
 
     /**
-     * Contextualize the admin class depends on the current request
+     * Contextualize the admin class depends on the current request.
      *
      * @throws \RuntimeException
      */
@@ -144,7 +143,7 @@ class CRUDController extends Controller
      * Proxy for the logger service of the container.
      * If no such service is found, a NullLogger is returned.
      *
-     * @return \Psr\Log\LoggerInterface
+     * @return Psr\Log\LoggerInterface
      */
     protected function getLogger()
     {
@@ -156,7 +155,7 @@ class CRUDController extends Controller
     }
 
     /**
-     * Returns the base template name
+     * Returns the base template name.
      *
      * @return string The template name
      */
@@ -177,27 +176,16 @@ class CRUDController extends Controller
         $parameters['admin']         = isset($parameters['admin']) ?
             $parameters['admin'] :
             $this->admin;
-
         $parameters['base_template'] = isset($parameters['base_template']) ?
             $parameters['base_template'] :
             $this->getBaseTemplate();
-
         $parameters['admin_pool']    = $this->get('sonata.admin.pool');
 
         return parent::render($view, $parameters, $response);
     }
 
-    /**
-     * @param \Exception $e
-     *
-     * @throws \Exception
-     */
-    protected function handleModelManagerException(\Exception $e)
+    private function logModelManagerException($e)
     {
-        if ($this->get('kernel')->isDebug()) {
-            throw $e;
-        }
-
         $context = array('exception' => $e);
         if ($e->getPrevious()) {
             $context['previous_exception_message'] = $e->getPrevious()->getMessage();
@@ -206,7 +194,7 @@ class CRUDController extends Controller
     }
 
     /**
-     * List action
+     * List action.
      *
      * @return Response
      *
@@ -216,10 +204,6 @@ class CRUDController extends Controller
     {
         if (false === $this->admin->isGranted('LIST')) {
             throw new AccessDeniedException();
-        }
-
-        if ($listMode = $this->getRequest()->get('_list_mode')) {
-            $this->admin->setListMode($listMode);
         }
 
         $datagrid = $this->admin->getDatagrid();
@@ -237,7 +221,7 @@ class CRUDController extends Controller
     }
 
     /**
-     * Execute a batch delete
+     * Execute a batch delete.
      *
      * @param ProxyQueryInterface $query
      *
@@ -256,8 +240,7 @@ class CRUDController extends Controller
             $modelManager->batchDelete($this->admin->getClass(), $query);
             $this->addFlash('sonata_flash_success', 'flash_batch_delete_success');
         } catch (ModelManagerException $e) {
-
-            $this->handleModelManagerException($e);
+            $this->logModelManagerException($e);
             $this->addFlash('sonata_flash_error', 'flash_batch_delete_error');
         }
 
@@ -268,7 +251,7 @@ class CRUDController extends Controller
     }
 
     /**
-     * Delete action
+     * Delete action.
      *
      * @param int|string|null $id
      *
@@ -309,9 +292,8 @@ class CRUDController extends Controller
                         'SonataAdminBundle'
                     )
                 );
-
             } catch (ModelManagerException $e) {
-                $this->handleModelManagerException($e);
+                $this->logModelManagerException($e);
 
                 if ($this->isXmlHttpRequest()) {
                     return $this->renderJson(array('result' => 'error'));
@@ -333,12 +315,12 @@ class CRUDController extends Controller
         return $this->render($this->admin->getTemplate('delete'), array(
             'object'     => $object,
             'action'     => 'delete',
-            'csrf_token' => $this->getCsrfToken('sonata.delete')
+            'csrf_token' => $this->getCsrfToken('sonata.delete'),
         ));
     }
 
     /**
-     * Edit action
+     * Edit action.
      *
      * @param int|string|null $id
      *
@@ -376,14 +358,13 @@ class CRUDController extends Controller
 
             // persist if the form was valid and if in preview mode the preview was approved
             if ($isFormValid && (!$this->isInPreviewMode() || $this->isPreviewApproved())) {
-
                 try {
                     $object = $this->admin->update($object);
 
                     if ($this->isXmlHttpRequest()) {
                         return $this->renderJson(array(
                             'result'    => 'ok',
-                            'objectId'  => $this->admin->getNormalizedIdentifier($object)
+                            'objectId'  => $this->admin->getNormalizedIdentifier($object),
                         ));
                     }
 
@@ -398,9 +379,8 @@ class CRUDController extends Controller
 
                     // redirect to edit mode
                     return $this->redirectTo($object);
-
                 } catch (ModelManagerException $e) {
-                    $this->handleModelManagerException($e);
+                    $this->logModelManagerException($e);
 
                     $isFormValid = false;
                 }
@@ -438,7 +418,7 @@ class CRUDController extends Controller
     }
 
     /**
-     * Redirect the user depend on this choice
+     * Redirect the user depend on this choice.
      *
      * @param object $object
      *
@@ -475,7 +455,7 @@ class CRUDController extends Controller
     }
 
     /**
-     * Batch action
+     * Batch action.
      *
      * @return Response|RedirectResponse
      *
@@ -554,19 +534,19 @@ class CRUDController extends Controller
             $formView = $datagrid->getForm()->createView();
 
             return $this->render($this->admin->getTemplate('batch_confirmation'), array(
-                'action'     => 'list',
+                'action'       => 'list',
                 'action_label' => $actionLabel,
-                'datagrid'   => $datagrid,
-                'form'       => $formView,
-                'data'       => $data,
-                'csrf_token' => $this->getCsrfToken('sonata.batch'),
+                'datagrid'     => $datagrid,
+                'form'         => $formView,
+                'data'         => $data,
+                'csrf_token'   => $this->getCsrfToken('sonata.batch'),
             ));
         }
 
         // execute the action, batchActionXxxxx
         $finalAction = sprintf('batchAction%s', ucfirst($camelizedAction));
-        if (!is_callable(array($this, $finalAction))) {
-            throw new \RuntimeException(sprintf('A `%s::%s` method must be callable', get_class($this), $finalAction));
+        if (!method_exists($this, $finalAction)) {
+            throw new \RuntimeException(sprintf('A `%s::%s` method must be created', get_class($this), $finalAction));
         }
 
         $query = $datagrid->getQuery();
@@ -586,7 +566,7 @@ class CRUDController extends Controller
     }
 
     /**
-     * Create action
+     * Create action.
      *
      * @return Response
      *
@@ -609,14 +589,13 @@ class CRUDController extends Controller
         $form = $this->admin->getForm();
         $form->setData($object);
 
-        if ($this->getRestMethod()== 'POST') {
+        if ($this->getRestMethod() == 'POST') {
             $form->submit($this->get('request'));
 
             $isFormValid = $form->isValid();
 
             // persist if the form was valid and if in preview mode the preview was approved
             if ($isFormValid && (!$this->isInPreviewMode() || $this->isPreviewApproved())) {
-
                 if (false === $this->admin->isGranted('CREATE', $object)) {
                     throw new AccessDeniedException();
                 }
@@ -626,8 +605,8 @@ class CRUDController extends Controller
 
                     if ($this->isXmlHttpRequest()) {
                         return $this->renderJson(array(
-                            'result' => 'ok',
-                            'objectId' => $this->admin->getNormalizedIdentifier($object)
+                            'result'   => 'ok',
+                            'objectId' => $this->admin->getNormalizedIdentifier($object),
                         ));
                     }
 
@@ -642,9 +621,8 @@ class CRUDController extends Controller
 
                     // redirect to edit mode
                     return $this->redirectTo($object);
-
                 } catch (ModelManagerException $e) {
-                    $this->handleModelManagerException($e);
+                    $this->logModelManagerException($e);
 
                     $isFormValid = false;
                 }
@@ -682,27 +660,27 @@ class CRUDController extends Controller
     }
 
     /**
-     * Returns true if the preview is requested to be shown
+     * Returns true if the preview is requested to be shown.
      *
      * @return bool
      */
     protected function isPreviewRequested()
     {
-        return ($this->get('request')->get('btn_preview') !== null);
+        return $this->get('request')->get('btn_preview') !== null;
     }
 
     /**
-     * Returns true if the preview has been approved
+     * Returns true if the preview has been approved.
      *
      * @return bool
      */
     protected function isPreviewApproved()
     {
-        return ($this->get('request')->get('btn_preview_approve') !== null);
+        return $this->get('request')->get('btn_preview_approve') !== null;
     }
 
     /**
-     * Returns true if the request is in the preview workflow
+     * Returns true if the request is in the preview workflow.
      *
      * That means either a preview is requested or the preview has already been shown
      * and it got approved/declined.
@@ -718,17 +696,17 @@ class CRUDController extends Controller
     }
 
     /**
-     * Returns true if the preview has been declined
+     * Returns true if the preview has been declined.
      *
      * @return bool
      */
     protected function isPreviewDeclined()
     {
-        return ($this->get('request')->get('btn_preview_decline') !== null);
+        return $this->get('request')->get('btn_preview_decline') !== null;
     }
 
     /**
-     * Show action
+     * Show action.
      *
      * @param int|string|null $id
      *
@@ -761,7 +739,7 @@ class CRUDController extends Controller
     }
 
     /**
-     * Show history revisions for object
+     * Show history revisions for object.
      *
      * @param int|string|null $id
      *
@@ -808,7 +786,7 @@ class CRUDController extends Controller
     }
 
     /**
-     * View history revision of object
+     * View history revision of object.
      *
      * @param int|string|null $id
      * @param string|null     $revision
@@ -869,7 +847,7 @@ class CRUDController extends Controller
     }
 
     /**
-     * Compare history revisions of object
+     * Compare history revisions of object.
      *
      * @param int|string|null $id
      * @param int|string|null $base_revision
@@ -939,12 +917,12 @@ class CRUDController extends Controller
             'action'            => 'show',
             'object'            => $base_object,
             'object_compare'    => $compare_object,
-            'elements'          => $this->admin->getShow()
+            'elements'          => $this->admin->getShow(),
         ));
     }
 
     /**
-     * Export data to specified format
+     * Export data to specified format.
      *
      * @param Request $request
      *
@@ -989,7 +967,7 @@ class CRUDController extends Controller
     }
 
     /**
-     * Gets ACL users
+     * Gets ACL users.
      *
      * @return \Traversable
      */
@@ -1010,44 +988,8 @@ class CRUDController extends Controller
     }
 
     /**
-     * Gets ACL roles
+     * Returns the Response object associated to the acl action.
      *
-     * @return \Traversable
-     */
-    protected function getAclRoles()
-    {
-        $aclRoles = array();
-        $roleHierarchy = $this->container->getParameter('security.role_hierarchy.roles');
-        $pool = $this->container->get('sonata.admin.pool');
-
-        foreach ($pool->getAdminServiceIds() as $id) {
-            try {
-                $admin = $pool->getInstance($id);
-            } catch (\Exception $e) {
-                continue;
-            }
-
-            $baseRole = $admin->getSecurityHandler()->getBaseRole($admin);
-            foreach ($admin->getSecurityInformation() as $role => $permissions) {
-                $role = sprintf($baseRole, $role);
-                $aclRoles[] = $role;
-            }
-        }
-
-        foreach ($roleHierarchy as $name => $roles) {
-            $aclRoles[] = $name;
-            $aclRoles = array_merge($aclRoles, $roles);
-        }
-
-        $aclRoles = array_unique($aclRoles);
-
-        return is_array($aclRoles) ? new \ArrayIterator($aclRoles) : $aclRoles;
-    }
-
-    /**
-     * Returns the Response object associated to the acl action
-     *
-     * @param Request         $request
      * @param int|string|null $id
      *
      * @return Response|RedirectResponse
@@ -1055,7 +997,7 @@ class CRUDController extends Controller
      * @throws AccessDeniedException If access is not granted.
      * @throws NotFoundHttpException If the object does not exist or the ACL is not enabled
      */
-    public function aclAction(Request $request, $id = null)
+    public function aclAction($id = null)
     {
         if (!$this->admin->isAclEnabled()) {
             throw new NotFoundHttpException('ACL are not enabled for this admin');
@@ -1075,49 +1017,36 @@ class CRUDController extends Controller
 
         $this->admin->setSubject($object);
         $aclUsers = $this->getAclUsers();
-        $aclRoles = $this->getAclRoles();
 
         $adminObjectAclManipulator = $this->get('sonata.admin.object.manipulator.acl.admin');
         $adminObjectAclData = new AdminObjectAclData(
             $this->admin,
             $object,
             $aclUsers,
-            $adminObjectAclManipulator->getMaskBuilderClass(),
-            $aclRoles
+            $adminObjectAclManipulator->getMaskBuilderClass()
         );
 
-        $aclUsersForm = $adminObjectAclManipulator->createAclUsersForm($adminObjectAclData);
-        $aclRolesForm = $adminObjectAclManipulator->createAclRolesForm($adminObjectAclData);
+        $form = $adminObjectAclManipulator->createForm($adminObjectAclData);
 
+        $request = $this->getRequest();
         if ($request->getMethod() === 'POST') {
-            if ($request->request->has(AdminObjectAclManipulator::ACL_USERS_FORM_NAME)) {
-                $form = $aclUsersForm;
-                $updateMethod = 'updateAclUsers';
-            } elseif ($request->request->has(AdminObjectAclManipulator::ACL_ROLES_FORM_NAME)) {
-                $form = $aclRolesForm;
-                $updateMethod = 'updateAclRoles';
-            }
+            $form->submit($request);
 
-            if (isset($form)) {
-                $form->submit($request);
+            if ($form->isValid()) {
+                $adminObjectAclManipulator->updateAcl($adminObjectAclData);
 
-                if ($form->isValid()) {
-                    $adminObjectAclManipulator->$updateMethod($adminObjectAclData);
-                    $this->addFlash('sonata_flash_success', 'flash_acl_edit_success');
+                $this->addFlash('sonata_flash_success', 'flash_acl_edit_success');
 
-                    return new RedirectResponse($this->admin->generateObjectUrl('acl', $object));
-                }
+                return new RedirectResponse($this->admin->generateObjectUrl('acl', $object));
             }
         }
 
         return $this->render($this->admin->getTemplate('acl'), array(
-            'action'       => 'acl',
-            'permissions'  => $adminObjectAclData->getUserPermissions(),
-            'object'       => $object,
-            'users'        => $aclUsers,
-            'roles'        => $aclRoles,
-            'aclUsersForm' => $aclUsersForm->createView(),
-            'aclRolesForm' => $aclRolesForm->createView()
+            'action'      => 'acl',
+            'permissions' => $adminObjectAclData->getUserPermissions(),
+            'object'      => $object,
+            'users'       => $aclUsers,
+            'form'        => $form->createView(),
         ));
     }
 
@@ -1135,7 +1064,7 @@ class CRUDController extends Controller
     }
 
     /**
-     * Validate CSRF token for action without form
+     * Validate CSRF token for action without form.
      *
      * @param string $intention
      *
@@ -1156,7 +1085,7 @@ class CRUDController extends Controller
     }
 
     /**
-     * Escape string for html output
+     * Escape string for html output.
      *
      * @param string $s
      *
@@ -1168,7 +1097,7 @@ class CRUDController extends Controller
     }
 
     /**
-     * Get CSRF token
+     * Get CSRF token.
      *
      * @param string $intention
      *

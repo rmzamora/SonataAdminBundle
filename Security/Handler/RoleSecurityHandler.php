@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Sonata project.
+ * This file is part of the Sonata Project package.
  *
  * (c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
  *
@@ -11,9 +11,9 @@
 
 namespace Sonata\AdminBundle\Security\Handler;
 
-use Symfony\Component\Security\Core\SecurityContextInterface;
-use Symfony\Component\Security\Core\Exception\AuthenticationCredentialsNotFoundException;
 use Sonata\AdminBundle\Admin\AdminInterface;
+use Symfony\Component\Security\Core\Exception\AuthenticationCredentialsNotFoundException;
+use Symfony\Component\Security\Core\SecurityContextInterface;
 
 class RoleSecurityHandler implements SecurityHandlerInterface
 {
@@ -32,7 +32,7 @@ class RoleSecurityHandler implements SecurityHandlerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function isGranted(AdminInterface $admin, $attributes, $object = null)
     {
@@ -55,15 +55,15 @@ class RoleSecurityHandler implements SecurityHandlerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getBaseRole(AdminInterface $admin)
     {
-        return 'ROLE_' . str_replace('.', '_', strtoupper($admin->getCode())) . '_%s';
+        return 'ROLE_'.str_replace('.', '_', strtoupper($admin->getCode())).'_%s';
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function buildSecurityInformation(AdminInterface $admin)
     {
@@ -71,14 +71,14 @@ class RoleSecurityHandler implements SecurityHandlerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function createObjectSecurity(AdminInterface $admin, $object)
     {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function deleteObjectSecurity(AdminInterface $admin, $object)
     {

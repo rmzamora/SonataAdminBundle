@@ -1,6 +1,7 @@
 <?php
+
 /*
- * This file is part of the Sonata package.
+ * This file is part of the Sonata Project package.
  *
  * (c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
  *
@@ -10,18 +11,70 @@
 
 namespace Sonata\AdminBundle\Validator\Constraints;
 
-use Sonata\CoreBundle\Validator\Constraints\InlineConstraint as BaseInlineConstraint;
+use Symfony\Component\Validator\Constraint;
 
-/**
- * @deprecated
- */
-class InlineConstraint extends BaseInlineConstraint
+class InlineConstraint extends Constraint
 {
+    protected $service;
+
+    protected $method;
+
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function validatedBy()
     {
         return 'sonata.admin.validator.inline';
+    }
+
+    /**
+     * @return bool
+     */
+    public function isClosure()
+    {
+        return $this->method instanceof \Closure;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getClosure()
+    {
+        return $this->method;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTargets()
+    {
+        return self::CLASS_CONSTRAINT;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRequiredOptions()
+    {
+        return array(
+            'service',
+            'method',
+        );
+    }
+
+    /**
+     * @return string
+     */
+    public function getMethod()
+    {
+        return $this->method;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getService()
+    {
+        return $this->service;
     }
 }

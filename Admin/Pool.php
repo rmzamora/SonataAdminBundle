@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Sonata package.
+ * This file is part of the Sonata Project package.
  *
  * (c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
  *
@@ -109,7 +109,7 @@ class Pool
     }
 
     /**
-     * Returns all admins related to the given $group
+     * Returns all admins related to the given $group.
      *
      * @param string $group
      *
@@ -137,7 +137,7 @@ class Pool
     }
 
     /**
-     * Return the admin related to the given $class
+     * Return the admin related to the given $class.
      *
      * @param string $class
      *
@@ -146,15 +146,15 @@ class Pool
     public function getAdminByClass($class)
     {
         if (!$this->hasAdminByClass($class)) {
-            return null;
+            return;
         }
 
         if (!is_array($this->adminClasses[$class])) {
-            throw new \RuntimeException("Invalid format for the Pool::adminClass property");
+            throw new \RuntimeException('Invalid format for the Pool::adminClass property');
         }
 
         if (count($this->adminClasses[$class]) > 1) {
-            throw new \RuntimeException(sprintf('Unable to find a valid admin for the class: %s, there are too many registered: %s', $class, implode(",", $this->adminClasses[$class])));
+            throw new \RuntimeException(sprintf('Unable to found a valid admin for the class: %s, get too many admin registered: %s', $class, implode(',', $this->adminClasses[$class])));
         }
 
         return $this->getInstance($this->adminClasses[$class][0]);
@@ -172,7 +172,7 @@ class Pool
 
     /**
      * Returns an admin class by its Admin code
-     * ie : sonata.news.admin.post|sonata.news.admin.comment => return the child class of post
+     * ie : sonata.news.admin.post|sonata.news.admin.comment => return the child class of post.
      *
      * @param string $adminCode
      *
@@ -194,7 +194,7 @@ class Pool
     }
 
     /**
-     * Returns a new admin instance depends on the given code
+     * Returns a new admin instance depends on the given code.
      *
      * @param string $id
      *
@@ -221,8 +221,6 @@ class Pool
 
     /**
      * @param array $adminGroups
-     *
-     * @return void
      */
     public function setAdminGroups(array $adminGroups)
     {
@@ -239,8 +237,6 @@ class Pool
 
     /**
      * @param array $adminServiceIds
-     *
-     * @return void
      */
     public function setAdminServiceIds(array $adminServiceIds)
     {
@@ -257,8 +253,6 @@ class Pool
 
     /**
      * @param array $adminClasses
-     *
-     * @return void
      */
     public function setAdminClasses(array $adminClasses)
     {
@@ -275,8 +269,6 @@ class Pool
 
     /**
      * @param array $templates
-     *
-     * @return void
      */
     public function setTemplates(array $templates)
     {
@@ -302,7 +294,7 @@ class Pool
             return $this->templates[$name];
         }
 
-        return null;
+        return;
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Sonata package.
+ * This file is part of the Sonata Project package.
  *
  * (c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
  *
@@ -65,40 +65,22 @@ class SonataAdminExtension extends \Twig_Extension
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFilters()
     {
         return array(
-            'render_list_element'           => new \Twig_Filter_Method($this,   'renderListElement', array('is_safe' => array('html'))),
-            'render_view_element'           => new \Twig_Filter_Method($this,   'renderViewElement', array('is_safe' => array('html'))),
-            'render_view_element_compare'   => new \Twig_Filter_Method($this,   'renderViewElementCompare', array('is_safe' => array('html'))),
-            'render_relation_element'       => new \Twig_Filter_Method($this,   'renderRelationElement'),
-            'sonata_urlsafeid'              => new \Twig_Filter_Method($this,   'getUrlsafeIdentifier'),
-            'sonata_xeditable_type'         => new \Twig_Filter_Method($this,   'getXEditableType'),
+            new \Twig_SimpleFilter('render_list_element', array($this, 'renderListElement'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFilter('render_view_element', array($this, 'renderViewElement'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFilter('render_view_element_compare', array($this, 'renderViewElementCompare'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFilter('render_relation_element', array($this, 'renderRelationElement')),
+            new \Twig_SimpleFilter('sonata_urlsafeid', array($this, 'getUrlsafeIdentifier')),
+            new \Twig_SimpleFilter('sonata_xeditable_type', array($this, 'getXEditableType')),
         );
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public function getFunctions()
-    {
-        return array(
-            'sonata_knp_menu_build' => new \Twig_Function_Method($this, 'getKnpMenu'),
-        );
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getTokenParsers()
-    {
-        return array();
-    }
-
-    /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getName()
     {
@@ -106,12 +88,12 @@ class SonataAdminExtension extends \Twig_Extension
     }
 
     /**
-     * Get template
+     * Get template.
      *
      * @param FieldDescriptionInterface $fieldDescription
      * @param string                    $defaultTemplate
      *
-     * @return \Twig_TemplateInterface
+     * @return \Twig_Template
      */
     protected function getTemplate(FieldDescriptionInterface $fieldDescription, $defaultTemplate)
     {
@@ -131,7 +113,7 @@ class SonataAdminExtension extends \Twig_Extension
     }
 
     /**
-     * render a list element from the FieldDescription
+     * render a list element from the FieldDescription.
      *
      * @param mixed                     $object
      * @param FieldDescriptionInterface $fieldDescription
@@ -153,12 +135,12 @@ class SonataAdminExtension extends \Twig_Extension
 
     /**
      * @param FieldDescriptionInterface $fieldDescription
-     * @param \Twig_TemplateInterface   $template
+     * @param \Twig_Template            $template
      * @param array                     $parameters
      *
      * @return string
      */
-    public function output(FieldDescriptionInterface $fieldDescription, \Twig_TemplateInterface $template, array $parameters = array())
+    public function output(FieldDescriptionInterface $fieldDescription, \Twig_Template $template, array $parameters = array())
     {
         $content = $template->render($parameters);
 
@@ -177,7 +159,7 @@ class SonataAdminExtension extends \Twig_Extension
 
     /**
      * return the value related to FieldDescription, if the associated object does no
-     * exists => a temporary one is created
+     * exists => a temporary one is created.
      *
      * @param object                    $object
      * @param FieldDescriptionInterface $fieldDescription
@@ -206,7 +188,7 @@ class SonataAdminExtension extends \Twig_Extension
     }
 
     /**
-     * render a view element
+     * render a view element.
      *
      * @param FieldDescriptionInterface $fieldDescription
      * @param mixed                     $object
@@ -232,7 +214,7 @@ class SonataAdminExtension extends \Twig_Extension
     }
 
     /**
-     * render a compared view element
+     * render a compared view element.
      *
      * @param FieldDescriptionInterface $fieldDescription
      * @param mixed                     $baseObject
@@ -329,11 +311,7 @@ class SonataAdminExtension extends \Twig_Extension
      */
     public function getUrlsafeIdentifier($model, AdminInterface $admin = null)
     {
-        if (is_null($admin)) {
-            $admin = $this->pool->getAdminByClass(
-                ClassUtils::getClass($model)
-            );
-        }
+        $admin = $this->pool->getAdminByClass(ClassUtils::getClass($model));
 
         return $admin->getUrlsafeIdentifier($model);
     }

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Sonata package.
+ * This file is part of the Sonata Project package.
  *
  * (c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
  *
@@ -11,10 +11,12 @@
 
 namespace Sonata\AdminBundle\Tests\Twig\Extension;
 
-use Sonata\AdminBundle\Admin\Pool;
-use Sonata\AdminBundle\Admin\FieldDescriptionInterface;
+use Psr\Log\LoggerInterface;
 use Sonata\AdminBundle\Admin\AdminInterface;
+use Sonata\AdminBundle\Admin\FieldDescriptionInterface;
+use Sonata\AdminBundle\Admin\Pool;
 use Sonata\AdminBundle\Exception\NoValueException;
+use Sonata\AdminBundle\Tests\Fixtures\Entity\FooToString;
 use Sonata\AdminBundle\Twig\Extension\SonataAdminExtension;
 use Symfony\Bridge\Twig\Extension\RoutingExtension;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
@@ -23,14 +25,13 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\Loader\XmlFileLoader;
 use Symfony\Component\Routing\RequestContext;
-use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Translation\Translator;
-use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Translation\Loader\XliffFileLoader;
-use Psr\Log\LoggerInterface;
+use Symfony\Component\Translation\MessageSelector;
+use Symfony\Component\Translation\Translator;
+
 
 /**
- * Test for SonataAdminExtension
+ * Test for SonataAdminExtension.
  *
  * @author Andrej Hudec <pulzarraider@gmail.com>
  */
@@ -42,7 +43,7 @@ class SonataAdminExtensionTest extends \PHPUnit_Framework_TestCase
     private $twigExtension;
 
     /**
-     * @var Twig_Environment
+     * @var \Twig_Environment
      */
     private $environment;
 
@@ -132,6 +133,10 @@ class SonataAdminExtensionTest extends \PHPUnit_Framework_TestCase
         $this->admin = $this->getMock('Sonata\AdminBundle\Admin\AdminInterface');
 
         $this->admin->expects($this->any())
+            ->method('isGranted')
+            ->will($this->returnValue(true));
+
+        $this->admin->expects($this->any())
             ->method('getCode')
             ->will($this->returnValue('xyz'));
 
@@ -161,7 +166,7 @@ class SonataAdminExtensionTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(12345));
 
         // for php5.3 BC
-        $admin    = $this->admin;
+        $admin = $this->admin;
         $adminBar = $this->adminBar;
 
         $container->expects($this->any())
@@ -254,7 +259,7 @@ class SonataAdminExtensionTest extends \PHPUnit_Framework_TestCase
                 }
             }));
 
-        $this->assertEquals($expected, trim(preg_replace('/\s+/', ' ', $this->twigExtension->renderListElement($this->object, $this->fieldDescription))));
+        $this->assertSame($expected, trim(preg_replace('/\s+/', ' ', $this->twigExtension->renderListElement($this->object, $this->fieldDescription))));
     }
 
     public function getRenderListElementTests()
@@ -487,7 +492,7 @@ class SonataAdminExtensionTest extends \PHPUnit_Framework_TestCase
                 }
             }));
 
-        $this->assertEquals($expected, trim(preg_replace('/\s+/', ' ', $this->twigExtension->renderViewElement($this->fieldDescription, $this->object))));
+        $this->assertSame($expected, trim(preg_replace('/\s+/', ' ', $this->twigExtension->renderViewElement($this->fieldDescription, $this->object))));
     }
 
     public function getRenderViewElementTests()
@@ -621,7 +626,7 @@ class SonataAdminExtensionTest extends \PHPUnit_Framework_TestCase
             ->method('getValue')
             ->will($this->returnValue('test123'));
 
-        $this->assertEquals('test123', $this->twigExtension->getValueFromFieldDescription($object, $fieldDescription));
+        $this->assertSame('test123', $this->twigExtension->getValueFromFieldDescription($object, $fieldDescription));
     }
 
     public function testGetValueFromFieldDescriptionWithRemoveLoopException()
@@ -677,7 +682,7 @@ class SonataAdminExtensionTest extends \PHPUnit_Framework_TestCase
             ->method('getNewInstance')
             ->will($this->returnValue('foo'));
 
-        $this->assertEquals('foo', $this->twigExtension->getValueFromFieldDescription($object, $fieldDescription));
+        $this->assertSame('foo', $this->twigExtension->getValueFromFieldDescription($object, $fieldDescription));
     }
 
     public function testOutput()
@@ -701,17 +706,17 @@ class SonataAdminExtensionTest extends \PHPUnit_Framework_TestCase
 
         $template = $this->environment->loadTemplate('SonataAdminBundle:CRUD:base_list_field.html.twig');
 
-        $this->assertEquals('<td class="sonata-ba-list-field sonata-ba-list-field-" objectId="12345"> foo </td>',
+        $this->assertSame('<td class="sonata-ba-list-field sonata-ba-list-field-" objectId="12345"> foo </td>',
                 trim(preg_replace('/\s+/', ' ', $this->twigExtension->output($this->fieldDescription, $template, $parameters))));
 
         $this->environment->enableDebug();
-        $this->assertEquals('<!-- START fieldName: fd_name template: SonataAdminBundle:CRUD:base_list_field.html.twig compiled template: SonataAdminBundle:CRUD:base_list_field.html.twig --> <td class="sonata-ba-list-field sonata-ba-list-field-" objectId="12345"> foo </td> <!-- END - fieldName: fd_name -->',
+        $this->assertSame('<!-- START fieldName: fd_name template: SonataAdminBundle:CRUD:base_list_field.html.twig compiled template: SonataAdminBundle:CRUD:base_list_field.html.twig --> <td class="sonata-ba-list-field sonata-ba-list-field-" objectId="12345"> foo </td> <!-- END - fieldName: fd_name -->',
                 trim(preg_replace('/\s+/', ' ', $this->twigExtension->output($this->fieldDescription, $template, $parameters))));
     }
 
     public function testRenderRelationElementNoObject()
     {
-        $this->assertEquals('foo', $this->twigExtension->renderRelationElement('foo', $this->fieldDescription));
+        $this->assertSame('foo', $this->twigExtension->renderRelationElement('foo', $this->fieldDescription));
     }
 
     public function testRenderRelationElementToString()
@@ -831,7 +836,7 @@ class SonataAdminExtensionTest extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo($entity))
             ->will($this->returnValue(1234567));
 
-        $this->assertEquals(1234567, $this->twigExtension->getUrlsafeIdentifier($entity));
+        $this->assertSame(1234567, $this->twigExtension->getUrlsafeIdentifier($entity));
     }
 
     public function testGetUrlsafeIdentifier_GivenAdmin_Foo()

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Sonata package.
+ * This file is part of the Sonata Project package.
  *
  * (c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
  *
@@ -17,7 +17,6 @@ use Symfony\Component\Form\FormFactoryInterface;
 
 interface FormContractorInterface extends BuilderInterface
 {
-
     /**
      * @abstract
      *
