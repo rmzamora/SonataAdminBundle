@@ -20,15 +20,12 @@ router                        router
 validator                     validator
 security_handler              sonata.admin.security.handler
 menu_factory                  knp_menu.factory
-menu_matcher                  knp_menu.matcher
 route_builder                 sonata.admin.route.path_info | sonata.admin.route.path_info_slashes
 label_translator_strategy     sonata.admin.label.strategy.form_component
 =========================     =============================================
 
-.. note::
-
-    %manager-type% is to be replaced by the manager type (orm, doctrine_mongodb...),
-    and the default route_builder depends on it.
+Note: %manager-type% is to be replaced by the manager type (orm, doctrine_mongodb...),
+and the default route_builder depends on it.
 
 You have 2 ways of defining the dependencies inside ``services.xml``:
 
@@ -38,7 +35,7 @@ You have 2 ways of defining the dependencies inside ``services.xml``:
 
     .. code-block:: xml
 
-        <service id="app.admin.project" class="AppBundle\Admin\ProjectAdmin">
+        <service id="acme.project.admin.project" class="Acme\ProjectBundle\Admin\ProjectAdmin">
             <tag
                 name="sonata.admin"
                 manager_type="orm"
@@ -48,7 +45,7 @@ You have 2 ways of defining the dependencies inside ``services.xml``:
                 route_builder="sonata.admin.route.path_info"
                 />
             <argument />
-            <argument>AppBundle\Entity\Project</argument>
+            <argument>Acme\ProjectBundle\Entity\Project</argument>
             <argument />
         </service>
 
@@ -56,13 +53,18 @@ You have 2 ways of defining the dependencies inside ``services.xml``:
 
     .. code-block:: yaml
 
-        app.admin.project:
-            class: AppBundle\Admin\ProjectAdmin
+        acme.project.admin.project:
+            class: Acme\ProjectBundle\Admin\ProjectAdmin
             tags:
-                - { name: sonata.admin, manager_type: orm, group: "Project", label: "Project", label_translator_strategy: "sonata.admin.label.strategy.native",  route_builder: "sonata.admin.route.path_info" }
+                - name: sonata.admin
+                  manager_type: orm
+                  group: "Project"
+                  label: "Project"
+                  label_translator_strategy: "sonata.admin.label.strategy.native"
+                  route_builder: "sonata.admin.route.path_info"
             arguments:
                 - ~
-                - AppBundle\Entity\Project
+                - Acme\ProjectBundle\Entity\Project
                 - ~
 
 * With a method call, more verbose
@@ -71,7 +73,7 @@ You have 2 ways of defining the dependencies inside ``services.xml``:
 
     .. code-block:: xml
 
-        <service id="app.admin.project" class="AppBundle\Admin\ProjectAdmin">
+        <service id="acme.project.admin.project" class="Acme\ProjectBundle\Admin\ProjectAdmin">
             <tag
                 name="sonata.admin"
                 manager_type="orm"
@@ -79,7 +81,7 @@ You have 2 ways of defining the dependencies inside ``services.xml``:
                 label="Project"
                 />
             <argument />
-            <argument>AppBundle\Entity\Project</argument>
+            <argument>Acme\ProjectBundle\Entity\Project</argument>
             <argument />
 
             <call method="setLabelTranslatorStrategy">
@@ -95,17 +97,17 @@ You have 2 ways of defining the dependencies inside ``services.xml``:
 
     .. code-block:: yaml
 
-        app.admin.project:
-            class: AppBundle\Admin\ProjectAdmin
+        acme.project.admin.project:
+            class: Acme\ProjectBundle\Admin\ProjectAdmin
             tags:
                 - { name: sonata.admin, manager_type: orm, group: "Project", label: "Project" }
             arguments:
                 - ~
-                - AppBundle\Entity\Project
+                - Acme\ProjectBundle\Entity\Project
                 - ~
             calls:
-                - [ setLabelTranslatorStrategy, [ @sonata.admin.label.strategy.native ]]
-                - [ setRouteBuilder, [ @sonata.admin.route.path_info ]]
+                - [ setLabelTranslatorStrategy, [ "@sonata.admin.label.strategy.native" ]]
+                - [ setRouteBuilder, [ "@sonata.admin.route.path_info" ]]
 
 If you want to modify the service that is going to be injected, add the following code to your
 application's config file:
@@ -121,6 +123,7 @@ application's config file:
                     model_manager:          # dependency name, from the table above
                         sonata.order.admin.order.manager  # customised service id
 
+
 Creating a custom RouteBuilder
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -131,7 +134,7 @@ To create your own RouteBuilder create the PHP class and register it as a servic
 .. code-block:: php
 
     <?php
-    namespace AppBundle\Route;
+    namespace Acme\AdminBundle\Route;
 
     use Sonata\AdminBundle\Builder\RouteBuilderInterface;
     use Sonata\AdminBundle\Admin\AdminInterface;
@@ -141,16 +144,14 @@ To create your own RouteBuilder create the PHP class and register it as a servic
     class EntityRouterBuilder extends PathInfoBuilder implements RouteBuilderInterface
     {
         /**
-         * @param AdminInterface  $admin
-         * @param RouteCollection $collection
+         * @param \Sonata\AdminBundle\Admin\AdminInterface $admin
+         * @param \Sonata\AdminBundle\Route\RouteCollection $collection
          */
         public function build(AdminInterface $admin, RouteCollection $collection)
         {
-            parent::build($admin, $collection);
-
+            parent::build($admin,$collection);
             $collection->add('yourSubAction');
-
-            // The create button will disappear, delete functionality will be disabled as well
+            // Create button will disappear, delete functionality will be disabled as well
             // No more changes needed!
             $collection->remove('create');
             $collection->remove('delete');
@@ -163,7 +164,7 @@ To create your own RouteBuilder create the PHP class and register it as a servic
 
     .. code-block:: xml
 
-        <service id="app.admin.entity_route_builder" class="AppBundle\Route\EntityRouterBuilder">
+        <service id="acme.admin.route.entity" class="Acme\AdminBundle\Route\EntityRouterBuilder">
             <argument type="service" id="sonata.admin.audit.manager" />
         </service>
 
@@ -173,11 +174,15 @@ To create your own RouteBuilder create the PHP class and register it as a servic
 
     .. code-block:: yaml
 
+        parameters:
+            acme.admin.entity_route_builder.class: Acme\AdminBundle\Route\EntityRouterBuilder
+
         services:
-            app.admin.entity_route_builder:
-                class: AppBundle\Route\EntityRouterBuilder
+            acme.admin.entity_route_builder:
+                class: "%acme.admin.entity_route_builder.class%"
                 arguments:
-                    - @sonata.admin.audit.manager
+                    - "@sonata.admin.audit.manager"
+
 
 Inherited classes
 -----------------
@@ -190,86 +195,63 @@ Lets consider a base class named `Person` and its subclasses `Student` and `Teac
 
     .. code-block:: xml
 
-        <service id="app.admin.person" class="AppBundle\Admin\PersonAdmin">
-            <tag name="sonata.admin" manager_type="orm" group="admin" label="Person" />
-            <argument/>
-            <argument>AppBundle\Entity\Person</argument>
-            <argument></argument>
-            <call method="setSubClasses">
-                <argument type="collection">
-                    <argument key="student">AppBundle\Entity\Student</argument>
-                    <argument key="teacher">AppBundle\Entity\Teacher</argument>
-                </argument>
-            </call>
-        </service>
+        <services>
+            <service id="sonata.admin.person" class="YourNS\AdminBundle\Admin\PersonAdmin">
+                <tag name="sonata.admin" manager_type="orm" group="admin" label="Person"/>
+                <argument/>
+                <argument>YourNS\AdminBundle\Entity\Person</argument>
+                <argument></argument>
+                <call method="setSubClasses">
+                    <argument type="collection">
+                        <argument key="student">YourNS\AdminBundle\Entity\Student</argument>
+                        <argument key="teacher">YourNS\AdminBundle\Entity\Teacher</argument>
+                    </argument>
+                </call>
+            </service>
+        </services>
 
 You will just need to change the way forms are configured in order to take into account these new subclasses:
 
 .. code-block:: php
 
     <?php
-    // src/AppBundle/Admin/PersonAdmin.php
+    // YourNS\AdminBundle\Admin\PersonAdmin.php
 
-    protected function configureFormFields(FormMapper $formMapper)
+    protected function configureFormFields(FormMapper $form)
     {
         $subject = $this->getSubject();
 
-        $formMapper
-            ->add('name')
-        ;
+        $form->add('name');
 
         if ($subject instanceof Teacher) {
-            $formMapper->add('course', 'text');
+            $form->add('course', 'text');
         }
         elseif ($subject instanceof Student) {
-            $formMapper->add('year', 'integer');
+            $form->add('year', 'integer');
         }
     }
 
-Tab Menu
---------
 
-ACL
-^^^
-
-Though the route linked my a menu may be protected the Tab Menu will not automatically check the ACl for you.
-The link will still appear unless you manually check it using the `isGranted` method:
-
-.. code-block:: php
-
-    <?php
-
-    protected function configureTabMenu(MenuItemInterface $menu, $action, AdminInterface $childAdmin = null)
-    {
-        // Link will always appear even if it is protected by ACL
-        $menu->addChild($this->trans('Show'), array('uri' => $admin->generateUrl('show', array('id' => $id))));
-
-        // Link will only appear if access to ACL protected URL is granted
-        if ($this->isGranted('EDIT')) {
-            $menu->addChild($this->trans('Edit'), array('uri' => $admin->generateUrl('edit', array('id' => $id))));
-        }
-    }
-
-Dropdowns
-^^^^^^^^^
+Dropdowns in Tab Menu
+---------------------
 
 You can use dropdowns inside the Tab Menu by default. This can be achieved by using
-the `'dropdown' => true` attribute:
+the `"dropdown" => true` attribute:
 
 .. code-block:: php
 
     <?php
-    // src/AppBundle/Admin/PersonAdmin.php
+    // YourNS\AdminBundle\Admin\PersonAdmin.php
 
     protected function configureTabMenu(MenuItemInterface $menu, $action, AdminInterface $childAdmin = null)
     {
-        // other tab menu stuff ...
+        // ...other tab menu stuff
 
         $menu->addChild('comments', array('attributes' => array('dropdown' => true)));
-
         $menu['comments']->addChild('list', array('uri' => $admin->generateUrl('listComment', array('id' => $id))));
         $menu['comments']->addChild('create', array('uri' => $admin->generateUrl('addComment', array('id' => $id))));
     }
+
 
 If you want to use the Tab Menu in a different way, you can replace the Menu Template:
 
@@ -277,82 +259,21 @@ If you want to use the Tab Menu in a different way, you can replace the Menu Tem
 
     .. code-block:: yaml
 
-        # app/config/config.yml
-
         sonata_admin:
             templates:
-                tab_menu_template:  AppBundle:Admin:own_tab_menu_template.html.twig
+                tab_menu_template:  YourNSAdminBundle:Admin:own_tab_menu_template.html.twig
+
 
 Disable content stretching
 --------------------------
 
-You can disable ``html``, ``body`` and ``sidebar`` elements stretching. These containers are forced
+You can disable html, body and sidebar elements stretching. These containers are forced
 to be full height by default. If you use custom layout or just don't need such behavior,
-add ``no-stretch`` class to the ``<html>`` tag.
+add **no-stretch** class to <html> tag.
 
 For example:
 
 .. code-block:: html+jinja
 
-    {# src/AppBundle/Resources/views/standard_layout.html.twig #}
-
+    {# YourNS\AdminBundle\Resources\views\standard_layout.html.twig #}
     {% block html_attributes %}class="no-js no-stretch"{% endblock %}
-
-Custom Action Access Management
--------------------------------
-
-You can customize the access system inside the CRUDController by adding some entries inside the  `$accessMapping` array in the linked Admin.
-
-.. code-block:: php
-
-    <?php
-    // src/AppBundle/Admin/PostAdmin.php
-
-    class CustomAdmin extends Admin
-    {
-        protected $accessMapping = array(
-            'myCustomFoo' => 'EDIT',
-            'myCustomBar' => array('EDIT', 'LIST'),
-        );
-    }
-
-    <?php
-    // src/AppBundle/Controller/CustomCRUDController.php
-
-    class CustomCRUDController extends CRUDController
-    {
-        public function myCustomFooAction()
-        {
-            $this->admin->checkAccess('myCustomFoo');
-            // If you can't access to EDIT role for the linked admin, an AccessDeniedException will be thrown
-
-            // ...
-        }
-
-        public function myCustomBarAction($object)
-        {
-            $this->admin->checkAccess('myCustomBar', $object);
-            // If you can't access to EDIT AND LIST roles for the linked admin, an AccessDeniedException will be thrown
-
-            // ...
-        }
-
-        // ...
-    }
-
-You can also fully customize how you want to handle your access management by simply overriding ``checkAccess`` function
-
-.. code-block:: php
-
-    <?php
-    // src/AppBundle/Admin/CustomAdmin.php
-
-    class CustomAdmin extends Admin
-    {
-        public function checkAccess($action, $object = null)
-        {
-            $this->customAccessLogic();
-        }
-
-        // ...
-    }
