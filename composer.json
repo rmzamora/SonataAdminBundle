@@ -22,19 +22,20 @@
         }
     ],
     "require": {
-		"symfony/http-foundation": "~2.4",
-        "symfony/form": "~2.4",
-        "symfony/validator": "~2.4",
-        "symfony/security-bundle": "~2.4",
-        "symfony/routing": "~2.4",
-        "symfony/config": "~2.4",
-        "symfony/console": "~2.4",
-        "symfony/twig-bridge": "~2.4",
-        "symfony/twig-bundle": "~2.4",
-        "symfony/class-loader":"~2.4",
-        "symfony/expression-language": "~2.4",
-        "symfony/property-access": "~2.3",
-        "sensio/generator-bundle": "~2.3",
+        "symfony/http-foundation": "~2.3|~3.0",
+        "symfony/form": "~2.3|~3.0",
+        "symfony/validator": "~2.3|~3.0",
+        "symfony/security-bundle": "~2.3|~3.0",
+        "symfony/routing": "~2.3|~3.0",
+        "symfony/config": "^2.3.9|~3.0",
+        "symfony/console": "~2.3|~3.0",
+        "symfony/twig-bridge": "~2.3|~3.0",
+        "symfony/class-loader":"~2.3|~3.0",
+        "symfony/expression-language": "~2.4|~3.0",
+        "symfony/translation":"~2.3|~3.0",
+        "symfony/dependency-injection": "~2.3,>=2.3.3|~3.0",
+        "symfony/property-access": "~2.3|~3.0",
+        "symfony/security-acl": "~2.3|~3.0",
         "twig/twig": "~1.23",
         "twig/extensions": "~1.0",
         "sonata-project/exporter": "~1.0",
@@ -42,20 +43,17 @@
         "rmzamora/core-bundle": "2.5.0.*",
         "doctrine/common": "~2.4",
         "doctrine/inflector": "~1.0",
-        "knplabs/knp-menu-bundle": ">=1.1.0,<3.0.0",
-        "knplabs/knp-menu": ">=1.1.0,<3.0.0"
-    },
-    "conflict": {
-        "symfony/security": ">2.8.999"
+        "knplabs/knp-menu-bundle": "^2.1.1"
     },
     "require-dev": {
-    	"jms/translation-bundle": "~1.1",
-		"symfony/yaml": "~2.3",
-        "sonata-project/intl-bundle": "~2.1",
+        "sensio/generator-bundle": "~2.3|~3.0",
+        "symfony/yaml": "~2.3|~3.0",
+        "sonata-project/intl-bundle": "dev-master",
         "symfony/phpunit-bridge": "~2.7|~3.0"
     },
     "suggest": {
         "jms/translation-bundle": "Extract message keys from Admins",
+        "sensio/generator-bundle": "Add sonata:admin:generate command",
         "sonata-project/intl-bundle": "Add localized date and number into the list"
     },
     "autoload": {
