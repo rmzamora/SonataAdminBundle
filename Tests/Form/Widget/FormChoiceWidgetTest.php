@@ -11,8 +11,6 @@
 
 namespace Sonata\AdminBundle\Tests\Form\Widget;
 
-use Symfony\Component\HttpKernel\Kernel;
-
 class FormChoiceWidgetTest extends BaseWidgetTest
 {
     protected $type = 'form';
@@ -41,7 +39,35 @@ class FormChoiceWidgetTest extends BaseWidgetTest
         $html = $this->renderWidget($choice->createView());
 
         $this->assertContains(
-            '<span>[trans]some[/trans]</span>',
+            '<li><label><input type="checkbox" id="choice_0" name="choice[]" value="0" />[trans]some[/trans]</label></li>',
+            $this->cleanHtmlWhitespace($html)
+        );
+    }
+
+    public function testBootstrapLabelRendering()
+    {
+        $sonataAdmin = $this->getSonataAdmin();
+        $sonataAdmin['options']['use_icheck'] = false;
+        $this->environment->addGlobal('sonata_admin', $sonataAdmin);
+
+        $choices = array('some', 'choices');
+        if (!method_exists('Symfony\Component\Form\FormTypeInterface', 'setDefaultOptions')) {
+            $choices = array_flip($choices);
+        }
+
+        $choice = $this->factory->create(
+            $this->getChoiceClass(),
+            null,
+            $this->getDefaultOption() + array(
+                'multiple' => true,
+                'expanded' => true,
+            ) + compact('choices')
+        );
+
+        $html = $this->renderWidget($choice->createView());
+
+        $this->assertContains(
+            '<li><div class="checkbox"><label><input type="checkbox" id="choice_0" name="choice[]" value="0" />[trans]some[/trans]</label></div></li>',
             $this->cleanHtmlWhitespace($html)
         );
     }
@@ -101,11 +127,10 @@ class FormChoiceWidgetTest extends BaseWidgetTest
 
     protected function getChoiceClass()
     {
-        if (version_compare(Kernel::VERSION, '2.8.0', '>=')) {
-            return 'Symfony\Component\Form\Extension\Core\Type\ChoiceType';
-        } else {
-            return 'choice';
-        }
+        return
+            method_exists('Symfony\Component\Form\AbstractType', 'getBlockPrefix') ?
+            'Symfony\Component\Form\Extension\Core\Type\ChoiceType' :
+            'choice';
     }
 
     /**
@@ -114,7 +139,10 @@ class FormChoiceWidgetTest extends BaseWidgetTest
      */
     protected function getDefaultOption()
     {
-        if (version_compare(Kernel::VERSION, '2.6.0', '>=')) {
+        if (method_exists(
+            'Symfony\Component\Form\Tests\AbstractLayoutTest',
+            'testSingleChoiceNonRequiredWithPlaceholder'
+        )) {
             return array(
                 'placeholder' => 'Choose an option',
             );

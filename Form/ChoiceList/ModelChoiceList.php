@@ -18,6 +18,7 @@ use Symfony\Component\Form\Exception\RuntimeException;
 use Symfony\Component\Form\ChoiceList\ArrayChoiceList;
 
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\PropertyAccess\PropertyPath;
 
 /**
@@ -84,13 +85,18 @@ class ModelChoiceList extends ArrayChoiceList
     private $propertyPath;
 
     /**
+     * @var PropertyAccessorInterface
+     */
+    private $propertyAccessor;
+
+    /**
      * @param ModelManagerInterface $modelManager
      * @param string                $class
      * @param null                  $property
      * @param null                  $query
      * @param array                 $choices
      */
-    public function __construct(ModelManagerInterface $modelManager, $class, $property = null, $query = null, $choices = array())
+    public function __construct(ModelManagerInterface $modelManager, $class, $property = null, $query = null, $choices = array(), PropertyAccessorInterface $propertyAccessor = null)
     {
         $this->modelManager   = $modelManager;
         $this->class          = $class;
@@ -101,6 +107,7 @@ class ModelChoiceList extends ArrayChoiceList
         // displaying entities as strings
         if ($property) {
             $this->propertyPath = new PropertyPath($property);
+            $this->propertyAccessor = $propertyAccessor ?: PropertyAccess::createPropertyAccessor();
         }
 
         parent::__construct($this->load($choices));
@@ -147,14 +154,14 @@ class ModelChoiceList extends ArrayChoiceList
         foreach ($entities as $key => $entity) {
             if ($this->propertyPath) {
                 // If the property option was given, use it
-                $propertyAccessor = PropertyAccess::createPropertyAccessor();
-                $value = $propertyAccessor->getValue($entity, $this->propertyPath);
+                $value = $this->propertyAccessor->getValue($entity, $this->propertyPath);
             } else {
                 // Otherwise expect a __toString() method in the entity
                 try {
                     $value = (string) $entity;
                 } catch (\Exception $e) {
-                    throw new RuntimeException(sprintf("Unable to convert the entity %s to String, entity must have a '__toString()' method defined", ClassUtils::getClass($entity)), 0, $e);
+                    throw new RuntimeException(sprintf('Unable to convert the entity "%s" to string, provide '
+                        .'"property" option or implement "__toString()" method in your entity.', ClassUtils::getClass($entity)), 0, $e);
                 }
             }
 

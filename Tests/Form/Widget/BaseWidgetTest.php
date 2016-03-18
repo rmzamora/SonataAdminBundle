@@ -19,7 +19,6 @@ use Symfony\Bridge\Twig\Tests\Extension\Fixtures\StubFilesystemLoader;
 use Symfony\Bundle\FrameworkBundle\Tests\Templating\Helper\Fixtures\StubTranslator;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\Test\TypeTestCase;
-use Symfony\Component\HttpKernel\Kernel;
 
 /**
  * Class BaseWidgetTest.
@@ -36,11 +35,33 @@ abstract class BaseWidgetTest extends TypeTestCase
     protected $extension;
 
     /**
+     * @var \Twig_Environment
+     */
+    protected $environment;
+
+    /**
      * Current template type, form or filter.
      *
      * @var string
      */
     protected $type = null;
+
+    /**
+     * @var array
+     */
+    protected $sonataAdmin = array(
+        'name'              => null,
+        'admin'             => null,
+        'value'             => null,
+        'edit'              => 'standard',
+        'inline'            => 'natural',
+        'field_description' => null,
+        'block_name'        => false,
+        'options'           => array(
+            'form_type'  => 'vertical',
+            'use_icheck' => true,
+        ),
+    );
 
     /**
      * {@inheritdoc}
@@ -57,11 +78,10 @@ abstract class BaseWidgetTest extends TypeTestCase
             $this->type.'_admin_fields.html.twig',
         ));
 
-        if (version_compare(Kernel::VERSION, '2.8.0', '>=')) {
-            $csrfManagerClass = 'Symfony\Component\Security\Csrf\CsrfTokenManagerInterface';
-        } else {
-            $csrfManagerClass = 'Symfony\Component\Form\Extension\Csrf\CsrfProvider\CsrfProviderInterface';
-        }
+        $csrfManagerClass =
+            interface_exists('Symfony\Component\Security\Csrf\CsrfTokenManagerInterface') ?
+            'Symfony\Component\Security\Csrf\CsrfTokenManagerInterface' :
+            'Symfony\Component\Form\Extension\Csrf\CsrfProvider\CsrfProviderInterface';
 
         $renderer = new TwigRenderer($rendererEngine, $this->getMock($csrfManagerClass));
 
@@ -81,29 +101,18 @@ abstract class BaseWidgetTest extends TypeTestCase
 
         $loader = new StubFilesystemLoader($twigPaths);
 
-        $environment = new \Twig_Environment($loader, array('strict_variables' => true));
-        $environment->addGlobal('sonata_admin', $this->getSonataAdmin());
-        $environment->addExtension(new TranslationExtension(new StubTranslator()));
+        $this->environment = new \Twig_Environment($loader, array('strict_variables' => true));
+        $this->environment->addGlobal('sonata_admin', $this->getSonataAdmin());
+        $this->environment->addExtension(new TranslationExtension(new StubTranslator()));
 
-        $environment->addExtension($this->extension);
+        $this->environment->addExtension($this->extension);
 
-        $this->extension->initRuntime($environment);
+        $this->extension->initRuntime($this->environment);
     }
 
     protected function getSonataAdmin()
     {
-        return array(
-            'name'              => null,
-            'admin'             => null,
-            'value'             => null,
-            'edit'              => 'standard',
-            'inline'            => 'natural',
-            'field_description' => null,
-            'block_name'        => false,
-            'options'           => array(
-                'form_type' => 'vertical',
-            ),
-        );
+        return $this->sonataAdmin;
     }
 
     /**
