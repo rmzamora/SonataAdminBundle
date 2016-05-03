@@ -92,6 +92,129 @@ class AdminTest extends \PHPUnit_Framework_TestCase
         $admin->getClass();
     }
 
+    public function testCheckAccessThrowsExceptionOnMadeUpAction()
+    {
+        $admin = new PostAdmin(
+            'sonata.post.admin.post',
+            'Application\Sonata\NewsBundle\Entity\Post',
+            'SonataNewsBundle:PostAdmin'
+        );
+        $this->setExpectedException(
+            '\InvalidArgumentException',
+            'Action "made-up" could not be found'
+        );
+        $admin->checkAccess('made-up');
+    }
+
+    public function testCheckAccessThrowsAccessDeniedException()
+    {
+        $admin = new PostAdmin(
+            'sonata.post.admin.post',
+            'Application\Sonata\NewsBundle\Entity\Post',
+            'SonataNewsBundle:PostAdmin'
+        );
+        $securityHandler = $this->prophesize(
+            'Sonata\AdminBundle\Security\Handler\SecurityHandlerInterface'
+        );
+        $securityHandler->isGranted($admin, 'CUSTOM_ROLE', $admin)->willReturn(true);
+        $securityHandler->isGranted($admin, 'EXTRA_CUSTOM_ROLE', $admin)->willReturn(false);
+        $customExtension = $this->prophesize(
+            'Sonata\AdminBundle\Admin\AdminExtension'
+        );
+        $customExtension->getAccessMapping($admin)->willReturn(
+            array('custom_action' => array('CUSTOM_ROLE', 'EXTRA_CUSTOM_ROLE'))
+        );
+        $admin->addExtension($customExtension->reveal());
+        $admin->setSecurityHandler($securityHandler->reveal());
+        $this->setExpectedException(
+            'Symfony\Component\Security\Core\Exception\AccessDeniedException',
+            'Access Denied to the action custom_action and role EXTRA_CUSTOM_ROLE'
+        );
+        $admin->checkAccess('custom_action');
+    }
+
+    public function testHasAccessOnMadeUpAction()
+    {
+        $admin = new PostAdmin(
+            'sonata.post.admin.post',
+            'Application\Sonata\NewsBundle\Entity\Post',
+            'SonataNewsBundle:PostAdmin'
+        );
+
+        $this->assertFalse($admin->hasAccess('made-up'));
+    }
+
+    public function testHasAccess()
+    {
+        $admin = new PostAdmin(
+            'sonata.post.admin.post',
+            'Application\Sonata\NewsBundle\Entity\Post',
+            'SonataNewsBundle:PostAdmin'
+        );
+        $securityHandler = $this->prophesize(
+            'Sonata\AdminBundle\Security\Handler\SecurityHandlerInterface'
+        );
+        $securityHandler->isGranted($admin, 'CUSTOM_ROLE', $admin)->willReturn(true);
+        $securityHandler->isGranted($admin, 'EXTRA_CUSTOM_ROLE', $admin)->willReturn(false);
+        $customExtension = $this->prophesize(
+            'Sonata\AdminBundle\Admin\AdminExtension'
+        );
+        $customExtension->getAccessMapping($admin)->willReturn(
+            array('custom_action' => array('CUSTOM_ROLE', 'EXTRA_CUSTOM_ROLE'))
+        );
+        $admin->addExtension($customExtension->reveal());
+        $admin->setSecurityHandler($securityHandler->reveal());
+
+        $this->assertFalse($admin->hasAccess('custom_action'));
+    }
+
+    public function testHasAccessAllowsAccess()
+    {
+        $admin = new PostAdmin(
+            'sonata.post.admin.post',
+            'Application\Sonata\NewsBundle\Entity\Post',
+            'SonataNewsBundle:PostAdmin'
+        );
+        $securityHandler = $this->prophesize(
+            'Sonata\AdminBundle\Security\Handler\SecurityHandlerInterface'
+        );
+        $securityHandler->isGranted($admin, 'CUSTOM_ROLE', $admin)->willReturn(true);
+        $securityHandler->isGranted($admin, 'EXTRA_CUSTOM_ROLE', $admin)->willReturn(true);
+        $customExtension = $this->prophesize(
+            'Sonata\AdminBundle\Admin\AdminExtension'
+        );
+        $customExtension->getAccessMapping($admin)->willReturn(
+            array('custom_action' => array('CUSTOM_ROLE', 'EXTRA_CUSTOM_ROLE'))
+        );
+        $admin->addExtension($customExtension->reveal());
+        $admin->setSecurityHandler($securityHandler->reveal());
+
+        $this->assertTrue($admin->hasAccess('custom_action'));
+    }
+
+    public function testHasAccessAllowsAccessEditAction()
+    {
+        $admin = new PostAdmin(
+            'sonata.post.admin.post',
+            'Application\Sonata\NewsBundle\Entity\Post',
+            'SonataNewsBundle:PostAdmin'
+        );
+        $securityHandler = $this->prophesize(
+            'Sonata\AdminBundle\Security\Handler\SecurityHandlerInterface'
+        );
+        $securityHandler->isGranted($admin, 'EDIT_ROLE', $admin)->willReturn(true);
+        $customExtension = $this->prophesize(
+            'Sonata\AdminBundle\Admin\AdminExtension'
+        );
+        $customExtension->getAccessMapping($admin)->willReturn(
+            array('edit_action' => array('EDIT_ROLE'))
+        );
+        $admin->addExtension($customExtension->reveal());
+        $admin->setSecurityHandler($securityHandler->reveal());
+
+        $this->assertTrue($admin->hasAccess('edit_action'));
+    }
+
     public function testGetBreadCrumbs()
     {
         $class = 'Application\Sonata\NewsBundle\Entity\Post';
@@ -1612,7 +1735,7 @@ class AdminTest extends \PHPUnit_Framework_TestCase
 
         $datagridBuilder->expects($this->exactly(3))
             ->method('addFilter')
-            ->will($this->returnCallback(function ($datagrid, $type = null, $fieldDescription, AdminInterface $admin) {
+            ->will($this->returnCallback(function ($datagrid, $type, $fieldDescription, AdminInterface $admin) {
                 $admin->addFilterFieldDescription($fieldDescription->getName(), $fieldDescription);
                 $fieldDescription->mergeOption('field_options', array('required' => false));
             }));
@@ -1670,6 +1793,41 @@ class AdminTest extends \PHPUnit_Framework_TestCase
         $admin = new PostAdmin('sonata.post.admin.post', 'NewsBundle\Entity\Post', 'SonataNewsBundle:PostAdmin');
 
         $this->assertSame($expected, $admin->getActionButtons('list', null));
+    }
+
+    /**
+     * @covers Sonata\AdminBundle\Admin\Admin::getDashboardActions
+     * @dataProvider provideGetBaseRouteName
+     */
+    public function testDefaultDashboardActionsArePresent($objFqn, $expected)
+    {
+        $pathInfo = new \Sonata\AdminBundle\Route\PathInfoBuilder($this->getMock('Sonata\AdminBundle\Model\AuditManagerInterface'));
+
+        $routeGenerator = new DefaultRouteGenerator(
+            $this->getMock('Symfony\Component\Routing\RouterInterface'),
+            new RoutesCache($this->cacheTempFolder, true)
+        );
+
+        $admin = new PostAdmin('sonata.post.admin.post', $objFqn, 'SonataNewsBundle:PostAdmin');
+        $admin->setRouteBuilder($pathInfo);
+        $admin->setRouteGenerator($routeGenerator);
+        $admin->initialize();
+
+        $securityHandler = $this->getMock('Sonata\AdminBundle\Security\Handler\SecurityHandlerInterface');
+        $securityHandler->expects($this->any())
+            ->method('isGranted')
+            ->will($this->returnCallback(function (AdminInterface $adminIn, $attributes, $object = null) use ($admin) {
+                if ($admin == $adminIn && ($attributes == 'CREATE' || $attributes == 'LIST')) {
+                    return true;
+                }
+
+                return false;
+            }));
+
+        $admin->setSecurityHandler($securityHandler);
+
+        $this->assertArrayHasKey('list', $admin->getDashboardActions());
+        $this->assertArrayHasKey('create', $admin->getDashboardActions());
     }
 }
 
