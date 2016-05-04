@@ -502,9 +502,6 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
         'mosaic' => array(
             'class' => 'fa fa-th-large fa-fw',
         ),
-//        'tree' => array(
-//            'class' => 'fa fa-sitemap fa-fw',
-//        ),
     );
 
     /**
@@ -1305,6 +1302,31 @@ abstract class Admin implements AdminInterface, DomainObjectInterface
         }
 
         return $this->routeGenerator->hasAdminRoute($this, $name);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isCurrentRoute($name, $adminCode = null)
+    {
+        if (!$this->hasRequest()) {
+            return false;
+        }
+
+        $request = $this->getRequest();
+        $route = $request->get('_route');
+
+        if ($adminCode) {
+            $admin = $this->getConfigurationPool()->getAdminByAdminCode($adminCode);
+        } else {
+            $admin = $this;
+        }
+
+        if (!$admin) {
+            return false;
+        }
+
+        return ($admin->getBaseRouteName().'_'.$name) == $route;
     }
 
     /**
