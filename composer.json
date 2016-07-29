@@ -1,8 +1,8 @@
 {
-    "name": "sonata-project/admin-bundle",
+    "name": "rmzamora/admin-bundle",
     "type": "symfony-bundle",
     "description": "The missing Symfony Admin Generator",
-    "keywords": ["Admin Generator", "admin", "sonata", "bootstrap"],
+    "keywords": ["Admin Generator", "admin", "sonata", "bootstrap", "fork"],
     "homepage": "https://sonata-project.org/bundles/admin",
     "license": "MIT",
     "authors": [
@@ -14,6 +14,11 @@
         {
             "name": "Sonata Community",
             "homepage": "https://github.com/sonata-project/SonataAdminBundle/contributors"
+        },
+        {
+            "name": "Mell M. Zamora",
+            "email": "me@mellzamora.com",
+            "homepage": "http://mellzamora.com"
         }
     ],
     "require": {
@@ -74,7 +79,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "3.x-dev"
+            "dev-3.x": "3.x-dev"
         }
     }
 }
